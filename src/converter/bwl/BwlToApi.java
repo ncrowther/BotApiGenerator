@@ -39,7 +39,7 @@ public class BwlToApi {
 
 				Map<String, List<String>> codeMap = CodeConverter.generateWDGFunctionCode(startNode.getId(), bpmnParser);
 
-				final String generatedDir = "generated/";
+				final String generatedDir = "D:\\RPA\\github\\BotApiGenerator\\generated\\";
 				String botFile =  generatedDir + StringUtils.convertToTitleCase(startNode.getName());
 				String walFileName = botFile + ".txt";
 				String postmanFileName = botFile + ".json";
