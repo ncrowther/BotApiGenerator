@@ -1,0 +1,6 @@
+
+data/
+generated/
+bin/
+bpmn/
+*.wad

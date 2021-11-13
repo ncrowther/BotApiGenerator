@@ -1,0 +1,21 @@
+âdefVar --name output --type String
+defVar --name exitCode --type Numeric
+defVar --name response --type String
+defVar --name error --type String
+defVar --name BwlProcessURL --type String
+defVar --name window01 --type Window
+defVar --name window02 --type Window
+defVar --name id --type String
+defVar --name success --type Boolean
+
+//launchWindow --executablepath "C:\\Program Files\\IBM Robotic Process Automation\\IBM Robotic Process Automation\\Studio.exe" --timeout "00:00:20" window01=value
+launchOrAttach --executablepath "C:\\Program Files\\IBM Robotic Process Automation\\IBM Robotic Process Automation\\Studio.exe" --title "IBM Robotic Process Automation Studio" --id "${id}" window01=value success=success
+//attachWindow --window ${window01}
+sendKeys --keys "%+w" --viacurrentwindow 
+sendKeys --keys "^v" --viacurrentwindow 
+
+sendKeys --keys "^+s" --viacurrentwindow 
+sendKeys --keys "Roberto.wal" --viacurrentwindow 
+sendKeys --keys "{ENTER}"
+//runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo on\r\n\r\nREM run java with params %1\r\n\r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\nset DATA_HOME=..\\data\r\n\r\npushd D:\\RPA\\github\\bpmnBotAPIGenerator\\bin\r\n\"C:\\Program Files\\Java\\jdk-15.0.1\\bin\\java\" -cp ..\\lib\\jsoup-1.14.3.jar;. converter.bwl.BwlBpmnToWdgCompiler ..\\data\\%1\r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${BwlProcessURL}" --blockexecution  exitCode=exitcode response=output error=error
+logMessage --message "Result: ${output}" --type "Info"*21.0.1.0
