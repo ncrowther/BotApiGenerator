@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import converter.IBwlParser;
 import converter.bpmn.BpmnTask;
 import converter.bpmn.TaskType;
+import converter.common.StringUtils;
 
 public class BwlJsonParser implements IBwlParser {
 
@@ -60,7 +61,7 @@ public class BwlJsonParser implements IBwlParser {
 
 	private void getMilestones(JSONObject jsonObj) {
 		String post_id = jsonObj.getString("name");
-		System.out.println(post_id);
+		// System.out.println(post_id);
 		getActivities(jsonObj);
 	}
 
@@ -96,6 +97,7 @@ public class BwlJsonParser implements IBwlParser {
 		for (int i = 0; i < inputsArr.length(); i++) {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
 			String inputParam = inputObj.getString("name");
+			inputParam = StringUtils.removeInvalidCharacters(inputParam);
 			System.out.println("In:" + inputParam);
 			task.addInputParam(inputParam);
 		}
@@ -106,6 +108,7 @@ public class BwlJsonParser implements IBwlParser {
 		for (int i = 0; i < inputsArr.length(); i++) {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
 			String outputParam = inputObj.getString("name");
+			outputParam = StringUtils.removeInvalidCharacters(outputParam);
 			System.out.println("Out:" + outputParam);
 			task.addOutputParam(outputParam);
 		}
@@ -117,11 +120,12 @@ public class BwlJsonParser implements IBwlParser {
 
 			JSONObject activity = activityArr.getJSONObject(j);
 			String taskName = activity.getString("name");
-			System.out.println(taskName);
+			taskName = StringUtils.removeInvalidCharacters(taskName);
+			// System.out.println(taskName);
 
 			if (activity.has("sub-type")) {
 				String subtype = activity.getString("sub-type");
-				System.out.println(subtype);
+				// System.out.println(subtype);
 				if (subtype.equals("robotic-task")) {
 					getTaskProperties(activity, taskName);
 				}
