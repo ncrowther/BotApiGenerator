@@ -1,9 +1,11 @@
-package converter.common;
+package converter.openApi;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import converter.common.CodePlacement;
 
 public class OpenApiWriter {
 

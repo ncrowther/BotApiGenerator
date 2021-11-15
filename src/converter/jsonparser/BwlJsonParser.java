@@ -1,13 +1,25 @@
-package converter.bwl;
+package converter.jsonparser;
 
+/* 
+ * Licensed Materials - Property of IBM Corporation.
+ * 
+ * 5725-A20
+ * 
+ * Copyright IBM Corporation 2021. All Rights Reserved.
+ * 
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corporation.
+ */
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import converter.common.BpmnTask;
-import converter.common.TaskType;
+
+import converter.IBwlParser;
+import converter.bpmn.BpmnTask;
+import converter.bpmn.TaskType;
 
 public class BwlJsonParser implements IBwlParser {
 
@@ -18,7 +30,7 @@ public class BwlJsonParser implements IBwlParser {
 	public BwlJsonParser(String json) {
 		parseProcess(json);
 	}
-	
+
 	public Map<String, BpmnTask> getTaskMap() {
 		return taskMap;
 	}
@@ -35,9 +47,8 @@ public class BwlJsonParser implements IBwlParser {
 		return taskMap.get(taskId);
 	}
 
-
 	private void parseProcess(String json) {
-		
+
 		JSONObject obj = new JSONObject(json);
 
 		JSONArray arr = obj.getJSONArray("milestones");
@@ -47,14 +58,14 @@ public class BwlJsonParser implements IBwlParser {
 		}
 	}
 
-	private  void getMilestones(JSONObject jsonObj) {
+	private void getMilestones(JSONObject jsonObj) {
 		String post_id = jsonObj.getString("name");
 		System.out.println(post_id);
 		getActivities(jsonObj);
 	}
 
-	private  void getTaskProperties(JSONObject activity, String name) {
-		
+	private void getTaskProperties(JSONObject activity, String name) {
+
 		BpmnTask task = new BpmnTask();
 		String id = "1";
 		task.setId(id);
@@ -63,22 +74,24 @@ public class BwlJsonParser implements IBwlParser {
 
 		taskMap.put(id, task);
 		startNodes.push(task);
-	
-		JSONArray propertiesArr = activity.getJSONArray("properties");
-		for (int i = 0; i < propertiesArr.length(); i++) {
-			JSONObject property = propertiesArr.getJSONObject(i);
 
-			if (property.has("inputs")) {
-				getInputParameters(property, task);
-			}
+		if (activity.has("properties")) {
+			JSONArray propertiesArr = activity.getJSONArray("properties");
+			for (int i = 0; i < propertiesArr.length(); i++) {
+				JSONObject property = propertiesArr.getJSONObject(i);
 
-			if (property.has("outputs")) {
-				getOutputParameters(property, task);
+				if (property.has("inputs")) {
+					getInputParameters(property, task);
+				}
+
+				if (property.has("outputs")) {
+					getOutputParameters(property, task);
+				}
 			}
 		}
 	}
 
-	private  void getInputParameters(JSONObject property, BpmnTask task) {
+	private void getInputParameters(JSONObject property, BpmnTask task) {
 		JSONArray inputsArr = property.getJSONArray("inputs");
 		for (int i = 0; i < inputsArr.length(); i++) {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
@@ -88,7 +101,7 @@ public class BwlJsonParser implements IBwlParser {
 		}
 	}
 
-	private  void getOutputParameters(JSONObject property, BpmnTask task) {
+	private void getOutputParameters(JSONObject property, BpmnTask task) {
 		JSONArray inputsArr = property.getJSONArray("outputs");
 		for (int i = 0; i < inputsArr.length(); i++) {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
@@ -120,7 +133,7 @@ public class BwlJsonParser implements IBwlParser {
 
 		BwlJsonParser jsonParser = new BwlJsonParser(json);
 	}
-	
+
 	static String json = "{\r\n" + "  \"name\" : \"AddSalesLeads\",\r\n" + "  \"id\" : \"7bed641530\",\r\n"
 			+ "  \"type\" : \"blueprint\",\r\n" + "  \"properties\" : [ ],\r\n" + "  \"tags\" : [ ],\r\n"
 			+ "  \"milestones\" : [ {\r\n" + "    \"name\" : \"Milestone 1\",\r\n" + "    \"id\" : \"7bed641534\",\r\n"

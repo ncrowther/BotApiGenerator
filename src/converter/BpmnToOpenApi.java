@@ -1,18 +1,30 @@
-package converter.bwl;
+package converter;
 
+/* 
+ * Licensed Materials - Property of IBM Corporation.
+ * 
+ * 5725-A20
+ * 
+ * Copyright IBM Corporation 2021. All Rights Reserved.
+ * 
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corporation.
+ */
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import bwlapi.BwlRestApi;
-import converter.common.BpmnTask;
-import converter.common.OpenApiWriter;
-import converter.common.PostmanWriter;
+import converter.bpmn.CodeConverter;
+import converter.IBwlParser;
+import converter.bpmn.BwlBpmnParser;
+import converter.bpmn.BpmnTask;
+import converter.openApi.OpenApiWriter;
 import converter.common.StringUtils;
-import converter.common.WalWriter;
+import converter.postman.PostmanWriter;
+import converter.wal.WalWriter;
 
-public class BwlBpmnToWdgCompiler {
+public class BpmnToOpenApi {
 	
 	public static void main(String[] args) {
 
@@ -46,10 +58,8 @@ public class BwlBpmnToWdgCompiler {
 
 			System.out.println("Processing " + inputFileName);
 			
-			// File inputFile = new File(inputFileName);		
-			//IBwlParser bpmnParser = new BwlBpmnParser(inputFile, walFileName);
-			String jsonString = BwlRestApi.getJson("");
-			IBwlParser bpmnParser = new BwlJsonParser(jsonString);
+			File inputFile = new File(inputFileName);		
+			IBwlParser bpmnParser = new BwlBpmnParser(inputFile, walFileName);
 
 			Stack<BpmnTask> startIds = bpmnParser.getStartIds();
 			

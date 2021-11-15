@@ -1,10 +1,12 @@
-package converter.common;
+package converter.postman;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import converter.common.CodePlacement;
 
 public class PostmanWriter {
 
