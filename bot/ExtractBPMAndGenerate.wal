@@ -24,7 +24,7 @@ logMessage --message "\'${bwlUsername}\'" --type "Info"
 logMessage --message "\'${bwlPassword}\'" --type "Info"
 
 inputBox --title "BWL URL" --prompt "Enter BWL URL for process" BwlProcessURL=value
-runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params \r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\n\r\npushd D:\\RPA\\github\\BotApiGenerator\\bin\r\njava -cp ..\\lib\\jsoup-1.14.3.jar;..\\lib\\javax.xml.bind.jar;..\\lib\\json-20210307.jar;. converter.bwl.BwlToApi %1 %2 %3 %4\r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${BwlProcessURL}  ${bwlUserName} ${bwlPassword} ${generatorBaseDir}" --blockexecution  exitCode=exitcode response=output error=error
+runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params \r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\n\r\npushd D:\\RPA\\github\\BotApiGenerator\\bin\r\njava -cp ..\\lib\\jsoup-1.14.3.jar;..\\lib\\javax.xml.bind.jar;..\\lib\\json-20210307.jar;. converter.BwlToOpenApi %1 %2 %3 %4\r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${BwlProcessURL}  ${bwlUserName} ${bwlPassword} ${generatorBaseDir}" --blockexecution  exitCode=exitcode response=output error=error
 if --left "${error}" --operator "Is_Null_Or_Empty"
 	goSub --label extractFilePath
 	goSub --label extractBotName
