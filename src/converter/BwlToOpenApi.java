@@ -69,6 +69,8 @@ public class BwlToOpenApi {
 			System.out.println("Processing URL:" + bwlProcessUrl + " U:" + bwlUsername + " P:" + bwlPassword);
 
 			String jsonString = BwlRestApi.getJson(bwlProcessUrl, bwlUsername, bwlPassword);
+			
+			// System.out.println(jsonString);
 
 			IBwlParser bpmnParser = new BwlJsonParser(jsonString);
 

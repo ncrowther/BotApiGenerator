@@ -98,7 +98,7 @@ public class BwlJsonParser implements IBwlParser {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
 			String inputParam = inputObj.getString("name");
 			inputParam = StringUtils.removeInvalidCharacters(inputParam);
-			System.out.println("In:" + inputParam);
+			// System.out.println("In:" + inputParam);
 			task.addInputParam(inputParam);
 		}
 	}
@@ -109,7 +109,7 @@ public class BwlJsonParser implements IBwlParser {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
 			String outputParam = inputObj.getString("name");
 			outputParam = StringUtils.removeInvalidCharacters(outputParam);
-			System.out.println("Out:" + outputParam);
+			// System.out.println("Out:" + outputParam);
 			task.addOutputParam(outputParam);
 		}
 	}
@@ -121,15 +121,18 @@ public class BwlJsonParser implements IBwlParser {
 			JSONObject activity = activityArr.getJSONObject(j);
 			String taskName = activity.getString("name");
 			taskName = StringUtils.removeInvalidCharacters(taskName);
-			// System.out.println(taskName);
+			//System.out.println(taskName);
 
 			if (activity.has("sub-type")) {
 				String subtype = activity.getString("sub-type");
-				// System.out.println(subtype);
+				//System.out.println(subtype);
 				if (subtype.equals("robotic-task")) {
 					getTaskProperties(activity, taskName);
 				}
-			}
+				if (subtype.equals("subprocess")) {
+					getActivities(activity);
+				}				
+			}			
 		}
 	}
 
@@ -138,51 +141,220 @@ public class BwlJsonParser implements IBwlParser {
 		BwlJsonParser jsonParser = new BwlJsonParser(json);
 	}
 
-	static String json = "{\r\n" + "  \"name\" : \"AddSalesLeads\",\r\n" + "  \"id\" : \"7bed641530\",\r\n"
-			+ "  \"type\" : \"blueprint\",\r\n" + "  \"properties\" : [ ],\r\n" + "  \"tags\" : [ ],\r\n"
-			+ "  \"milestones\" : [ {\r\n" + "    \"name\" : \"Milestone 1\",\r\n" + "    \"id\" : \"7bed641534\",\r\n"
-			+ "    \"type\" : \"milestone\",\r\n" + "    \"activities\" : [ {\r\n" + "      \"name\" : \"Start\",\r\n"
-			+ "      \"id\" : \"7bed641550\",\r\n" + "      \"type\" : \"start-event\"\r\n" + "    }, {\r\n"
-			+ "      \"name\" : \"Prepare Sales Data\",\r\n" + "      \"id\" : \"8fed642502\",\r\n"
-			+ "      \"type\" : \"activity\",\r\n" + "      \"sub-type\" : \"normal\"\r\n" + "    }, {\r\n"
-			+ "      \"name\" : \"AddSalesLead\",\r\n" + "      \"id\" : \"7bed641538\",\r\n"
-			+ "      \"type\" : \"activity\",\r\n" + "      \"sub-type\" : \"robotic-task\",\r\n"
-			+ "      \"properties\" : [ {\r\n" + "        \"inputs\" : [ {\r\n"
-			+ "          \"id\" : \"7bed642a53\",\r\n" + "          \"name\" : \"first_name\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"7bed642a5e\",\r\n" + "          \"name\" : \"last_name\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"35ebf9360a\",\r\n" + "          \"name\" : \"Email\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"7bed642a6c\",\r\n" + "          \"name\" : \"job_title\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"7bed642a75\",\r\n" + "          \"name\" : \"company\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"a7ed6442ba\",\r\n" + "          \"name\" : \"phone\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"a7ed6442bd\",\r\n" + "          \"name\" : \"client_address\"\r\n"
-			+ "        }, {\r\n" + "          \"id\" : \"a7ed6442c0\",\r\n" + "          \"name\" : \"client_city\"\r\n"
-			+ "        }, {\r\n" + "          \"id\" : \"a7ed6442c5\",\r\n"
-			+ "          \"name\" : \"client_state\"\r\n" + "        }, {\r\n"
-			+ "          \"id\" : \"a7ed6442ca\",\r\n" + "          \"name\" : \"client_zipcode\"\r\n"
-			+ "        }, {\r\n" + "          \"id\" : \"a7ed6442d1\",\r\n" + "          \"name\" : \"interest\"\r\n"
-			+ "        }, {\r\n" + "          \"id\" : \"4decf8fe0f\",\r\n" + "          \"name\" : \"followup\"\r\n"
-			+ "        } ]\r\n" + "      }, {\r\n" + "        \"outputs\" : [ {\r\n"
-			+ "          \"id\" : \"7ded641c5f\",\r\n" + "          \"name\" : \"salesId\"\r\n" + "        } ]\r\n"
-			+ "      }, {\r\n" + "        \"System\" : [ {\r\n" + "          \"id\" : \"7bed640af6\",\r\n"
-			+ "          \"name\" : \"localhost:8099\"\r\n" + "        } ]\r\n" + "      } ],\r\n"
-			+ "      \"description\" : \"<p>This bot adds new <span style=\\\"color:#ff0000\\\"><i>leads </i></span>to the leads website called JKAutomation</p><generatedbybwl></generatedbybwl>\"\r\n"
-			+ "    }, {\r\n" + "      \"name\" : \"Log Activity In SalesForce\",\r\n"
-			+ "      \"id\" : \"8fed64250a\",\r\n" + "      \"type\" : \"activity\",\r\n"
-			+ "      \"sub-type\" : \"normal\"\r\n" + "    } ]\r\n" + "  }, {\r\n"
-			+ "    \"name\" : \"Milestone 2\",\r\n" + "    \"id\" : \"7bed641536\",\r\n"
-			+ "    \"type\" : \"milestone\",\r\n" + "    \"activities\" : [ {\r\n" + "      \"name\" : \"End\",\r\n"
-			+ "      \"id\" : \"7bed641552\",\r\n" + "      \"type\" : \"end-event\"\r\n" + "    } ]\r\n" + "  } ],\r\n"
-			+ "  \"problems\" : [ ],\r\n" + "  \"attachments\" : [ ],\r\n"
-			+ "  \"space-ids\" : [ \"12eb456a97\", \"93eb715f68\", \"41ece48a6f\", \"6cecf836b1\", \"56ecf3206a\", \"7bed641529\" ],\r\n"
-			+ "  \"space-names\" : [ \"Blueworks Live Training\", \"Nigel Crowther Training Space\", \"WDGBots\", \"WDGProjects\", \"ONS\", \"Sales\" ],\r\n"
-			+ "  \"archived-state\" : \"active\",\r\n" + "  \"published-state\" : \"published\",\r\n"
-			+ "  \"last-modified-date\" : \"2021-11-12T14:14:44.855+0000\",\r\n" + "  \"last-modified-by-user\" : {\r\n"
-			+ "    \"id\" : \"49706c7f\",\r\n" + "    \"full-name\" : \"Nigel Crowther\",\r\n"
-			+ "    \"email-address\" : \"ncrowther@uk.ibm.com\"\r\n" + "  },\r\n"
-			+ "  \"created-date\" : \"2021-11-10T19:43:53.529+0000\",\r\n" + "  \"created-by-user\" : {\r\n"
-			+ "    \"id\" : \"49706c7f\",\r\n" + "    \"full-name\" : \"Nigel Crowther\",\r\n"
-			+ "    \"email-address\" : \"ncrowther@uk.ibm.com\"\r\n" + "  },\r\n"
-			+ "  \"published-date\" : \"2021-11-12T14:01:03.747+0000\",\r\n"
-			+ "  \"published-snapshot-name\" : \"current-version\",\r\n" + "  \"text-annotations\" : [ ]\r\n" + "}\r\n"
+	static String json = "{\r\n" + 
+			"  \"name\" : \"ProcessRefund\",\r\n" + 
+			"  \"id\" : \"aeed62e59b\",\r\n" + 
+			"  \"type\" : \"blueprint\",\r\n" + 
+			"  \"properties\" : [ ],\r\n" + 
+			"  \"tags\" : [ ],\r\n" + 
+			"  \"milestones\" : [ {\r\n" + 
+			"    \"name\" : \"Process Refunds\",\r\n" + 
+			"    \"id\" : \"aeed62e5a1\",\r\n" + 
+			"    \"type\" : \"milestone\",\r\n" + 
+			"    \"activities\" : [ {\r\n" + 
+			"      \"name\" : \"Start\",\r\n" + 
+			"      \"id\" : \"aeed62e5b5\",\r\n" + 
+			"      \"type\" : \"start-event\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"aeed62fa57\",\r\n" + 
+			"          \"name\" : \"App Connect\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"ReadRefunds\",\r\n" + 
+			"      \"id\" : \"afed620037\",\r\n" + 
+			"      \"type\" : \"activity\",\r\n" + 
+			"      \"sub-type\" : \"normal\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"aeed62fa57\",\r\n" + 
+			"          \"name\" : \"App Connect\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"More Refunds\",\r\n" + 
+			"      \"id\" : \"aeed62ed04\",\r\n" + 
+			"      \"type\" : \"gateway\",\r\n" + 
+			"      \"sub-type\" : \"exclusive-gateway\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"aeed62fa57\",\r\n" + 
+			"          \"name\" : \"App Connect\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"ProcessRefund\",\r\n" + 
+			"      \"id\" : \"aeed62ed17\",\r\n" + 
+			"      \"type\" : \"activity\",\r\n" + 
+			"      \"sub-type\" : \"normal\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"ceec7bfb81\",\r\n" + 
+			"          \"name\" : \"rpa\"\r\n" + 
+			"        } ]\r\n" + 
+			"      }, {\r\n" + 
+			"        \"inputs\" : [ {\r\n" + 
+			"          \"id\" : \"aeed62e5f3\",\r\n" + 
+			"          \"name\" : \"RefundAmount\"\r\n" + 
+			"        }, {\r\n" + 
+			"          \"id\" : \"b2ebed40d6\",\r\n" + 
+			"          \"name\" : \"CustomerNumber\"\r\n" + 
+			"        }, {\r\n" + 
+			"          \"id\" : \"35ed655852\",\r\n" + 
+			"          \"name\" : \"CardType\"\r\n" + 
+			"        }, {\r\n" + 
+			"          \"id\" : \"35ed655858\",\r\n" + 
+			"          \"name\" : \"CardNumber\"\r\n" + 
+			"        }, {\r\n" + 
+			"          \"id\" : \"35ed65585c\",\r\n" + 
+			"          \"name\" : \"expiryDate\"\r\n" + 
+			"        }, {\r\n" + 
+			"          \"id\" : \"35ed655860\",\r\n" + 
+			"          \"name\" : \"cvc\"\r\n" + 
+			"        } ]\r\n" + 
+			"      }, {\r\n" + 
+			"        \"outputs\" : [ {\r\n" + 
+			"          \"id\" : \"ed657947\",\r\n" + 
+			"          \"name\" : \"paymentId\"\r\n" + 
+			"        }, {\r\n" + 
+			"          \"id\" : \"35ed65584b\",\r\n" + 
+			"          \"name\" : \"transactionDate\"\r\n" + 
+			"        } ]\r\n" + 
+			"      }, {\r\n" + 
+			"        \"System\" : [ {\r\n" + 
+			"          \"id\" : \"7bed640af6\",\r\n" + 
+			"          \"name\" : \"localhost:8099\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ],\r\n" + 
+			"      \"description\" : \"<p>Process customer refund using credit card</p><generatedbybwl></generatedbybwl>\"\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"Subprocess\",\r\n" + 
+			"      \"id\" : \"36ed65c702\",\r\n" + 
+			"      \"type\" : \"activity\",\r\n" + 
+			"      \"sub-type\" : \"subprocess\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"aeed62fa57\",\r\n" + 
+			"          \"name\" : \"App Connect\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ],\r\n" + 
+			"      \"activities\" : [ {\r\n" + 
+			"        \"name\" : \"Start\",\r\n" + 
+			"        \"id\" : \"36ed65c707\",\r\n" + 
+			"        \"type\" : \"start-event\",\r\n" + 
+			"        \"properties\" : [ {\r\n" + 
+			"          \"participants\" : [ {\r\n" + 
+			"            \"id\" : \"aeed62fa57\",\r\n" + 
+			"            \"name\" : \"App Connect\"\r\n" + 
+			"          } ]\r\n" + 
+			"        } ]\r\n" + 
+			"      }, {\r\n" + 
+			"        \"name\" : \"Email Results\",\r\n" + 
+			"        \"id\" : \"aeed62ed24\",\r\n" + 
+			"        \"type\" : \"activity\",\r\n" + 
+			"        \"sub-type\" : \"robotic-task\",\r\n" + 
+			"        \"properties\" : [ {\r\n" + 
+			"          \"participants\" : [ {\r\n" + 
+			"            \"id\" : \"aeed62fa57\",\r\n" + 
+			"            \"name\" : \"App Connect\"\r\n" + 
+			"          } ]\r\n" + 
+			"        }, {\r\n" + 
+			"          \"inputs\" : [ {\r\n" + 
+			"            \"id\" : \"4decf8fe03\",\r\n" + 
+			"            \"name\" : \"email Address\"\r\n" + 
+			"          }, {\r\n" + 
+			"            \"id\" : \"36ed655000\",\r\n" + 
+			"            \"name\" : \"email Header\"\r\n" + 
+			"          }, {\r\n" + 
+			"            \"id\" : \"36ed655004\",\r\n" + 
+			"            \"name\" : \"email Body\"\r\n" + 
+			"          } ]\r\n" + 
+			"        }, {\r\n" + 
+			"          \"outputs\" : [ {\r\n" + 
+			"            \"id\" : \"36ed65501e\",\r\n" + 
+			"            \"name\" : \"emailResponse\"\r\n" + 
+			"          } ]\r\n" + 
+			"        } ],\r\n" + 
+			"        \"description\" : \"<p><span style=\\\"background-color:#ffff99\\\">Email Customer refund message</span></p><generatedbybwl></generatedbybwl>\"\r\n" + 
+			"      }, {\r\n" + 
+			"        \"name\" : \"ODM\",\r\n" + 
+			"        \"id\" : \"35ed65992c\",\r\n" + 
+			"        \"type\" : \"activity\",\r\n" + 
+			"        \"sub-type\" : \"normal\",\r\n" + 
+			"        \"properties\" : [ {\r\n" + 
+			"          \"participants\" : [ {\r\n" + 
+			"            \"id\" : \"aeed62fa57\",\r\n" + 
+			"            \"name\" : \"App Connect\"\r\n" + 
+			"          } ]\r\n" + 
+			"        } ],\r\n" + 
+			"        \"linked-decision\" : {\r\n" + 
+			"          \"name\" : \"Authorise transfer\",\r\n" + 
+			"          \"id\" : \"cecbe9aa9\"\r\n" + 
+			"        }\r\n" + 
+			"      }, {\r\n" + 
+			"        \"name\" : \"End\",\r\n" + 
+			"        \"id\" : \"36ed65c709\",\r\n" + 
+			"        \"type\" : \"end-event\",\r\n" + 
+			"        \"properties\" : [ {\r\n" + 
+			"          \"participants\" : [ {\r\n" + 
+			"            \"id\" : \"aeed62fa57\",\r\n" + 
+			"            \"name\" : \"App Connect\"\r\n" + 
+			"          } ]\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"End\",\r\n" + 
+			"      \"id\" : \"aeed62ed09\",\r\n" + 
+			"      \"type\" : \"end-event\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"aeed62fa57\",\r\n" + 
+			"          \"name\" : \"App Connect\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"End\",\r\n" + 
+			"      \"id\" : \"bfed621402\",\r\n" + 
+			"      \"type\" : \"end-event\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"ceec7bfb81\",\r\n" + 
+			"          \"name\" : \"rpa\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    }, {\r\n" + 
+			"      \"name\" : \"End\",\r\n" + 
+			"      \"id\" : \"bfed620e02\",\r\n" + 
+			"      \"type\" : \"end-event\",\r\n" + 
+			"      \"properties\" : [ {\r\n" + 
+			"        \"participants\" : [ {\r\n" + 
+			"          \"id\" : \"ceec7bfb81\",\r\n" + 
+			"          \"name\" : \"rpa\"\r\n" + 
+			"        } ]\r\n" + 
+			"      } ]\r\n" + 
+			"    } ]\r\n" + 
+			"  } ],\r\n" + 
+			"  \"problems\" : [ ],\r\n" + 
+			"  \"attachments\" : [ ],\r\n" + 
+			"  \"space-ids\" : [ \"12eb456a97\", \"93eb715f68\", \"41ece48a6f\", \"6cecf836b1\", \"56ecf3206a\", \"56ecf36e2f\" ],\r\n" + 
+			"  \"space-names\" : [ \"Blueworks Live Training\", \"Nigel Crowther Training Space\", \"WDGBots\", \"WDGProjects\", \"ONS\", \"Finance\" ],\r\n" + 
+			"  \"archived-state\" : \"active\",\r\n" + 
+			"  \"published-state\" : \"unpublished\",\r\n" + 
+			"  \"last-modified-date\" : \"2021-11-16T11:29:16.764+0000\",\r\n" + 
+			"  \"last-modified-by-user\" : {\r\n" + 
+			"    \"id\" : \"49706c7f\",\r\n" + 
+			"    \"full-name\" : \"Nigel Crowther\",\r\n" + 
+			"    \"email-address\" : \"ncrowther@uk.ibm.com\"\r\n" + 
+			"  },\r\n" + 
+			"  \"created-date\" : \"2021-11-03T20:50:00.936+0000\",\r\n" + 
+			"  \"created-by-user\" : {\r\n" + 
+			"    \"id\" : \"49706c7f\",\r\n" + 
+			"    \"full-name\" : \"Nigel Crowther\",\r\n" + 
+			"    \"email-address\" : \"ncrowther@uk.ibm.com\"\r\n" + 
+			"  },\r\n" + 
+			"  \"text-annotations\" : [ ]\r\n" + 
+			"}\r\n" + 
+			""
 			+ "";
 }
