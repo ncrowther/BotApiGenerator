@@ -10,18 +10,15 @@ package converter;
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corporation.
  */
-import java.util.List;
-import java.util.Map;
+
 import java.util.Stack;
 
-import converter.bpmn.CodeConverter;
-import converter.IBwlParser;
+import converter.bwl.BwlJsonParser;
 import converter.bwl.BwlRestApi;
 import converter.bpmn.BpmnTask;
+import converter.bpmn.IBpmnParser;
 import converter.openApi.OpenApiWriter;
 import converter.common.StringUtils;
-import converter.jsonparser.BwlJsonParser;
-import converter.postman.PostmanWriter;
 import converter.wal.WalWriter;
 
 public class BwlToOpenApi {
@@ -58,7 +55,6 @@ public class BwlToOpenApi {
 	
 			}	
 			
-			// D:\\RPA\\github\\BotApiGenerator
 			if (args.length > 3) {
 				baseDir = args[3];	
 				System.out.println("Arg[3]: " + args[3]);
@@ -72,26 +68,21 @@ public class BwlToOpenApi {
 			
 			// System.out.println(jsonString);
 
-			IBwlParser bpmnParser = new BwlJsonParser(jsonString);
+			IBpmnParser bpmnParser = new BwlJsonParser(jsonString);
 
-			Stack<BpmnTask> startIds = bpmnParser.getStartIds();
+			Stack<BpmnTask> taskIds = bpmnParser.getTaskIds();
 			
-			while (!startIds.empty()) {
-				BpmnTask startNode = startIds.pop();
+			while (!taskIds.empty()) {
+				BpmnTask bpmnTask = taskIds.pop();
 				
-				CodeConverter.reset();
-
-				Map<String, List<String>> codeMap = CodeConverter.generateWDGFunctionCode(startNode.getId(), bpmnParser);
 
 				final String generatedDir = baseDir + "\\generated\\";
-				String botFile =  generatedDir + StringUtils.convertToTitleCase(startNode.getName());
+				String botFile =  generatedDir + StringUtils.convertToTitleCase(bpmnTask.getName());
 				String walFileName = botFile + ".txt";
-				String postmanFileName = botFile + ".json";
 				String openApiFileName = botFile + ".yaml";
 				
-				WalWriter.writeWDGFile(walFileName, codeMap);
-				PostmanWriter.writeCollectionFile(postmanFileName, codeMap);
-				OpenApiWriter.writeCollectionFile(openApiFileName, codeMap);
+				WalWriter.writeRPAFile(walFileName, bpmnTask);
+				OpenApiWriter.writeOpenApiFile(openApiFileName, bpmnTask);
 				
 				System.out.println("Code generated in " + walFileName);
 			}

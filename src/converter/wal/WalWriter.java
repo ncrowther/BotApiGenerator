@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import converter.bpmn.BpmnTask;
 import converter.common.CodePlacement;
 
 public class WalWriter {
 
-	public static void writeWDGFile(String filename, Map<String, List<String>> generatedCode)
+	public static void writeRPAFile(String filename, BpmnTask bpmnTask)
 			throws IOException {
-
+		
+		Map<String, List<String>> generatedCode = WalCodeConverter.generateCode(bpmnTask);
+		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 
 		StringBuilder strBuilder = new StringBuilder();

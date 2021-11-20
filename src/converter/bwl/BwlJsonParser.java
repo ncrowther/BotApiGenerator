@@ -1,4 +1,4 @@
-package converter.jsonparser;
+package converter.bwl;
 
 /* 
  * Licensed Materials - Property of IBM Corporation.
@@ -17,16 +17,15 @@ import java.util.Stack;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import converter.IBwlParser;
 import converter.bpmn.BpmnTask;
-import converter.bpmn.TaskType;
+import converter.bpmn.IBpmnParser;
 import converter.common.StringUtils;
 
-public class BwlJsonParser implements IBwlParser {
+public class BwlJsonParser implements IBpmnParser {
 
 	private Map<String, BpmnTask> taskMap = new HashMap<String, BpmnTask>();
 	private Map<String, String> sequenceMap = new HashMap<String, String>();
-	private Stack<BpmnTask> startNodes = new Stack<BpmnTask>();
+	private Stack<BpmnTask> taskNodes = new Stack<BpmnTask>();
 
 	public BwlJsonParser(String json) {
 		parseProcess(json);
@@ -40,8 +39,8 @@ public class BwlJsonParser implements IBwlParser {
 		return sequenceMap;
 	}
 
-	public Stack<BpmnTask> getStartIds() {
-		return startNodes;
+	public Stack<BpmnTask> getTaskIds() {
+		return taskNodes;
 	}
 
 	public BpmnTask getTask(String taskId) {
@@ -60,7 +59,7 @@ public class BwlJsonParser implements IBwlParser {
 	}
 
 	private void getMilestones(JSONObject jsonObj) {
-		String post_id = jsonObj.getString("name");
+		//String post_id = jsonObj.getString("name");
 		// System.out.println(post_id);
 		getActivities(jsonObj);
 	}
@@ -70,11 +69,10 @@ public class BwlJsonParser implements IBwlParser {
 		BpmnTask task = new BpmnTask();
 		String id = "1";
 		task.setId(id);
-		task.setType(TaskType.TASK);
 		task.setName(name);
 
 		taskMap.put(id, task);
-		startNodes.push(task);
+		taskNodes.push(task);
 
 		if (activity.has("properties")) {
 			JSONArray propertiesArr = activity.getJSONArray("properties");
@@ -88,6 +86,10 @@ public class BwlJsonParser implements IBwlParser {
 				if (property.has("outputs")) {
 					getOutputParameters(property, task);
 				}
+				
+				if (property.has("System")) {
+					getSystemParameter(property, task);
+				}				
 			}
 		}
 	}
@@ -113,6 +115,17 @@ public class BwlJsonParser implements IBwlParser {
 			task.addOutputParam(outputParam);
 		}
 	}
+	
+	private void getSystemParameter(JSONObject property, BpmnTask task) {
+		JSONArray inputsArr = property.getJSONArray("System");
+		for (int i = 0; i < inputsArr.length(); i++) {
+			JSONObject inputObj = inputsArr.getJSONObject(i);
+			String systemParam = inputObj.getString("name");
+			systemParam = StringUtils.removeInvalidCharacters(systemParam);
+			System.out.println("SystemParam:" + systemParam);
+			task.setSystem(systemParam);
+		}
+	}	
 
 	private void getActivities(JSONObject milestone) {
 		JSONArray activityArr = milestone.getJSONArray("activities");

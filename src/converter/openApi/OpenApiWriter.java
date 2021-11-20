@@ -5,19 +5,23 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import converter.bpmn.BpmnTask;
 import converter.common.CodePlacement;
 
 public class OpenApiWriter {
 
-	public static void writeCollectionFile(String filename, Map<String, List<String>> generatedCode)
+	public static void writeOpenApiFile(String filename, BpmnTask bpmnTask)
 			throws IOException {
 
+		Map<String, List<String>> generatedCode = ApiCodeConverter.generateCode(bpmnTask);
+		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 
 		String botName = getCode(generatedCode, CodePlacement.BOTNAME.toString());
 		String description = getCode(generatedCode, CodePlacement.API_DOCUMENTATION.toString());
 		String apiInputParams = getCode(generatedCode, CodePlacement.API_INPUT_PARAMS.toString());
 		String apiOutputParams = getCode(generatedCode, CodePlacement.API_OUTPUT_PARAMS.toString());
+		String host = getCode(generatedCode, CodePlacement.API_SYSTEM.toString());
 		
 		StringBuilder strBuilder = new StringBuilder();
 		
@@ -28,7 +32,7 @@ public class OpenApiWriter {
 				   description +
 				"  contact:\r\n" + 
 				"    email: ncrowther@uk.ibm.com\r\n" + 
-				"host: localhost:8099\r\n" + 
+				host +
 				"basePath: /\r\n" + 
 				"schemes:\r\n" + 
 				"- https\r\n" + 
@@ -51,9 +55,8 @@ public class OpenApiWriter {
 				"      - name: unlockMachine\r\n" + 
 				"        in: query\r\n" + 
 				"        required: true\r\n" + 
-				"        type: integer\r\n" + 
-				"        format: int32\r\n" + 
-				"        description: 1 if unlock 0 otherwise\r\n" + 
+				"        type: string\r\n" + 
+				"        description: true to unlock false otherwise\r\n" + 
 				         apiInputParams  + 
 				"      responses:\r\n" + 
 				"        '200':\r\n" + 

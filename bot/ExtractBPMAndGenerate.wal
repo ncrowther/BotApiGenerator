@@ -1,4 +1,4 @@
-ä'defVar --name output --type String
+‚(defVar --name output --type String
 defVar --name exitCode --type Numeric
 defVar --name response --type String
 defVar --name error --type String
@@ -41,59 +41,59 @@ else
 endIf
 
 beginSub --name extractWalFilePath
-parseText --text "${response}" --query "Code generated in" --startindex 1 startpos=value
-evaluate --expression "${startpos} + ${PATH_PREAMBLE_LEN}" startpos=value
-getSubString --text "${response}" --start ${startpos} generatedWalFile=value
-replaceText --texttoparse "${generatedWalFile}" --textpattern "ECHO is off." generatedWalFile=value
-trimString --text "${generatedWalFile}" --trimoption "TrimEnd" generatedWalFile=value
-logMessage --message "\'${generatedWalFile}\'" --type "Info"
+	parseText --text "${response}" --query "Code generated in" --startindex 1 startpos=value
+	evaluate --expression "${startpos} + ${PATH_PREAMBLE_LEN}" startpos=value
+	getSubString --text "${response}" --start ${startpos} generatedWalFile=value
+	replaceText --texttoparse "${generatedWalFile}" --textpattern "ECHO is off." generatedWalFile=value
+	trimString --text "${generatedWalFile}" --trimoption "TrimEnd" generatedWalFile=value
+	logMessage --message "\'${generatedWalFile}\'" --type "Info"
 endSub
 
 beginSub --name extractBotName
-getRegex --text "${generatedWalFile}" --regexPattern "^[A-Z][\\:]\\\\(.+\\\\)*(.+)\\.(.+)$" --regexOptions "0" --groupnumber 2 botName=value
+	getRegex --text "${generatedWalFile}" --regexPattern "^[A-Z][\\:]\\\\(.+\\\\)*(.+)\\.(.+)$" --regexOptions "0" --groupnumber 2 botName=value
 endSub
 
 beginSub --name pasteGeneratedWalToClipboard
-openTextReader --share "Read" --path "${generatedWalFile}" --encoding "Default" textreader=value
-readTextToEnd --file ${textReader} walText=value
-clearClipboard
-setClipboard --text "${walText}" --mode "Text" success=value
-logMessage --message "${walText}" --type "Info"
+	openTextReader --share "Read" --path "${generatedWalFile}" --encoding "Default" textreader=value
+	readTextToEnd --file ${textReader} walText=value
+	clearClipboard
+	setClipboard --text "${walText}" --mode "Text" success=value
+	logMessage --message "${walText}" --type "Info"
 endSub
 
 beginSub --name CreateWalFileFromClipboard
-launchOrAttach --executablepath "C:\\Program Files\\IBM Robotic Process Automation\\IBM Robotic Process Automation\\Studio.exe" --title "IBM Robotic Process Automation Studio" --id "${id}" window01=value success=success
-sendKeys --keys "%+w" --viacurrentwindow 
-delay --timeout "00:00:01"
-sendKeys --keys "{F7}" --viacurrentwindow 
-delay --timeout "00:00:01"
+	launchOrAttach --executablepath "C:\\Program Files\\IBM Robotic Process Automation\\IBM Robotic Process Automation\\Studio.exe" --title "IBM Robotic Process Automation Studio" --id "${id}" window01=value success=success
+	sendKeys --keys "%+w" --viacurrentwindow
+	delay --timeout "00:00:01"
+	sendKeys --keys "{F7}" --viacurrentwindow
+	delay --timeout "00:00:01"
 //paste
-sendKeys --keys "^v" --viacurrentwindow 
-delay --timeout "00:00:02"
-sendKeys --keys "+{F7}" --viacurrentwindow 
-sendKeys --keys "^+s" --viacurrentwindow 
-sendKeys --keys "${botName}.wal" --viacurrentwindow 
-sendKeys --keys "{ENTER}"
+	sendKeys --keys "^v" --viacurrentwindow
+	delay --timeout "00:00:02"
+	sendKeys --keys "+{F7}" --viacurrentwindow
+	sendKeys --keys "^+s" --viacurrentwindow
+	sendKeys --keys "${botName}.wal" --viacurrentwindow
+	sendKeys --keys "{ENTER}"
 endSub
 
 beginSub --name extractOpenApiFilePath
-replaceText --texttoparse "${generatedWalFile}" --textpattern ".txt" --replacement ".yaml" generatedOpenApiFile=value
-logMessage --message "\'${generatedOpenApiFile}\'" --type "Info"
+	replaceText --texttoparse "${generatedWalFile}" --textpattern ".txt" --replacement ".yaml" generatedOpenApiFile=value
+	logMessage --message "\'${generatedOpenApiFile}\'" --type "Info"
 endSub
 
 beginSub --name openApi
-webStart --name web01 --type "Chrome" browserId=value
-webNavigate --url "https://editor.swagger.io/"
-delay --timeout "00:00:01"
-webClick --selector "CssSelector" --css "#swagger-editor > div > div:nth-child(1) > div > div > div > div:nth-child(2) > span" --simulatehuman  success=value
-delay --timeout "00:00:01"
-webClick --selector "CssSelector" --css ".dd-items-left > li:nth-child(2) > button:nth-child(1)" --simulatehuman  success=value
-delay --timeout "00:00:01"
-findWindow --title Open success=success
-delay --timeout "00:00:01"
-sendKeys --keys "${generatedOpenApiFile}" --viacurrentwindow 
-delay --timeout "00:00:01"
-sendKeys --keys "{ENTER}" --viacurrentwindow 
-logMessage --message "${exitCode}" --type "Info"
-webClose --name web01 --leavebrowseropen 
+	webStart --name web01 --type "Chrome" browserId=value
+	webNavigate --url "https://editor.swagger.io/"
+	delay --timeout "00:00:01"
+	webClick --selector "CssSelector" --css "#swagger-editor > div > div:nth-child(1) > div > div > div > div:nth-child(2) > span" --simulatehuman  success=value
+	delay --timeout "00:00:01"
+	webClick --selector "CssSelector" --css ".dd-items-left > li:nth-child(2) > button:nth-child(1)" --simulatehuman  success=value
+	delay --timeout "00:00:01"
+	findWindow --title Open success=success
+	delay --timeout "00:00:01"
+	sendKeys --keys "${generatedOpenApiFile}" --viacurrentwindow
+	delay --timeout "00:00:01"
+	sendKeys --keys "{ENTER}" --viacurrentwindow
+	logMessage --message "${exitCode}" --type "Info"
+	webClose --name web01 --leavebrowseropen
 endSub*21.0.1.0
