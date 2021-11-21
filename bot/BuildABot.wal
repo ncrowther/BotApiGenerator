@@ -1,0 +1,119 @@
+Œ0defVar --name vLang --type Language
+defVar --name vChat --type ChatData
+defVar --name vIVR --type IvrData
+defVar --name vBotResponse --type String
+defVar --name vGdp --type String
+defVar --name vTimePeriod --type String
+defVar --name vTag --type String
+defVar --name vUserOutput --type String
+defVar --name vValueOutput --type String
+defVar --name vInputParam --type String
+defVar --name vOutputParam --type String
+defVar --name vExcel --type Excel
+defVar --name exit --type Boolean --value False
+defVar --name vContext --type String
+defVar --name excelTableButtons --type DataTable
+defVar --name createdCards --type List --innertype CardItem
+defVar --name excel --type Excel
+defVar --name languageUS --type Language
+defVar --name selectedOption --type String
+defVar --name result --type Boolean
+defVar --name pathFile --type String
+defVar --name writerText --type TextFileWriter
+defVar --name cards --type String --value "D:\\RPA\\github\\BotApiGenerator\\bot\\tableButtonsCards.xlsx"
+defVar --name inputVarsStr --type String
+defVar --name outputVarsStr --type String
+defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
+defVar --name vBotName --type String
+defVar --name vBotHost --type String
+
+//
+// Access to data table with card information.
+excelOpen --file "${cards}" excel=value
+excelGetTable --file ${excel} --getfirstsheet  --fromrow 1 --fromcolumn 1 --torow 4 --tocolumn 10 --hasheaders  excelTableButtons=value
+mapTableToCard --dataTable ${excelTableButtons} --titleColumn column0 --subtitleColumn 2 --textColumn 3 --thumbnailUrlColumn 4 --actionColumn 5 --actionValueColumn 6 createdCards=value
+// Mapping of cards and specification of their actions.
+
+mapTableToCardButtons --dataTable ${excelTableButtons} --cardItems ${createdCards} --buttonActionColumn 7 --buttonTextColumn 8 --buttonValueColumn 9
+
+createLanguage --culture "en-US" languageUS=value
+botConnect --type "Chat" --language ${languageUS} --autoanswer  --timeout "00:15:00"
+	
+	goSub --label getBotName
+	
+	goSub --label getBotHost
+	
+	while --left "${exit}" --operator "Is_True" --negate 
+		chatAskCarousel --text "Specify parameters" --cards ${createdCards} --retry  --attempts 3 --retrytext "Please retry" --timeout "00:05:00" selectedOption=value result=success
+		
+		logMessage --message "Carousel: ${selectedOption}" --type "Info"
+		//botSay --text "Processing ${selectedOption} request!"
+		
+		if --left "${selectedOption}" --operator "Contains" --right ADDINPUTPARAM
+			goSub --label getInputParam
+		elseIf --left "${selectedOption}" --operator "Contains" --right ADDOUTPUTPARAM
+			goSub --label getOutputParam
+		elseIf --left "${selectedOption}" --operator "Contains" --right GENERATE
+			botSay --language ${vLang} --text Generating
+			setVar --name "${exit}" --value true
+		endIf
+	endWhile
+	
+	goSub --label generateBotBpmnFile
+	
+	executeScript --isfromfile  --filename "D:\\RPA\\github\\BotApiGenerator\\bot\\readFileAndGenerate.wal"
+	
+botDisconnect
+
+beginSub --name getBotName
+botAskName --timeoutsub TimeoutSubroutine --confidenceThreshold 100 --beep  --language ${languageUS} --text "Enter the bot name" --timeout "00:05:00" vBotName=utterance
+botSay --language ${vLang} --text "botName ${vBotName} added"
+endSub
+
+beginSub --name getBotHost
+botAskName --timeoutsub TimeoutSubroutine --confidenceThreshold 100 --beep  --language ${languageUS} --text "Enter the bot host" --timeout "00:05:00" vBotHost=utterance
+botSay --language ${vLang} --text "bot host ${vBotHost} added"
+endSub
+
+beginSub --name getInputParam
+botAskName --timeoutsub TimeoutSubroutine --confidenceThreshold 100 --beep  --language ${languageUS} --text "Enter an input parameter name" --timeout "00:05:00" vInputParam=utterance
+botSay --language ${vLang} --text "Input parameter ${vInputParam} added"
+
+if --left "${inputVarsStr}" --operator "Is_Null"
+	setVar --name "${inputVarsStr}" --value "{\"name\": \"${vInputParam}\"}"
+else
+	setVar --name "${inputVarsStr}" --value "${inputVarsStr} , {\"name\": \"${vInputParam}\"}"
+endIf
+endSub
+
+beginSub --name getOutputParam
+botAskName --timeoutsub TimeoutSubroutine --confidenceThreshold 100 --beep  --language ${languageUS} --text "Enter an output parameter name" --timeout "00:05:00" vOutputParam=utterance
+botSay --language ${vLang} --text "Output parameter ${vOutputParam} added"
+
+if --left "${outputVarsStr}" --operator "Is_Null"
+	setVar --name "${outputVarsStr}" --value "{\"name\": \"${vOutputParam}\"}"
+else
+	setVar --name "${outputVarsStr}" --value "${outputVarsStr} , {\"name\": \"${vOutputParam}\"}"
+endIf
+endSub
+
+beginSub --name generateBotBpmnFile
+
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_NAME#" --replacement "${vBotName}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_HOST#" --replacement "${vBotHost}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replacement "${inputVarsStr}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
+
+getSpecialFolder --folder "MyDocuments" pathFile=value
+// Open the file entered for writing.
+fileDelete --file "${pathFile}\\botparams.json"
+openTextWriter --mode "OpenOrCreate" --autoflush  --share "None" --path "${pathFile}\\botparams.json" --encoding "Default" writerText=value
+// Write the entered text to the open file.
+textWrite --text "${jsonBpmn}" --file ${writerText}
+textFileClose --file ${writerText}
+endSub
+
+beginSub --name TimeoutSubroutine
+messageBox --title Timeout --text "Timed Out! Please, restart the connection." --icon "Warning" --buttons "OK" --defaultbutton "FirstButton"
+endSub
+*21.0.1.0
