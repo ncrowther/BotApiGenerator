@@ -1,4 +1,7 @@
-í4defVar --name vChat --type ChatData
+
+	­â©%fªÝF–¼­¾Ée€<defVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
+defVar --name cards --type String
+defVar --name vChat --type ChatData
 defVar --name vLang --type Language
 defVar --name vIVR --type IvrData
 defVar --name vBotResponse --type String
@@ -19,8 +22,6 @@ defVar --name selectedOption --type String
 defVar --name result --type Boolean
 defVar --name pathFile --type String
 defVar --name writerText --type TextFileWriter
-defVar --name cards --type String --value "D:\\RPA\\github\\BotApiGenerator\\bot\\tableButtonsCards.xlsx"
-defVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
 defVar --name inputVarsStr --type String
 defVar --name outputVarsStr --type String
 defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
@@ -28,6 +29,10 @@ defVar --name vBotName --type String --value generatedBot
 defVar --name vBotHost --type String --value "localhost:8099"
 defVar --name success --type Boolean
 
+selectFolder --text "Select the bot generator folder (e.g. C:\\BotGenerator)" generatorBaseDir=value
+
+messageBox --title "Bot Generator" --text "Bot will be created in ${generatorBaseDir}\r\nPlease wait for chat to start..." --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
+setVar --name "${cards}" --value "${generatorBaseDir}\\\\bot\\\\tableButtonsCards.xlsx"
 // Access to data table with card information.
 excelOpen --file "${cards}" excel=value
 excelGetTable --file ${excel} --getfirstsheet  --fromrow 1 --fromcolumn 1 --torow 6 --tocolumn 10 --hasheaders  excelTableButtons=value
@@ -47,80 +52,88 @@ botConnect --type "Chat" --language ${languageUS} --autoanswer  --timeout "00:15
 botDisconnect
 
 beginSub --name getBotName
-inputBox --title "Bot name" --prompt "Enter the bot name" vBotName=value
+	inputBox --title "Bot name" --prompt "Enter the bot name" vBotName=value
 endSub
 
 beginSub --name getBotHost
-inputBox --title "Bot host" --prompt "Enter the bot host. Default is: localhost:8099" vBotHost=value
+	inputBox --title "Bot host" --prompt "Enter the bot host. Default is: localhost:8099" vBotHost=value
 endSub
 
 beginSub --name getInputParam
-inputBox --title "Input Parameter" --prompt "Enter an input parameter name" vInputParam=value
-
-if --left "${inputVarsStr}" --operator "Is_Null"
-	setVar --name "${inputVarsStr}" --value "{\"name\": \"${vInputParam}\"}"
-else
-	setVar --name "${inputVarsStr}" --value "${inputVarsStr} , {\"name\": \"${vInputParam}\"}"
-endIf
+	inputBox --title "Input Parameter" --prompt "Enter an input parameter name" vInputParam=value
+	
+	getRegex --text "${vInputParam}" --regexPattern "^[a-zA-Z_$][a-zA-Z_$0-9]*$" --regexOptions "0" vInputParam=value
+	if --left "${vInputParam}" --operator "Is_Null_Or_Empty" --negate
+		if --left "${inputVarsStr}" --operator "Is_Null"
+			setVar --name "${inputVarsStr}" --value "{\"name\": \"${vInputParam}\"}"
+		else
+			setVar --name "${inputVarsStr}" --value "${inputVarsStr} , {\"name\": \"${vInputParam}\"}"
+		endIf
+	endIf
 endSub
 
 beginSub --name getOutputParam
-inputBox --title "Output Parameter" --prompt "Enter an output parameter name" vOutputParam=value
-
-if --left "${outputVarsStr}" --operator "Is_Null"
-	setVar --name "${outputVarsStr}" --value "{\"name\": \"${vOutputParam}\"}"
-else
-	setVar --name "${outputVarsStr}" --value "${outputVarsStr} , {\"name\": \"${vOutputParam}\"}"
-endIf
+	inputBox --title "Output Parameter" --prompt "Enter an output parameter name" vOutputParam=value
+	getRegex --text "${vOutputParam}" --regexPattern "^[a-zA-Z_$][a-zA-Z_$0-9]*$" --regexOptions "0" vOutputParam=value
+	if --left "${vOutputParam}" --operator "Is_Null_Or_Empty" --negate
+		if --left "${outputVarsStr}" --operator "Is_Null"
+			setVar --name "${outputVarsStr}" --value "{\"name\": \"${vOutputParam}\"}"
+		else
+			setVar --name "${outputVarsStr}" --value "${outputVarsStr} , {\"name\": \"${vOutputParam}\"}"
+		endIf
+	endIf
 endSub
 
 beginSub --name generateBotBpmnFile
-
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_NAME#" --replacement "${vBotName}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_HOST#" --replacement "${vBotHost}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replacement "${inputVarsStr}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
-
-getSpecialFolder --folder "MyDocuments" pathFile=value
+	
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_NAME#" --replacement "${vBotName}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_HOST#" --replacement "${vBotHost}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replacement "${inputVarsStr}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
+	
+	getSpecialFolder --folder "MyDocuments" pathFile=value
 // Open the file entered for writing.
-fileDelete --file "${pathFile}\\botparams.json"
-openTextWriter --mode "OpenOrCreate" --autoflush  --share "None" --path "${pathFile}\\botparams.json" --encoding "Default" writerText=value
+	fileDelete --file "${pathFile}\\botparams.json"
+	openTextWriter --mode "OpenOrCreate" --autoflush  --share "None" --path "${pathFile}\\botparams.json" --encoding "Default" writerText=value
 // Write the entered text to the open file.
-textWrite --text "${jsonBpmn}" --file ${writerText}
-textFileClose --file ${writerText}
+	textWrite --text "${jsonBpmn}" --file ${writerText}
+	textFileClose --file ${writerText}
 endSub
 
 beginSub --name TimeoutSubroutine
-messageBox --title Timeout --text "Timed Out! Please, restart the connection." --icon "Warning" --buttons "OK" --defaultbutton "FirstButton"
+	messageBox --title Timeout --text "Timed Out! Please, restart the connection." --icon "Warning" --buttons "OK" --defaultbutton "FirstButton"
 endSub
 
 beginSub --name generateFromDialog
-
-chatAskCarousel --text "Specify your bot and then press Generate!" --cards ${createdCards} --retry  --attempts 3 --retrytext "Please retry" --timeout "00:05:00" selectedOption=value result=success
-
-while --left "${exit}" --operator "Is_True" --negate 
 	
-	logMessage --message "Carousel: ${selectedOption}" --type "Info"
+	chatAskCarousel --text "Specify your bot!" --cards ${createdCards} --timeoutsub TimeoutSubroutine --language ${languageUS} --timeout "00:10:00" selectedOption=value result=success
 	
-	if --left "${selectedOption}" --operator "Contains" --right ADDINPUTPARAM
-		goSub --label getInputParam
-		botAskName --beep  --language ${languageUS} --text "Input parameter added. Enter choice" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right ADDOUTPUTPARAM
-		goSub --label getOutputParam
-		botAskName --beep  --language ${languageUS} --text "Output parameter added. Enter choice" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right SETBOTNAME
-		goSub --label getBotName
-		botAskName --beep  --language ${languageUS} --text "Bot name added. Enter choice" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right SETHOST
-		goSub --label getBotHost
-		botAskName --beep  --language ${languageUS} --text "Bot host added. Enter choice" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right GENERATE
-		botSay --language ${languageUS} --text "Generating Bot. Please wait...."
-		setVar --name "${exit}" --value true
-	endIf
-endWhile
-
-goSub --label generateBotBpmnFile
-
-executeScript --isfromfile  --filename "D:\\RPA\\github\\BotApiGenerator\\bot\\readFileAndGenerate.wal"
-endSub*21.0.1.0
+	while --left "${exit}" --operator "Is_True" --negate
+		
+		logMessage --message "Carousel: ${selectedOption}" --type "Info"
+		
+		if --left "${selectedOption}" --operator "Contains" --right ADDINPUTPARAM
+			goSub --label getInputParam
+			botAskName --beep  --language ${languageUS} --text "Input parameters: ${inputVarsStr}. Enter choice" selectedOption=utterance success=success
+		elseIf --left "${selectedOption}" --operator "Contains" --right ADDOUTPUTPARAM
+			goSub --label getOutputParam
+			botAskName --beep  --language ${languageUS} --text "Output parameters: ${outputVarsStr}. Enter choice" selectedOption=utterance success=success
+		elseIf --left "${selectedOption}" --operator "Contains" --right SETBOTNAME
+			goSub --label getBotName
+			botAskName --beep  --language ${languageUS} --text "Bot name ${vBotName} added. Enter choice" selectedOption=utterance success=success
+		elseIf --left "${selectedOption}" --operator "Contains" --right SETHOST
+			goSub --label getBotHost
+			botAskName --beep  --language ${languageUS} --text "Bot host ${vBotHost} added. Enter choice" selectedOption=utterance success=success
+		elseIf --left "${selectedOption}" --operator "Contains" --right GENERATE
+			botSay --language ${languageUS} --text "Generating Bot. Please wait...."
+			setVar --name "${exit}" --value true
+		else
+			botAskName --beep  --language ${languageUS} --text "Enter choice" selectedOption=utterance success=success
+		endIf
+		
+	endWhile
+	
+	goSub --label generateBotBpmnFile
+	
+	executeScript --isfromfile  --filename "D:\\RPA\\github\\BotApiGenerator\\bot\\readFileAndGenerate.wal"
+endSub"	1·ú‹çB¿JŒÍI*21.0.1.0

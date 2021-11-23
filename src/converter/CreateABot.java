@@ -1,5 +1,6 @@
 package converter;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,6 +64,9 @@ public class CreateABot {
 				BpmnTask bpmnTask = taskIds.pop();
 
 				final String generatedDir = baseDir + "\\generated\\";
+				
+				createDirIfDoesNotExist(generatedDir);
+			    
 				String botFile = generatedDir + StringUtils.convertToTitleCase(bpmnTask.getName());
 				String walFileName = botFile + ".txt";
 				String openApiFileName = botFile + ".yaml";
@@ -75,6 +79,15 @@ public class CreateABot {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void createDirIfDoesNotExist(final String generatedDir) {
+		File directory = new File(generatedDir);
+		if (! directory.exists()){
+		    directory.mkdir();
+		    // If you require it to make the entire directory path including parents,
+		    // use directory.mkdirs(); here instead.
 		}
 	}
 }

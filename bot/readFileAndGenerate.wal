@@ -1,4 +1,5 @@
-œ$defVar --name output --type String
+
+	ó(€(WÇH–4n(Jhµ¬$defVar --name output --type String
 defVar --name exitCode --type Numeric
 defVar --name response --type String
 defVar --name error --type String
@@ -20,7 +21,7 @@ defVar --name pathFile --type String
 
 getSpecialFolder --folder "MyDocuments" pathFile=value
 
-runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params \r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\n\r\npushd D:\\RPA\\github\\BotApiGenerator\\bin\r\njava -cp ..\\lib\\jsoup-1.14.3.jar;..\\lib\\javax.xml.bind.jar;..\\lib\\json-20210307.jar;. converter.CreateABot %1 %2 \r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${pathFile}\\botparams.json ${generatorBaseDir}" --blockexecution  exitCode=exitcode response=output error=error
+runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params \r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\n\r\npushd D:\\RPA\\github\\BotApiGenerator\\bin\r\njava -cp ..\\lib\\jsoup-1.14.3.jar;..\\lib\\javax.xml.bind.jar;..\\lib\\json-20210307.jar;. converter.CreateABot %1 %2 \r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${pathFile}\\botparams.json ${pathFile}" --blockexecution  exitCode=exitcode response=output error=error
 if --left "${error}" --operator "Is_Null_Or_Empty"
 	goSub --label extractWalFilePath
 	goSub --label extractBotName
@@ -65,7 +66,7 @@ sendKeys --keys "^v" --viacurrentwindow
 delay --timeout "00:00:02"
 sendKeys --keys "+{F7}" --viacurrentwindow 
 sendKeys --keys "^+s" --viacurrentwindow 
-sendKeys --keys "${botName}.wal" --viacurrentwindow 
+sendKeys --keys "${pathFile}\\generated\\${botName}.wal" --viacurrentwindow 
 sendKeys --keys "{ENTER}"
 endSub
 
@@ -89,4 +90,4 @@ delay --timeout "00:00:01"
 sendKeys --keys "{ENTER}" --viacurrentwindow 
 logMessage --message "${exitCode}" --type "Info"
 webClose --name web01 --leavebrowseropen 
-endSub*21.0.1.0
+endSub"	@“7‘‡´G½÷vm¡¡*21.0.1.0

@@ -1,4 +1,5 @@
-¨(defVar --name output --type String
+
+	€Ó_‡%óLºŠ¶ªð$¨(defVar --name output --type String
 defVar --name exitCode --type Numeric
 defVar --name response --type String
 defVar --name error --type String
@@ -98,4 +99,4 @@ delay --timeout "00:00:01"
 sendKeys --keys "{ENTER}" --viacurrentwindow 
 logMessage --message "${exitCode}" --type "Info"
 webClose --name web01 --leavebrowseropen 
-endSub*21.0.1.0
+endSub"	¥Æ_• Ì•B½}©—Ì!ùÃ*21.0.1.0
