@@ -13,12 +13,12 @@ See https://www.ibm.com/products/blueworkslive
 
 Download this repo as a zip and extract to a folder of your choice.
 
-In RPA Studio, open BotApiGenerator/bot/BuildABot.wal
-Run this script WITHOUT DEBUg (ctl + F5).  If you run with debug the generated script will be malformed
-When the chat bot appears, sele N to generate the bot from the chat bot, and then select the chat bot carousel buttons to add your bot name and parameters.
-When done select generate.  Avoid using the mouse or keyboard until the bot has finished generation.
-Once finished, you should see the generated wal in Studio, and a browser window containing the YAML which you can use to invoke the bot.
-Manually deploy the bot to your tenant and then use the API editor to test your Bot.
+- In RPA Studio, open BotApiGenerator/bot/BuildABot.wal
+- Run this script WITHOUT DEBUg (ctl + F5).  If you run with debug the generated script will be malformed
+- When the chat bot appears, sele N to generate the bot from the chat bot, and then select the chat bot carousel buttons to add your bot name and parameters.
+- When done select generate.  Avoid using the mouse or keyboard until the bot has finished generation.
+- Once finished, you should see the generated wal in Studio, and a browser window containing the YAML which you can use to invoke the bot.
+- Manually deploy the bot to your tenant and then use the API editor to test your Bot.
 See https://youtu.be/v6xn30RtY1E
 
 ## Bugs and Limitations
