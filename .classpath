@@ -9,5 +9,10 @@
 	<classpathentry kind="lib" path="lib/json-20210307.jar"/>
 	<classpathentry kind="lib" path="lib/jsoup-1.14.3.jar"/>
 	<classpathentry kind="lib" path="lib/javax.xml.bind.jar"/>
+	<classpathentry kind="lib" path="lib/commons-text-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.12.0.jar"/>
+	<classpathentry kind="lib" path="lib/swagger-parser-2.0.28.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/swagger-parser-v2-converter-2.0.28.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

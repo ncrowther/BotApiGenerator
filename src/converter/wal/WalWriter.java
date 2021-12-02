@@ -19,36 +19,42 @@ public class WalWriter {
 
 		StringBuilder strBuilder = new StringBuilder();
 		
-		String docs = getCode(generatedCode, CodePlacement.WAL_DOCUMENTATION.toString());		
+		String docs = getCodeBlock(generatedCode, CodePlacement.WAL_DOCUMENTATION.toString());		
 		strBuilder.append(docs);        
 		strBuilder.append("// Input Variables \r\n");
-		String inputVars = getCode(generatedCode, CodePlacement.DEF_INPUT_VARS.toString());
+		String inputVars = getCodeBlock(generatedCode, CodePlacement.DEF_INPUT_VARS.toString());
 		strBuilder.append(inputVars);
 
 		strBuilder.append("// Output Variables \r\n");		
-		String outputVars = getCode(generatedCode, CodePlacement.DEF_OUTPUT_VARS.toString());
+		String outputVars = getCodeBlock(generatedCode, CodePlacement.DEF_OUTPUT_VARS.toString());
 		strBuilder.append(outputVars);		
 		strBuilder.append(  "defVar --name ResponseCode --type String --value 0 --output\r\n" + 
 			            	"defVar --name ResponseMessage --type String --output\r\n");
 		
 		strBuilder.append("// Local Variables \r\n");			
 		strBuilder.append(  "defVar --name success --type Boolean --value True\r\n"); 	
+		String internalVars = getCodeBlock(generatedCode, CodePlacement.DEF_INTERNAL_VARS.toString());
+		strBuilder.append(internalVars);			
+		
+		String code = getCodeBlock(generatedCode, CodePlacement.MAIN.toString());
+		strBuilder.append(code);
 		
 		strBuilder.append("\r\n\r\n// Add your bot code here \r\n");
-		String code = getCode(generatedCode, CodePlacement.MAIN.toString());
-		strBuilder.append(code);
 		
 		strBuilder.append("\r\n" + 
 				"// Return response.  ResponseCode is 0 for success, any other number for error code\r\n" + 
 				"if --left \"${success}\" --operator \"Is_True\"\r\n" + 
 				"	setVar --name \"${ResponseCode}\" --value 0\r\n" + 
-				"	setVar --name \"${ResponseMessage}\" --value OK\r\n" + 
 				"else\r\n" + 
-				"	// ResponseCode greater than 0 indicates failure\r\n" + 
-				"	setVar --name \"${ResponseCode}\" --value 123\r\n" + 
+				"	setVar --name \"${ResponseCode}\" --value -1\r\n" + 
 				"	setVar --name \"${ResponseMessage}\" --value \"Bot failed\"\r\n" + 
-				"endIf");
+				"endIf\r\n");
 		
+		String callApi = getCodeBlock(generatedCode, CodePlacement.CALLODM.toString());
+		
+		if (callApi != null) {
+			strBuilder.append(callApi);			
+		}
 		
 		byte[] strToBytes = strBuilder.toString().getBytes();
 		outputStream.write(strToBytes);
@@ -57,7 +63,7 @@ public class WalWriter {
 		outputStream.close();
 	}	
 
-	private static String getCode(Map<String, List<String>> generatedCode, String key) {
+	private static String getCodeBlock(Map<String, List<String>> generatedCode, String key) {
 
 		List<String> functionCode = generatedCode.get(key);
 
@@ -73,5 +79,5 @@ public class WalWriter {
 		}
 
 		return strBuilder.toString();
-	}
+	}	
 }

@@ -1,9 +1,10 @@
 package converter;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /* 
  * Licensed Materials - Property of IBM Corporation.
@@ -17,6 +18,7 @@ import java.nio.file.Path;
  */
 
 import java.util.Stack;
+import java.util.stream.Stream;
 
 import converter.bwl.BwlJsonParser;
 import converter.bpmn.BpmnTask;
@@ -51,8 +53,10 @@ public class CreateABot {
 
 			System.out.println("Processing :" + bpmnFile);
 
-			Path path = Path.of(bpmnFile);
-			String jsonString = Files.readString(path, StandardCharsets.US_ASCII);
+			//Path path = Path.of(bpmnFile);
+			//String jsonString = Files.readString(path, StandardCharsets.US_ASCII);
+			
+			String jsonString = readFile(bpmnFile);
 
 			System.out.println(jsonString);
 
@@ -89,5 +93,21 @@ public class CreateABot {
 		    // If you require it to make the entire directory path including parents,
 		    // use directory.mkdirs(); here instead.
 		}
+	}
+	
+	private static String readFile(String filePath)
+	{
+		StringBuilder contentBuilder = new StringBuilder();
+
+		try (Stream < String > stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
+		{
+			stream.forEach(s -> contentBuilder.append(s).append("\n"));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		return contentBuilder.toString();
 	}
 }

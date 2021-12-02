@@ -1,5 +1,7 @@
 
-	ó(€(WÇH–4n(Jhµ¬$defVar --name output --type String
+	ó(€(WÇH–4n(Jhµ¹&defVar --name inApiDefined --type Boolean --parameter 
+defVar --name inOdmDefined --type Boolean --parameter 
+defVar --name output --type String
 defVar --name exitCode --type Numeric
 defVar --name response --type String
 defVar --name error --type String
@@ -21,14 +23,16 @@ defVar --name pathFile --type String
 
 getSpecialFolder --folder "MyDocuments" pathFile=value
 
-runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params \r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\n\r\npushd D:\\RPA\\github\\BotApiGenerator\\bin\r\njava -cp ..\\lib\\jsoup-1.14.3.jar;..\\lib\\javax.xml.bind.jar;..\\lib\\json-20210307.jar;. converter.CreateABot %1 %2 \r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${pathFile}\\botparams.json ${pathFile}" --blockexecution  exitCode=exitcode response=output error=error
+runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params \r\n\r\nIF %1.==. GOTO No1\r\n\r\nset PATH=%PATH%;C:\\Program Files\\Java\\jdk-15.0.1\\bin\r\n\r\npushd D:\\RPA\\github\\BotApiGenerator\\bin\r\njava -cp ..\\lib\\jsoup-1.14.3.jar;..\\lib\\javax.xml.bind.jar;..\\lib\\json-20210307.jar;;..\\lib\\commons-io-2.11.0.jar;..\\lib\\commons-lang3-3.12.0.jar;..\\lib\\commons-text-1.9.jar;. converter.CreateABot %1 %2 \r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO No param 1\r\n\r\n:End\r\n\r\necho %result%\r\npopd" --arguments "${pathFile}\\botparams.json ${pathFile}" --blockexecution  exitCode=exitcode response=output error=error
 if --left "${error}" --operator "Is_Null_Or_Empty"
 	goSub --label extractWalFilePath
 	goSub --label extractBotName
 	goSub --label pasteGeneratedWalToClipboard
 	goSub --label CreateWalFileFromClipboard
-	goSub --label extractOpenApiFilePath
-	goSub --label openApi
+	if --left "${inApiDefined}" --operator "Is_True"
+		goSub --label extractOpenApiFilePath
+		goSub --label openApi
+	endIf
 	logMessage --message "Result: ${success}" --type "Info"
 else
 	logMessage --message "Failed: ${Error}" --type "Error"

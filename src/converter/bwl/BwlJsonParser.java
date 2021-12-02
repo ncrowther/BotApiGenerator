@@ -11,6 +11,7 @@ package converter.bwl;
  * restricted by GSA ADP Schedule Contract with IBM Corporation.
  */
 import java.util.HashMap;
+
 import java.util.Map;
 import java.util.Stack;
 
@@ -20,6 +21,8 @@ import org.json.JSONObject;
 import converter.bpmn.BpmnTask;
 import converter.bpmn.IBpmnParser;
 import converter.common.StringUtils;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 public class BwlJsonParser implements IBpmnParser {
 
@@ -89,6 +92,10 @@ public class BwlJsonParser implements IBpmnParser {
 				
 				if (property.has("System")) {
 					getSystemParameter(property, task);
+				}	
+				
+				if (property.has("Odm")) {
+					getOdmParameters(property, task);
 				}				
 			}
 		}
@@ -126,6 +133,35 @@ public class BwlJsonParser implements IBpmnParser {
 			task.setSystem(systemParam);
 		}
 	}	
+	
+	private void getOdmParameters(JSONObject property, BpmnTask task) {
+		JSONArray inputsArr = property.getJSONArray("Odm");
+		for (int i = 0; i < inputsArr.length(); i++) {
+			JSONObject inputObj = inputsArr.getJSONObject(i);
+			getOdmPath(task, inputObj);
+			getOdmHost(task, inputObj);
+			getOdmPayload(task, inputObj);			
+		}
+	}
+
+	private void getOdmHost(BpmnTask task, JSONObject inputObj) {
+		String apiHost = inputObj.getString("host");
+		System.out.println("apiHost:" + apiHost);
+		task.setOdmHost(apiHost);
+	}	
+	
+	private void getOdmPath(BpmnTask task, JSONObject inputObj) {
+		String apiPath = inputObj.getString("path");
+		System.out.println("apiPath:" + apiPath);
+		task.setOdmPath(apiPath);
+	}	
+	
+	private void getOdmPayload(BpmnTask task, JSONObject inputObj) {
+		String apiPayload = inputObj.getString("payload");
+		apiPayload = StringEscapeUtils.escapeJson(apiPayload);
+		System.out.println("apiPayload:" + apiPayload);
+		task.setOdmPayload(apiPayload);
+	}		
 
 	private void getActivities(JSONObject milestone) {
 		JSONArray activityArr = milestone.getJSONArray("activities");
