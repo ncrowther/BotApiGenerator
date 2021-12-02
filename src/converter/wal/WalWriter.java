@@ -34,10 +34,14 @@ public class WalWriter {
 		strBuilder.append("// Local Variables \r\n");			
 		strBuilder.append(  "defVar --name success --type Boolean --value True\r\n"); 	
 		String internalVars = getCodeBlock(generatedCode, CodePlacement.DEF_INTERNAL_VARS.toString());
-		strBuilder.append(internalVars);			
+		strBuilder.append(internalVars);	
+		
+		String responseStr = "setVar --name \"${ResponseMessage}\" --value OK\r\n";
+		strBuilder.append(responseStr);
 		
 		String code = getCodeBlock(generatedCode, CodePlacement.MAIN.toString());
 		strBuilder.append(code);
+		
 		
 		strBuilder.append("\r\n\r\n// Add your bot code here \r\n");
 		

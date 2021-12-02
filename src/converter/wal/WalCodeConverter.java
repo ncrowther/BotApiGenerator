@@ -84,11 +84,7 @@ public class WalCodeConverter {
 		addCode(CodePlacement.DEF_OUTPUT_VARS.toString(), paramsStr);
 
 		String varStr = "setVar --name \"${" + paramName + "}\" --value 0 ";
-		addCode(CodePlacement.MAIN.toString(), varStr);
-
-		String responseStr = "setVar --name \"${ResponseMessage}\" --value OK\r\n";
-		addCode(CodePlacement.MAIN.toString(), responseStr);
-		
+		addCode(CodePlacement.MAIN.toString(), varStr);		
 	}
 	
 	private static void generateWalDocumentation(String documentation) {
