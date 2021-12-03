@@ -1,5 +1,5 @@
 
-	≠‚©%f™›Fñº≠æ…e›OdefVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
+	≠‚©%f™›Fñº≠æ…eÅQdefVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -64,6 +64,7 @@ botConnect --type "Chat" --language ${languageUS} --autoanswer  --timeout "00:15
 botDisconnect
 
 beginSub --name getBotName
+onError --executenext 
 inputBox --title "Bot name" --prompt "Enter the bot name" vBotName=value
 endSub
 
@@ -72,6 +73,7 @@ inputBox --title "Bot host" --prompt "Enter the bot host. Default is: localhost:
 endSub
 
 beginSub --name getInputParams
+
 
 setVar --name "${loop}" --value true
 
@@ -130,16 +132,24 @@ endIf
 endSub
 
 beginSub --name getApi
+onError --executenext 
 goSub --label getBotHost
+onError --executenext 
 goSub --label getInputParams
+onError --executenext 
 goSub --label getOutputParams
 setVar --name "${apiDefined}" --value true
 endSub
 
 beginSub --name getODMCall
+onError --executenext 
 inputBox --title "Enter ODM host" --prompt "Enter the ODM host" --value "localhost:9090" vOdmHost=value
+
+onError --executenext 
 inputBox --title "Enter ODM path" --prompt "Enter the API Path" --value "/SampleRuleApp/1.0/SampleDecision/1.0" vOdmPath=value
-inputBox --title "Enter ODM payload" --prompt "Enter the API payload" --value "{ \"testing\": \"123\"}" vOdmPayload=value
+
+onError --executenext 
+inputBox --title "Enter ODM payload" --prompt "ODM payload" --value "{ \"testing\": \"123\"}" vOdmPayload=value
 escapeData --data "${vOdmPayload}" --json  vOdmPayload=value
 
 endSub
