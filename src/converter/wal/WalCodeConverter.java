@@ -111,7 +111,8 @@ public class WalCodeConverter {
 		String odmHost = task.getOdmHost();
 		String odmPath = task.getOdmPath();
 		String odmPayload = task.getOdmPayload();
-		
+		String resUser = task.getResUser();
+		String resPwd = task.getResPwd();
 
 		String paramsStr = "defVar --name ODM_Body --type String\r\n" + 
 				"defVar --name ODM_response --type String\r\n" + 
@@ -129,8 +130,12 @@ public class WalCodeConverter {
 		String callOdmStr =
 				"\r\nbeginSub --name callDecisionService\r\n" + 
 				"	setVar --name \"${ODM_Body}\" --value \"" + odmPayload + "\"\r\n" +
-				"	logMessage --message \"### Calling ODM with : ${ODM_Body}\" --type \"Info\"\r\n" + 
-				"	httpRequest --verb \"Post\" --url \"http://" + odmHost + "/DecisionService/rest" +  odmPath + "?format=JSON\" --formatter \"Json\" --source \"${ODM_Body}\" success=success ODM_response=value\r\n" + 
+				"	logMessage --message \"### Calling ODM with : ${ODM_Body}\" --type \"Info\"" + 
+				"	\r\n\r\n" + 				
+				"	httpRequest --verb \"Post\" --url \"" + odmHost + "/DecisionService/rest" +  odmPath + "?format=JSON\" --username " + resUser + " --password " + resPwd + " --formatter \"Json\" --source \"${ODM_Body}\" success=success ODM_response=value" +
+				"	\r\n\r\n" + 					"	if --left \"${success}\" --operator \"Is_True\" --negate\r\n" + 
+				"		return\r\n" + 
+				"	endIf\r\n" +				
 				"	logMessage --message \"Response = ${ODM_response}\" --type \"Info\"\r\n" + 
 				"	\r\n" + 
 				"	jsonToTable --json \"${ODM_response}\" --jsonPath \"$\" tableColumns=columns tableRows=rows extractionSuccess=success extractedTable=value\r\n" + 
@@ -144,6 +149,7 @@ public class WalCodeConverter {
 				"	endIf\r\n" + 
 				"	\r\n" + 
 				"endSub\r\n";	
+
 		
 		addCode(CodePlacement.CALLODM.toString(), callOdmStr);
 	}

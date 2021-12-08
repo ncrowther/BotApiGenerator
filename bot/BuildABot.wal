@@ -1,5 +1,5 @@
 
-	≠‚©%f™›Fñº≠æ…eÅQdefVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
+	≠‚©%f™›Fñº≠æ…e∑XdefVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -24,12 +24,14 @@ defVar --name pathFile --type String
 defVar --name writerText --type TextFileWriter
 defVar --name inputVarsStr --type String
 defVar --name outputVarsStr --type String
-defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n}, {\r\n    \"Odm\": [{\r\n     \"host\": \"#ODM_HOST#\",\r\n     \"path\": \"#ODM_PATH#\",\r\n     \"payload\": #ODM_PAYLOAD#\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
+defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n}, {\r\n    \"Odm\": [{\r\n     \"host\": \"#ODM_HOST#\",\r\n     \"path\": \"#ODM_PATH#\",\r\n     \"resUser\": \"#RES_USER#\",\r\n     \"resPwd\": \"#RES_PWD#\",\r\n     \"payload\": #ODM_PAYLOAD#\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
 defVar --name vBotName --type String --value generatedBot
 defVar --name vBotHost --type String --value "localhost:8099"
 defVar --name vOdmHost --type String
 defVar --name vOdmPath --type String
 defVar --name vOdmPayload --type String
+defVar --name vResUser --type String
+defVar --name vResPwd --type String
 defVar --name apiDefined --type Boolean --value False
 defVar --name success --type Boolean
 defVar --name loop --type Boolean
@@ -143,10 +145,20 @@ endSub
 
 beginSub --name getODMCall
 onError --executenext 
-inputBox --title "Enter ODM host" --prompt "Enter the ODM host" --value "localhost:9090" vOdmHost=value
+inputBox --title "Enter ODM host" --prompt "Enter the ODM host" --value "https://localhost:9443" vOdmHost=value
+trimString --text "${vOdmHost}" --trimoption "TrimStartAndEnd" vOdmHost=value
 
 onError --executenext 
 inputBox --title "Enter ODM path" --prompt "Enter the API Path" --value "/SampleRuleApp/1.0/SampleDecision/1.0" vOdmPath=value
+trimString --text "${vOdmPath}" --trimoption "TrimStartAndEnd" vOdmPath=value
+
+onError --executenext 
+inputBox --title "Enter Res username" --prompt "Enter the Res username" --value resAdmin vResUser=value
+trimString --text "${vResUser}" --trimoption "TrimStartAndEnd" vResUser=value
+
+onError --executenext 
+inputBox --title "Enter Res password" --prompt "Enter the Res password" --value resAdmin vResPwd=value
+trimString --text "${vResPwd}" --trimoption "TrimStartAndEnd" vResPwd=value
 
 onError --executenext 
 inputBox --title "Enter ODM payload" --prompt "ODM payload" --value "{ \"testing\": \"123\"}" vOdmPayload=value
@@ -163,6 +175,8 @@ replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replac
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_HOST#" --replacement "${vOdmHost}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PATH#" --replacement "${vOdmPath}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PAYLOAD#" --replacement "${vOdmPayload}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_USER#" --replacement "${vResUser}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_PWD#" --replacement "${vResPwd}" jsonBpmn=value
 
 getSpecialFolder --folder "MyDocuments" pathFile=value
 // Open the file entered for writing.

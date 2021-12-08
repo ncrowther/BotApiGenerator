@@ -140,7 +140,9 @@ public class BwlJsonParser implements IBpmnParser {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
 			getOdmPath(task, inputObj);
 			getOdmHost(task, inputObj);
-			getOdmPayload(task, inputObj);			
+			getOdmPayload(task, inputObj);		
+			getResUser(task, inputObj);			
+			getResPwd(task, inputObj);					
 		}
 	}
 
@@ -161,8 +163,20 @@ public class BwlJsonParser implements IBpmnParser {
 		apiPayload = StringEscapeUtils.escapeJson(apiPayload);
 		System.out.println("apiPayload:" + apiPayload);
 		task.setOdmPayload(apiPayload);
+	}	
+	
+	private void getResUser(BpmnTask task, JSONObject inputObj) {
+		String resUser = inputObj.getString("resUser");
+		System.out.println("resUser:" + resUser);
+		task.setResUser(resUser);
 	}		
 
+	private void getResPwd(BpmnTask task, JSONObject inputObj) {
+		String resPwd = inputObj.getString("resPwd");
+		System.out.println("resPwd:" + resPwd);
+		task.setResPwd(resPwd);
+	}			
+	
 	private void getActivities(JSONObject milestone) {
 		JSONArray activityArr = milestone.getJSONArray("activities");
 		for (int j = 0; j < activityArr.length(); j++) {
