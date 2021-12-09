@@ -1,6 +1,6 @@
 
-	ó(€(WÇH–4n(Jhµß'defVar --name inBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator" --parameter 
-defVar --name inApiDefined --type Boolean --parameter 
+	ó(€(WÇH–4n(Jhµü'defVar --name inApiDefined --type Boolean --value True --parameter 
+defVar --name inBaseDir --type String
 defVar --name rpaHome --type String
 defVar --name javaHome --type String
 defVar --name output --type String
@@ -23,6 +23,8 @@ defVar --name browserId --type Browser
 defVar --name pathFile --type String
 
 getSpecialFolder --folder "MyDocuments" pathFile=value
+
+setVar --name "${inBaseDir}" --value "${pathFile}\\BotApiGenerator"
 
 runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params. NOTE: JRE must be installed\r\n\r\nIF %1.==. GOTO No1\r\nIF %2.==. GOTO No2\r\n\r\nSET LIB_DIR=%2\\lib\r\npushd %LIB_DIR%\r\njava -cp BotApiGenerator.jar;jsoup-1.14.3.jar;javax.xml.bind.jar;json-20210307.jar;commons-io-2.11.0.jar;commons-lang3-3.12.0.jar;commons-text-1.9.jar converter.CreateABot %1 %2 \r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO Expected bot params file\r\n\r\n:No2\r\n  ECHO Expected Base Dir \r\n  exit 7 \r\n\r\n:End\r\n\r\necho %result%" --arguments "${pathFile}\\botparams.json ${inBaseDir}" --blockexecution  exitCode=exitcode response=output error=error
 
@@ -86,7 +88,7 @@ logMessage --message "\'${generatedOpenApiFile}\'" --type "Info"
 endSub
 
 beginSub --name openApi
-webStart --name web01 --type "Chrome" browserId=value
+webStart --name web01 --type "Firefox" browserId=value
 webNavigate --url "https://editor.swagger.io/"
 delay --timeout "00:00:01"
 webClick --selector "CssSelector" --css "#swagger-editor > div > div:nth-child(1) > div > div > div > div:nth-child(2) > span" --simulatehuman  success=value
