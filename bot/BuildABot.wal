@@ -1,5 +1,4 @@
-
-	≠‚©%f™›Fñº≠æ…e∑XdefVar --name generatorBaseDir --type String --value "D:\\RPA\\github\\BotApiGenerator"
+åUdefVar --name generatorBaseDir --type String
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -24,7 +23,7 @@ defVar --name pathFile --type String
 defVar --name writerText --type TextFileWriter
 defVar --name inputVarsStr --type String
 defVar --name outputVarsStr --type String
-defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n}, {\r\n    \"Odm\": [{\r\n     \"host\": \"#ODM_HOST#\",\r\n     \"path\": \"#ODM_PATH#\",\r\n     \"resUser\": \"#RES_USER#\",\r\n     \"resPwd\": \"#RES_PWD#\",\r\n     \"payload\": #ODM_PAYLOAD#\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
+defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n}, {\r\n    \"Odm\": [{\r\n     \"host\": \"#ODM_HOST#\",\r\n     \"path\": \"#ODM_PATH#\",\r\n     \"resUser\": \"#RES_USER#\",\r\n     \"resPwd\": \"#RES_PWD#\",\r\n     \"payload\": \"#ODM_PAYLOAD#\"\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
 defVar --name vBotName --type String --value generatedBot
 defVar --name vBotHost --type String --value "localhost:8099"
 defVar --name vOdmHost --type String
@@ -38,7 +37,8 @@ defVar --name loop --type Boolean
 defVar --name reponse --type String
 defVar --name response --type String
 
-//selectFolder --text "Select the bot generator folder (e.g. C:\\BotGenerator)" generatorBaseDir=value
+getSpecialFolder --folder "MyDocuments" generatorBaseDir=value
+setVar --name "${generatorBaseDir}" --value "${generatorBaseDir}\\BotApiGenerator"
 ifFolder --path "${generatorBaseDir}" success=value
 
 if --left "${success}" --operator "Is_True" --negate 
@@ -56,13 +56,7 @@ mapTableToCardButtons --dataTable ${excelTableButtons} --cardItems ${createdCard
 
 createLanguage --culture "en-US" languageUS=value
 botConnect --type "Chat" --language ${languageUS} --autoanswer  --timeout "00:15:00"
-	//botAskBoolean --beep  --language ${languageUS} --text "NOTE: THIS BOT MUST BE RUN WIHOUT DEBUG (Ctrl + F5). \nDo you want to generate the bot from a Blueworks Live diagram?" result=value success=success
-	//if --left "${result}" --operator "Is_True"
-	//	executeScript --isfromfile  --filename "D:\\RPA\\github\\BotApiGenerator\\bot\\ExtractBPMAndGenerate.wal"
-	//else
 	goSub --label generateFromDialog
-	//endIf
-	
 botDisconnect
 
 beginSub --name getBotName
@@ -75,7 +69,6 @@ inputBox --title "Bot host" --prompt "Enter the bot host. Default is: localhost:
 endSub
 
 beginSub --name getInputParams
-
 
 setVar --name "${loop}" --value true
 
@@ -219,5 +212,5 @@ endWhile
 
 goSub --label generateBotBpmnFile
 
-executeScript --isfromfile  --filename "D:\\RPA\\github\\BotApiGenerator\\bot\\readFileAndGenerate.wal" --parameters "inApiDefined=${apiDefined},inBaseDir=${generatorBaseDir}" success=value
-endSub"	t~ÂœyIvBΩèpÖäπY*21.0.1.0
+executeScript --isfromfile  --filename "${generatorBaseDir}\\bot\\readFileAndGenerate.wal" --parameters "inApiDefined=${apiDefined}" success=value
+endSub*21.0.1.0
