@@ -1,4 +1,4 @@
-“VdefVar --name generatorBaseDir --type String
+—VdefVar --name generatorBaseDir --type String
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -169,7 +169,7 @@ replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replace
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_HOST#" --replacement "${vOdmHost}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PATH#" --replacement "${vOdmPath}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PAYLOAD#" --replacement "${vOdmPayload}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "\"#ODM_PAYLOAD#\"" --replacement "${vOdmPayload}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_USER#" --replacement "${vResUser}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_PWD#" --replacement "${vResPwd}" jsonBpmn=value
 
