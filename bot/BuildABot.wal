@@ -1,4 +1,4 @@
-ŒUdefVar --name generatorBaseDir --type String
+“VdefVar --name generatorBaseDir --type String
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -39,12 +39,14 @@ defVar --name response --type String
 
 getSpecialFolder --folder "MyDocuments" generatorBaseDir=value
 setVar --name "${generatorBaseDir}" --value "${generatorBaseDir}\\BotApiGenerator"
+// setVar --name "${generatorBaseDir}" --value "D:\\RPA\\github\\BotApiGenerator"
 ifFolder --path "${generatorBaseDir}" success=value
 
 if --left "${success}" --operator "Is_True" --negate 
-	messageBox --title "Bot Generator" --text "Please set a valid base directory in line 1" --icon "Error" --buttons "OK" --defaultbutton "FirstButton"
+	messageBox --title "Bot Generator" --text "Please extract the bot generator zip under the documents folder" --icon "Error" --buttons "OK" --defaultbutton "FirstButton"
 	stopExecution
 endIf
+
 messageBox --title "Bot Generator" --text "Please wait for chat to start..." --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
 setVar --name "${cards}" --value "${generatorBaseDir}\\\\bot\\\\tableButtonsCards.xlsx"
 
@@ -212,5 +214,5 @@ endWhile
 
 goSub --label generateBotBpmnFile
 
-executeScript --isfromfile  --filename "${generatorBaseDir}\\bot\\readFileAndGenerate.wal" --parameters "inApiDefined=${apiDefined}" success=value
+executeScript --isfromfile  --filename "${generatorBaseDir}\\bot\\readFileAndGenerate.wal" --parameters "inApiDefined=${apiDefined},inBaseDir=${generatorBaseDir}" success=value
 endSub*21.0.1.0

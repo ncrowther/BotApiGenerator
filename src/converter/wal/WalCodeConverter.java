@@ -31,7 +31,10 @@ public class WalCodeConverter {
 
 				generateInOutParams( task, null);
 				
-				generateOdmCall( task, null);
+				if (!task.getOdmHost().equals("")) {
+					generateOdmCall( task, null);					
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
