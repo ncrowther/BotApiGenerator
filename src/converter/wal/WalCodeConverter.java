@@ -117,7 +117,11 @@ public class WalCodeConverter {
 		String resUser = task.getResUser();
 		String resPwd = task.getResPwd();
 
-		String paramsStr = "defVar --name ODM_Body --type String\r\n" + 
+		String paramsStr = "defVar --name headers --type StringDictionary --innertype String\r\n" + 
+				"defVar --name contentheaders --type StringDictionary --innertype String\r\n" + 
+				"defVar --name vHeaders --type StringDictionary --innertype String\r\n" + 
+				"defVar --name vBase64Aauth --type String\r\n" + 	
+				"defVar --name ODM_Body --type String\r\n" + 
 				"defVar --name ODM_response --type String\r\n" + 
 				"defVar --name extractionSuccess --type Boolean\r\n" + 
 				"defVar --name extractedTable --type DataTable\r\n" + 
@@ -132,11 +136,15 @@ public class WalCodeConverter {
 		// CALL ODM
 		String callOdmStr =
 				"\r\nbeginSub --name callDecisionService\r\n" + 
+		        "// TODO: Use the vault to store your RES username and password\r\n" +
+				"textToBase64 --source \"" + resUser + ":" + resPwd + "\" --encoding \"UTF8\" success=success vBase64Aauth=value\r\n" + 
+				"strDictAdd --key authorization --value \"basic ${vBase64Aauth}\" --dictionary ${vHeaders}\r\n" +	
 				"	setVar --name \"${ODM_Body}\" --value \"" + odmPayload + "\"\r\n" +
 				"	logMessage --message \"### Calling ODM with : ${ODM_Body}\" --type \"Info\"" + 
 				"	\r\n\r\n" + 				
-				"	httpRequest --verb \"Post\" --url \"" + odmHost + "/DecisionService/rest" +  odmPath + "?format=JSON\" --username " + resUser + " --password " + resPwd + " --formatter \"Json\" --source \"${ODM_Body}\" success=success ODM_response=value" +
-				"	\r\n\r\n" + 					"	if --left \"${success}\" --operator \"Is_True\" --negate\r\n" + 
+				"	httpRequest --verb \"Post\" --url \"" + odmHost +  odmPath + "\" --headers ${vHeaders} --formatter \"Json\" --source \"${ODM_Body}\" success=success ODM_response=value" +
+				"\r\n\r\n" +
+				"	if --left \"${success}\" --operator \"Is_True\" --negate\r\n" + 
 				"		return\r\n" + 
 				"	endIf\r\n" +				
 				"	logMessage --message \"Response = ${ODM_response}\" --type \"Info\"\r\n" + 

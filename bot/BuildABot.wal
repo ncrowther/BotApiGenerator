@@ -1,4 +1,4 @@
-—VdefVar --name generatorBaseDir --type String
+ÉVdefVar --name generatorBaseDir --type String
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -26,9 +26,9 @@ defVar --name outputVarsStr --type String
 defVar --name jsonBpmn --type String --value "{\r\n \"name\": \"BPM PROCESS\",\r\n \"milestones\": [{\r\n  \"name\": \"MILESTONE\",\r\n  \"activities\": [{\r\n   \"type\": \"activity\",\r\n      \"name\": \"#BOT_NAME#\",\r\n   \"sub-type\": \"robotic-task\",\r\n   \"properties\": [{\r\n    \"inputs\": [#INPUT_PARAMS#]\r\n   }, {\r\n    \"outputs\": [#OUTPUT_PARAMS#]\r\n   }, {\r\n    \"System\": [{\r\n     \"name\": \"#BOT_HOST#\"\r\n    }]\r\n}, {\r\n    \"Odm\": [{\r\n     \"host\": \"#ODM_HOST#\",\r\n     \"path\": \"#ODM_PATH#\",\r\n     \"resUser\": \"#RES_USER#\",\r\n     \"resPwd\": \"#RES_PWD#\",\r\n     \"payload\": \"#ODM_PAYLOAD#\"\r\n    }]\r\n   }]\r\n  }]\r\n }]\r\n}"
 defVar --name vBotName --type String --value generatedBot
 defVar --name vBotHost --type String --value "localhost:8099"
-defVar --name vOdmHost --type String
+defVar --name vOdmUrl --type String
 defVar --name vOdmPath --type String
-defVar --name vOdmPayload --type String
+defVar --name vOdmPayload --type String --value "\"\""
 defVar --name vResUser --type String
 defVar --name vResPwd --type String
 defVar --name apiDefined --type Boolean --value False
@@ -38,8 +38,8 @@ defVar --name reponse --type String
 defVar --name response --type String
 
 getSpecialFolder --folder "MyDocuments" generatorBaseDir=value
-setVar --name "${generatorBaseDir}" --value "${generatorBaseDir}\\BotApiGenerator"
-// setVar --name "${generatorBaseDir}" --value "D:\\RPA\\github\\BotApiGenerator"
+//setVar --name "${generatorBaseDir}" --value "${generatorBaseDir}\\BotApiGenerator"
+setVar --name "${generatorBaseDir}" --value "D:\\RPA\\github\\BotApiGenerator"
 ifFolder --path "${generatorBaseDir}" success=value
 
 if --left "${success}" --operator "Is_True" --negate 
@@ -140,8 +140,8 @@ endSub
 
 beginSub --name getODMCall
 onError --executenext 
-inputBox --title "Enter ODM host" --prompt "Enter the ODM host" --value "https://localhost:9443" vOdmHost=value
-trimString --text "${vOdmHost}" --trimoption "TrimStartAndEnd" vOdmHost=value
+inputBox --title "Enter ODM URL" --prompt "Enter the ODM URL" --value "https://odmeutrial2.bpm.ibmcloud.com/odm/dev/DecisionService/rest" vOdmUrl=value
+trimString --text "${vOdmUrl}" --trimoption "TrimStartAndEnd" vOdmUrl=value
 
 onError --executenext 
 inputBox --title "Enter ODM path" --prompt "Enter the API Path" --value "/SampleRuleApp/1.0/SampleDecision/1.0" vOdmPath=value
@@ -167,7 +167,7 @@ replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_NAME#" --replacement
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_HOST#" --replacement "${vBotHost}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replacement "${inputVarsStr}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_HOST#" --replacement "${vOdmHost}" jsonBpmn=value
+replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_HOST#" --replacement "${vOdmUrl}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PATH#" --replacement "${vOdmPath}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "\"#ODM_PAYLOAD#\"" --replacement "${vOdmPayload}" jsonBpmn=value
 replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_USER#" --replacement "${vResUser}" jsonBpmn=value
