@@ -1,6 +1,6 @@
 
-	ó(€(WÇH–4n(JhµÉ*defVar --name inApiDefined --type Boolean --value True --parameter 
-defVar --name inBaseDir --type String --parameter 
+	ó(€(WÇH–4n(Jhµå*defVar --name inApiDefined --type Boolean --value True --parameter
+defVar --name inBaseDir --type String --parameter
 defVar --name rpaHome --type String
 defVar --name javaHome --type String
 defVar --name output --type String
@@ -31,7 +31,7 @@ getSpecialFolder --folder "MyDocuments" pathFile=value
 
 runWindowsScript --scripttype "BATScript" --source "Text" --script "@echo off\r\n\r\nREM run java with params. NOTE: JRE must be installed\r\n\r\nIF %1.==. GOTO No1\r\nIF %2.==. GOTO No2\r\n\r\nSET LIB_DIR=%2\\lib\r\npushd %LIB_DIR%\r\njava -cp BotApiGenerator.jar;jsoup-1.14.3.jar;javax.xml.bind.jar;json-20210307.jar;commons-io-2.11.0.jar;commons-lang3-3.12.0.jar;commons-text-1.9.jar converter.CreateABot %1 %2 \r\n\r\nGOTO End\r\n\r\n:No1\r\n  ECHO Expected bot params file\r\n\r\n:No2\r\n  ECHO Expected Base Dir \r\n  exit 7 \r\n\r\n:End\r\n\r\necho %result%" --arguments "${pathFile}\\botparams.json ${inBaseDir}" --blockexecution  exitCode=exitcode response=output error=error
 
-if --left "${exitCode}" --operator "Equal_To" --right 0 --negate 
+if --left "${exitCode}" --operator "Equal_To" --right 0 --negate
 	setVar --name "${error}" --value "Converter failed"
 endIf
 
@@ -50,61 +50,61 @@ else
 endIf
 
 beginSub --name extractWalFilePath
-parseText --text "${response}" --query "Code generated in" --startindex 1 startpos=value
-evaluate --expression "${startpos} + ${PATH_PREAMBLE_LEN}" startpos=value
-getSubString --text "${response}" --start ${startpos} generatedWalFile=value
-replaceText --texttoparse "${generatedWalFile}" --textpattern "ECHO is off." generatedWalFile=value
-trimString --text "${generatedWalFile}" --trimoption "TrimEnd" generatedWalFile=value
-logMessage --message "\'${generatedWalFile}\'" --type "Info"
+	parseText --text "${response}" --query "Code generated in" --startindex 1 startpos=value
+	evaluate --expression "${startpos} + ${PATH_PREAMBLE_LEN}" startpos=value
+	getSubString --text "${response}" --start ${startpos} generatedWalFile=value
+	replaceText --texttoparse "${generatedWalFile}" --textpattern "ECHO is off." generatedWalFile=value
+	trimString --text "${generatedWalFile}" --trimoption "TrimEnd" generatedWalFile=value
+	logMessage --message "\'${generatedWalFile}\'" --type "Info"
 endSub
 
 beginSub --name extractBotName
-getRegex --text "${generatedWalFile}" --regexPattern "^[A-Z][\\:]\\\\(.+\\\\)*(.+)\\.(.+)$" --regexOptions "0" --groupnumber 2 botName=value
+	getRegex --text "${generatedWalFile}" --regexPattern "^[A-Z][\\:]\\\\(.+\\\\)*(.+)\\.(.+)$" --regexOptions "0" --groupnumber 2 botName=value
 endSub
 
 beginSub --name pasteGeneratedWalToClipboard
-openTextReader --share "Read" --path "${generatedWalFile}" --encoding "Default" textreader=value
-readTextToEnd --file ${textReader} walText=value
-clearClipboard
-setClipboard --text "${walText}" --mode "Text" success=value
-logMessage --message "${walText}" --type "Info"
+	openTextReader --share "Read" --path "${generatedWalFile}" --encoding "Default" textreader=value
+	readTextToEnd --file ${textReader} walText=value
+	clearClipboard
+	setClipboard --text "${walText}" --mode "Text" success=value
+	logMessage --message "${walText}" --type "Info"
 endSub
 
 beginSub --name CreateWalFileFromClipboard
-launchOrAttach --executablepath "C:\\Program Files\\IBM Robotic Process Automation\\IBM Robotic Process Automation\\Studio.exe" --title "IBM Robotic Process Automation Studio" --id "${id}" window01=value success=success
-sendKeys --keys "%+w" --viacurrentwindow 
-delay --timeout "00:00:01"
-sendKeys --keys "{F7}" --viacurrentwindow 
-delay --timeout "00:00:01"
+	launchOrAttach --executablepath "C:\\Program Files\\IBM Robotic Process Automation\\IBM Robotic Process Automation\\Studio.exe" --title "IBM Robotic Process Automation Studio" --id "${id}" window01=value success=success
+	sendKeys --keys "%+w" --viacurrentwindow
+	delay --timeout "00:00:01"
+	sendKeys --keys "{F7}" --viacurrentwindow
+	delay --timeout "00:00:01"
 //paste
-sendKeys --keys "^v" --viacurrentwindow 
-delay --timeout "00:00:02"
-sendKeys --keys "+{F7}" --viacurrentwindow 
-sendKeys --keys "^+s" --viacurrentwindow 
-sendKeys --keys "${pathFile}\\generated\\${botName}.wal" --viacurrentwindow 
-sendKeys --keys "{ENTER}"
+	sendKeys --keys "^v" --viacurrentwindow
+	delay --timeout "00:00:02"
+	sendKeys --keys "+{F7}" --viacurrentwindow
+	sendKeys --keys "^+s" --viacurrentwindow
+	sendKeys --keys "${pathFile}\\generated\\${botName}.wal" --viacurrentwindow
+	sendKeys --keys "{ENTER}"
 endSub
 
 beginSub --name extractOpenApiFilePath
-replaceText --texttoparse "${generatedWalFile}" --textpattern ".txt" --replacement ".yaml" generatedOpenApiFile=value
-logMessage --message "\'${generatedOpenApiFile}\'" --type "Info"
+	replaceText --texttoparse "${generatedWalFile}" --textpattern ".txt" --replacement ".yaml" generatedOpenApiFile=value
+	logMessage --message "\'${generatedOpenApiFile}\'" --type "Info"
 endSub
 
 beginSub --name openApi
-webStart --name web01 --type "Chrome" browserId=value
-webNavigate --url "https://editor.swagger.io/"
-delay --timeout "00:00:01"
-setVar --name "${cssPath}" --value "#swagger-editor > div > div:nth-child(1) > div > div > div > div:nth-child(2) > span"
+	webStart --name web01 --type "Chrome" browserId=value
+	webNavigate --url "https://editor.swagger.io/"
+	delay --timeout "00:00:01"
+	setVar --name "${cssPath}" --value "#swagger-editor > div > div:nth-child(1) > div > div > div > div:nth-child(2) > span"
 //webWaitElement --selector "XPath" --xpath "${cssPath}" --simulatehuman  --timeout "${DEFAULT_TIMEOUT}" success=value
-webClick --selector "CssSelector" --css "${cssPath}" --simulatehuman  success=value
-delay --timeout "00:00:01"
-webClick --selector "CssSelector" --css ".dd-items-left > li:nth-child(2) > button:nth-child(1)" --simulatehuman  success=value
-delay --timeout "00:00:01"
-findWindow --title Open success=success
-delay --timeout "00:00:01"
-sendKeys --keys "${generatedOpenApiFile}" --viacurrentwindow 
-delay --timeout "00:00:01"
-sendKeys --keys "{ENTER}" --viacurrentwindow 
-logMessage --message "${exitCode}" --type "Info"
-webClose --name web01 --leavebrowseropen 
-endSub"	@“7‘‡´G½÷vm¡¡*21.0.1.0
+	webClick --selector "CssSelector" --css "${cssPath}" --simulatehuman  success=value
+	delay --timeout "00:00:01"
+	webClick --selector "CssSelector" --css ".dd-items-left > li:nth-child(2) > button:nth-child(1)" --simulatehuman  success=value
+	delay --timeout "00:00:01"
+	findWindow --title Open success=success
+	delay --timeout "00:00:01"
+	sendKeys --keys "${generatedOpenApiFile}" --viacurrentwindow
+	delay --timeout "00:00:01"
+	sendKeys --keys "{ENTER}" --viacurrentwindow
+	logMessage --message "${exitCode}" --type "Info"
+	webClose --name web01 --leavebrowseropen
+endSub"	@“7‘‡´G½÷vm¡¡*21.0.2.2

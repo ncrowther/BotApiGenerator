@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.BpmnTask;
+import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
+import rpa.api.parameters.RpaParameter;
 
-public class OpenApiWriter {
+public class InternalApiWriter {
 
-	public static void writeOpenApiFile(String filename, BpmnTask bpmnTask)
+	public static void writeInternalApiFile(String filename, RpaConfig bpmnTask, List<RpaParameter> botSignature)
 			throws IOException {
 
-		Map<String, List<String>> generatedCode = ApiCodeConverter.generateCode(bpmnTask);
+		Map<String, List<String>> generatedCode = InternalApiCodeConverter.generateCode(bpmnTask, botSignature);
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 

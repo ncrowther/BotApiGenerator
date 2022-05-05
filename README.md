@@ -3,8 +3,8 @@
 ## Description
 
 This utility runs a chat bot in RPA Studio to generate:
- - Wal 
- - Yaml 
+ - Wal
+ - Yaml
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ Download this repo and extract to a folder of your choice.
 - Launch IBM RPA Studio
 - Open BotApiGenerator-main/bot/BuildABot.wal - See bugs and limitations
 - Run this script WITHOUT DEBUG (CTRL + F5).  If you run with debug the generated script will be malformed
-- When promoted, enter the name of the folder in which you extracted the zip
+- When prompted, enter the name of the folder in which you extracted the zip
 - When the chat bot appears, select N to generate the bot from the chat bot, and then select the chat bot buttons to add bot parameters.
 - When done select generate.  Avoid using the mouse or keyboard until the bot has finished generation.
 - Once finished, you should see the generated wal in Studio, and a browser containing YAML to invoke the bot.

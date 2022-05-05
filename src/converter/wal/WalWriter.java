@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.BpmnTask;
+import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
 
 public class WalWriter {
 
-	public static void writeRPAFile(String filename, BpmnTask bpmnTask)
+	public static void writeRPAFile(String filename, RpaConfig bpmnTask)
 			throws IOException {
 		
 		Map<String, List<String>> generatedCode = WalCodeConverter.generateCode(bpmnTask);

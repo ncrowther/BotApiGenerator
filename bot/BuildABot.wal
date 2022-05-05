@@ -1,4 +1,4 @@
-ÉVdefVar --name generatorBaseDir --type String
+üMdefVar --name generatorBaseDir --type String
 defVar --name cards --type String
 defVar --name excelTableButtons --type DataTable
 defVar --name createdCards --type List --innertype CardItem
@@ -42,177 +42,165 @@ getSpecialFolder --folder "MyDocuments" generatorBaseDir=value
 setVar --name "${generatorBaseDir}" --value "D:\\RPA\\github\\BotApiGenerator"
 ifFolder --path "${generatorBaseDir}" success=value
 
-if --left "${success}" --operator "Is_True" --negate 
+if --left "${success}" --operator "Is_True" --negate
 	messageBox --title "Bot Generator" --text "Please extract the bot generator zip under the documents folder" --icon "Error" --buttons "OK" --defaultbutton "FirstButton"
 	stopExecution
 endIf
 
-messageBox --title "Bot Generator" --text "Please wait for chat to start..." --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
-setVar --name "${cards}" --value "${generatorBaseDir}\\\\bot\\\\tableButtonsCards.xlsx"
+// messageBox --title "Bot Generator" --text "Please wait for chat to start..." --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
+// setVar --name "${cards}" --value "${generatorBaseDir}\\\\bot\\\\tableButtonsCards.xlsx"
 
 // Access to data table with card information.
-excelOpen --file "${cards}" excel=value
-excelGetTable --file ${excel} --getfirstsheet  --fromrow 1 --fromcolumn 1 --torow 5 --tocolumn 10 --hasheaders  excelTableButtons=value
-mapTableToCard --dataTable ${excelTableButtons} --titleColumn column0 --subtitleColumn 2 --textColumn 3 --thumbnailUrlColumn 4 --actionColumn 5 --actionValueColumn 6 createdCards=value
-mapTableToCardButtons --dataTable ${excelTableButtons} --cardItems ${createdCards} --buttonActionColumn 5 --buttonTextColumn 8 --buttonValueColumn 9
+//excelOpen --file "${cards}" excel=value
+//excelGetTable --file ${excel} --getfirstsheet  --fromrow 1 --fromcolumn 1 --torow 5 --tocolumn 10 --hasheaders  excelTableButtons=value
+//mapTableToCard --dataTable ${excelTableButtons} --titleColumn column0 --subtitleColumn 2 --textColumn 3 --thumbnailUrlColumn 4 --actionColumn 5 --actionValueColumn 6 createdCards=value
+//mapTableToCardButtons --dataTable ${excelTableButtons} --cardItems ${createdCards} --buttonActionColumn 5 --buttonTextColumn 8 --buttonValueColumn 9
 
-createLanguage --culture "en-US" languageUS=value
-botConnect --type "Chat" --language ${languageUS} --autoanswer  --timeout "00:15:00"
-	goSub --label generateFromDialog
-botDisconnect
+//createLanguage --culture "en-US" languageUS=value
+//botConnect --type "Chat" --language ${languageUS} --autoanswer  --timeout "00:15:00"
+goSub --label generateFromDialog
+//botDisconnect
 
 beginSub --name getBotName
-onError --executenext 
-inputBox --title "Bot name" --prompt "Enter the bot name" vBotName=value
+	onError --executenext
+	inputBox --title "Bot name" --prompt "Enter the bot name" vBotName=value
 endSub
 
 beginSub --name getBotHost
-inputBox --title "Bot host" --prompt "Enter the bot host. Default is: localhost:8099" --value "localhost:8099" vBotHost=value
+	inputBox --title "Bot host" --prompt "Enter the bot host. Default is: localhost:8099" --value "localhost:8099" vBotHost=value
 endSub
 
 beginSub --name getInputParams
-
-setVar --name "${loop}" --value true
-
-while --left "${loop}" --operator "Is_True"
 	
-	goSub --label getInputParam
+	setVar --name "${loop}" --value true
 	
-	messageBox --title "Bot Generator" --text "Define another input parameter?" --icon "Question" --buttons "YesNo" --defaultbutton "FirstButton" response=value
-	if --left "${response}" --operator "Matches" --right No
-		setVar --name "${loop}" --value false
-	endIf
+	while --left "${loop}" --operator "Is_True"
+		
+		goSub --label getInputParam
+		
+		messageBox --title "Bot Generator" --text "Define another input parameter?" --icon "Question" --buttons "YesNo" --defaultbutton "FirstButton" response=value
+		if --left "${response}" --operator "Matches" --right No
+			setVar --name "${loop}" --value false
+		endIf
+		
+	endWhile
 	
-endWhile
-
 endSub
 
 beginSub --name getInputParam
-inputBox --title "Input Parameter" --prompt "Enter an input parameter name" vInputParam=value
-getRegex --text "${vInputParam}" --regexPattern "^[a-zA-Z_$][a-zA-Z_$0-9]*$" --regexOptions "0" vInputParam=value
-if --left "${vInputParam}" --operator "Is_Null_Or_Empty" --negate 
-	if --left "${inputVarsStr}" --operator "Is_Null"
-		setVar --name "${inputVarsStr}" --value "{\"name\": \"${vInputParam}\"}"
-	else
-		setVar --name "${inputVarsStr}" --value "${inputVarsStr} , {\"name\": \"${vInputParam}\"}"
+	inputBox --title "Input Parameter" --prompt "Enter an input parameter name" vInputParam=value
+	getRegex --text "${vInputParam}" --regexPattern "^[a-zA-Z_$][a-zA-Z_$0-9]*$" --regexOptions "0" vInputParam=value
+	if --left "${vInputParam}" --operator "Is_Null_Or_Empty" --negate
+		if --left "${inputVarsStr}" --operator "Is_Null"
+			setVar --name "${inputVarsStr}" --value "{\"name\": \"${vInputParam}\"}"
+		else
+			setVar --name "${inputVarsStr}" --value "${inputVarsStr} , {\"name\": \"${vInputParam}\"}"
+		endIf
 	endIf
-endIf
 endSub
 
 beginSub --name getOutputParams
-
-setVar --name "${loop}" --value true
-
-while --left "${loop}" --operator "Is_True"
 	
-	goSub --label getOutputParam
+	setVar --name "${loop}" --value true
 	
-	messageBox --title "Bot Generator" --text "Define another output parameter?" --icon "Question" --buttons "YesNo" --defaultbutton "FirstButton" response=value
-	if --left "${response}" --operator "Matches" --right No
-		setVar --name "${loop}" --value false
-	endIf
+	while --left "${loop}" --operator "Is_True"
+		
+		goSub --label getOutputParam
+		
+		messageBox --title "Bot Generator" --text "Define another output parameter?" --icon "Question" --buttons "YesNo" --defaultbutton "FirstButton" response=value
+		if --left "${response}" --operator "Matches" --right No
+			setVar --name "${loop}" --value false
+		endIf
+		
+	endWhile
 	
-endWhile
-
 endSub
 
 beginSub --name getOutputParam
-inputBox --title "Output Parameter" --prompt "Enter an output parameter name" vOutputParam=value
-getRegex --text "${vOutputParam}" --regexPattern "^[a-zA-Z_$][a-zA-Z_$0-9]*$" --regexOptions "0" vOutputParam=value
-if --left "${vOutputParam}" --operator "Is_Null_Or_Empty" --negate 
-	if --left "${outputVarsStr}" --operator "Is_Null"
-		setVar --name "${outputVarsStr}" --value "{\"name\": \"${vOutputParam}\"}"
-	else
-		setVar --name "${outputVarsStr}" --value "${outputVarsStr} , {\"name\": \"${vOutputParam}\"}"
+	inputBox --title "Output Parameter" --prompt "Enter an output parameter name" vOutputParam=value
+	getRegex --text "${vOutputParam}" --regexPattern "^[a-zA-Z_$][a-zA-Z_$0-9]*$" --regexOptions "0" vOutputParam=value
+	if --left "${vOutputParam}" --operator "Is_Null_Or_Empty" --negate
+		if --left "${outputVarsStr}" --operator "Is_Null"
+			setVar --name "${outputVarsStr}" --value "{\"name\": \"${vOutputParam}\"}"
+		else
+			setVar --name "${outputVarsStr}" --value "${outputVarsStr} , {\"name\": \"${vOutputParam}\"}"
+		endIf
 	endIf
-endIf
 endSub
 
 beginSub --name getApi
-onError --executenext 
-goSub --label getBotHost
-onError --executenext 
-goSub --label getInputParams
-onError --executenext 
-goSub --label getOutputParams
-setVar --name "${apiDefined}" --value true
+	onError --executenext
+	goSub --label getBotHost
+	onError --executenext
+	goSub --label getInputParams
+	onError --executenext
+	goSub --label getOutputParams
+	setVar --name "${apiDefined}" --value true
 endSub
 
 beginSub --name getODMCall
-onError --executenext 
-inputBox --title "Enter ODM URL" --prompt "Enter the ODM URL" --value "https://odmeutrial2.bpm.ibmcloud.com/odm/dev/DecisionService/rest" vOdmUrl=value
-trimString --text "${vOdmUrl}" --trimoption "TrimStartAndEnd" vOdmUrl=value
-
-onError --executenext 
-inputBox --title "Enter ODM path" --prompt "Enter the API Path" --value "/SampleRuleApp/1.0/SampleDecision/1.0" vOdmPath=value
-trimString --text "${vOdmPath}" --trimoption "TrimStartAndEnd" vOdmPath=value
-
-onError --executenext 
-inputBox --title "Enter Res username" --prompt "Enter the Res username" --value resAdmin vResUser=value
-trimString --text "${vResUser}" --trimoption "TrimStartAndEnd" vResUser=value
-
-onError --executenext 
-inputBox --title "Enter Res password" --prompt "Enter the Res password" --value resAdmin vResPwd=value
-trimString --text "${vResPwd}" --trimoption "TrimStartAndEnd" vResPwd=value
-
-onError --executenext 
-inputBox --title "Enter ODM payload" --prompt "ODM payload" --value "{ \"testing\": \"123\"}" vOdmPayload=value
-escapeData --data "${vOdmPayload}" --json  vOdmPayload=value
-
+	onError --executenext
+	inputBox --title "Enter ODM URL" --prompt "Enter the ODM URL" --value "https://odmeutrial2.bpm.ibmcloud.com/odm/dev/DecisionService/rest" vOdmUrl=value
+	trimString --text "${vOdmUrl}" --trimoption "TrimStartAndEnd" vOdmUrl=value
+	
+	onError --executenext
+	inputBox --title "Enter ODM path" --prompt "Enter the API Path" --value "/SampleRuleApp/1.0/SampleDecision/1.0" vOdmPath=value
+	trimString --text "${vOdmPath}" --trimoption "TrimStartAndEnd" vOdmPath=value
+	
+	onError --executenext
+	inputBox --title "Enter Res username" --prompt "Enter the Res username" --value resAdmin vResUser=value
+	trimString --text "${vResUser}" --trimoption "TrimStartAndEnd" vResUser=value
+	
+	onError --executenext
+	inputBox --title "Enter Res password" --prompt "Enter the Res password" --value resAdmin vResPwd=value
+	trimString --text "${vResPwd}" --trimoption "TrimStartAndEnd" vResPwd=value
+	
+	onError --executenext
+	inputBox --title "Enter ODM payload" --prompt "ODM payload" --value "{ \"testing\": \"123\"}" vOdmPayload=value
+	escapeData --data "${vOdmPayload}" --json  vOdmPayload=value
+	
 endSub
 
 beginSub --name generateBotBpmnFile
-
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_NAME#" --replacement "${vBotName}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_HOST#" --replacement "${vBotHost}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replacement "${inputVarsStr}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_HOST#" --replacement "${vOdmUrl}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PATH#" --replacement "${vOdmPath}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "\"#ODM_PAYLOAD#\"" --replacement "${vOdmPayload}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_USER#" --replacement "${vResUser}" jsonBpmn=value
-replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_PWD#" --replacement "${vResPwd}" jsonBpmn=value
-
-getSpecialFolder --folder "MyDocuments" pathFile=value
+	
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_NAME#" --replacement "${vBotName}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#BOT_HOST#" --replacement "${vBotHost}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#INPUT_PARAMS#" --replacement "${inputVarsStr}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#OUTPUT_PARAMS#" --replacement "${outputVarsStr}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_HOST#" --replacement "${vOdmUrl}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#ODM_PATH#" --replacement "${vOdmPath}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "\"#ODM_PAYLOAD#\"" --replacement "${vOdmPayload}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_USER#" --replacement "${vResUser}" jsonBpmn=value
+	replaceText --texttoparse "${jsonBpmn}" --textpattern "#RES_PWD#" --replacement "${vResPwd}" jsonBpmn=value
+	
+	getSpecialFolder --folder "MyDocuments" pathFile=value
 // Open the file entered for writing.
-fileDelete --file "${pathFile}\\botparams.json"
-openTextWriter --mode "OpenOrCreate" --autoflush  --share "None" --path "${pathFile}\\botparams.json" --encoding "Default" writerText=value
+	fileDelete --file "${pathFile}\\botparams.json"
+	openTextWriter --mode "OpenOrCreate" --autoflush  --share "None" --path "${pathFile}\\botparams.json" --encoding "Default" writerText=value
 // Write the entered text to the open file.
-textWrite --text "${jsonBpmn}" --file ${writerText}
-textFileClose --file ${writerText}
+	textWrite --text "${jsonBpmn}" --file ${writerText}
+	textFileClose --file ${writerText}
 endSub
 
 beginSub --name TimeoutSubroutine
-messageBox --title Timeout --text "Timed Out! Please, restart the connection." --icon "Warning" --buttons "OK" --defaultbutton "FirstButton"
+	messageBox --title Timeout --text "Timed Out! Please, restart the connection." --icon "Warning" --buttons "OK" --defaultbutton "FirstButton"
 endSub
 
 beginSub --name generateFromDialog
-
-chatAskCarousel --text "Specify your bot!" --cards ${createdCards} --timeoutsub TimeoutSubroutine --language ${languageUS} --timeout "00:30:00" selectedOption=value result=success
-
-while --left "${exit}" --operator "Is_True" --negate 
 	
-	logMessage --message "Carousel: ${selectedOption}" --type "Info"
+// chatAskCarousel --cards ${createdCards} --timeoutsub TimeoutSubroutine --language ${languageUS} --text "Specify your bot!" --timeout "00:30:00" selectedOption=value result=success
 	
-	if --left "${selectedOption}" --operator "Contains" --right SETBOTNAME
-		goSub --label getBotName
-		botAskName --timeoutsub TimeoutSubroutine --beep  --language ${languageUS} --text "Bot name ${vBotName} added. Select option" --timeout "00:30:00" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right EXPOSEAPI
-		goSub --label getApi
-		botAskName --timeoutsub TimeoutSubroutine --beep  --language ${languageUS} --text "Bot API specified. Select option" --timeout "00:30:00" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right ADDDECISION
-		goSub --label getODMCall
-		botAskName --timeoutsub TimeoutSubroutine --beep  --language ${languageUS} --text "ODM invocation specified. Select option" --timeout "00:30:00" selectedOption=utterance success=success
-	elseIf --left "${selectedOption}" --operator "Contains" --right GENERATE
-		messageBox --title "Bot Generator" --text "Bot will be created in ${generatorBaseDir}" --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
-		setVar --name "${exit}" --value true
-	else
-		botAskName --timeoutsub TimeoutSubroutine --beep  --language ${languageUS} --text "Select option" --timeout "00:30:00" selectedOption=utterance success=success
-	endIf
 	
-endWhile
-
-goSub --label generateBotBpmnFile
-
-executeScript --isfromfile  --filename "${generatorBaseDir}\\bot\\readFileAndGenerate.wal" --parameters "inApiDefined=${apiDefined},inBaseDir=${generatorBaseDir}" success=value
-endSub*21.0.1.0
+	
+	goSub --label getBotName
+	
+	goSub --label getApi
+	
+// goSub --label getODMCall
+	
+	messageBox --title "Bot Generator" --text "Bot will be created in ${generatorBaseDir}" --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
+	
+	goSub --label generateBotBpmnFile
+	
+	executeScript --isfromfile  --filename "${generatorBaseDir}\\bot\\readFileAndGenerate.wal" --parameters "inApiDefined=${apiDefined},inBaseDir=${generatorBaseDir}" success=value
+endSub*21.0.2.2

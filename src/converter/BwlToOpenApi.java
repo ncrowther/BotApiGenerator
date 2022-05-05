@@ -19,9 +19,9 @@ import java.util.Stack;
 
 import converter.bwl.BwlJsonParser;
 import converter.bwl.BwlRestApi;
-import converter.bpmn.BpmnTask;
+import converter.bpmn.RpaConfig;
 import converter.bpmn.IBpmnParser;
-import converter.openApi.OpenApiWriter;
+import converter.openApi.InternalApiWriter;
 import converter.common.StringUtils;
 import converter.wal.WalWriter;
 
@@ -74,10 +74,10 @@ public class BwlToOpenApi {
 
 			IBpmnParser bpmnParser = new BwlJsonParser(jsonString);
 
-			Stack<BpmnTask> taskIds = bpmnParser.getTaskIds();
+			Stack<RpaConfig> taskIds = bpmnParser.getTaskIds();
 			
 			while (!taskIds.empty()) {
-				BpmnTask bpmnTask = taskIds.pop();
+				RpaConfig bpmnTask = taskIds.pop();
 				
 
 				final String generatedDir = baseDir + "\\generated\\";
@@ -86,7 +86,7 @@ public class BwlToOpenApi {
 				String openApiFileName = botFile + ".yaml";
 				
 				WalWriter.writeRPAFile(walFileName, bpmnTask);
-				OpenApiWriter.writeOpenApiFile(openApiFileName, bpmnTask);
+				//InternalApiWriter.writeInternalApiFile(openApiFileName, bpmnTask);
 				
 				System.out.println("Code generated in " + walFileName);
 			}

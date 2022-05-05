@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 /* 
  * Licensed Materials - Property of IBM Corporation.
@@ -21,11 +22,17 @@ import java.util.Stack;
 import java.util.stream.Stream;
 
 import converter.bwl.BwlJsonParser;
-import converter.bpmn.BpmnTask;
+import converter.bpmn.RpaConfig;
 import converter.bpmn.IBpmnParser;
-import converter.openApi.OpenApiWriter;
+import converter.openApi.ExternalApiWriter;
+import converter.openApi.InternalApiWriter;
 import converter.common.StringUtils;
+import converter.junit.JUnitWriter;
 import converter.wal.WalWriter;
+import rpa.api.RpaApi;
+import rpa.api.RpaApi.RpaApiException;
+import rpa.api.parameters.RpaParameter;
+import rpa.json.JsonUtils;
 
 public class CreateABot {
 
@@ -51,10 +58,7 @@ public class CreateABot {
 				throw new Exception("No base directory specified");
 			}
 
-			System.out.println("Processing :" + bpmnFile);
-
-			//Path path = Path.of(bpmnFile);
-			//String jsonString = Files.readString(path, StandardCharsets.US_ASCII);
+			System.out.println("Processing :" + bpmnFile);		
 			
 			String jsonString = readFile(bpmnFile);
 
@@ -62,28 +66,62 @@ public class CreateABot {
 
 			IBpmnParser bpmnParser = new BwlJsonParser(jsonString);
 
-			Stack<BpmnTask> taskIds = bpmnParser.getTaskIds();
+			Stack<RpaConfig> rpaConfigs = bpmnParser.getTaskIds();
 
-			while (!taskIds.empty()) {
-				BpmnTask bpmnTask = taskIds.pop();
-
+			while (!rpaConfigs.empty()) {
+				RpaConfig rpaConfig = rpaConfigs.pop();
+		
+				List<RpaParameter> botSignature = fetchBotSignature(rpaConfig);
+	
 				final String generatedDir = baseDir + "\\generated\\";
 				
 				createDirIfDoesNotExist(generatedDir);
 			    
-				String botFile = generatedDir + StringUtils.convertToTitleCase(bpmnTask.getName());
+				String botFile = generatedDir + StringUtils.convertToTitleCase(rpaConfig.getName());
 				String walFileName = botFile + ".txt";
-				String openApiFileName = botFile + ".yaml";
+				String internalOpenApiFileName = botFile + "_internal.yaml";
+				String externalOpenApiFileName = botFile + "_external.yaml";				
+				String junitFileName = botFile + "Test.java";
+				
+				//WalWriter.writeRPAFile(walFileName, rpaConfig);
+				//System.out.println("Wal generated in " + walFileName);
+				
+				InternalApiWriter.writeInternalApiFile(internalOpenApiFileName, rpaConfig, botSignature);
+				System.out.println("Internal API generated in " + internalOpenApiFileName);
 
-				WalWriter.writeRPAFile(walFileName, bpmnTask);
-				OpenApiWriter.writeOpenApiFile(openApiFileName, bpmnTask);
-
-				System.out.println("Code generated in " + walFileName);
+				ExternalApiWriter.writeExternalApiFile(externalOpenApiFileName, rpaConfig, botSignature);
+				System.out.println("External API generated in " + externalOpenApiFileName);
+				
+				JUnitWriter.writeJUnitFile(junitFileName, rpaConfig, botSignature);
+				System.out.println("JUnit test generated in " + junitFileName);				
+				
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static List<RpaParameter> fetchBotSignature(RpaConfig rpaConfig) throws RpaApiException {
+		String baseURL = rpaConfig.getBaseUrl();
+		String tenantId = rpaConfig.getTenantId();
+		String username = rpaConfig.getRpaUser();
+		String password = rpaConfig.getRpaPwd();
+		String processName = rpaConfig.getName();
+
+		String token = RpaApi.getBearerToken(baseURL, tenantId, username, password);
+		
+		String processId = RpaApi.getProcessIdByName(rpaConfig.getBaseUrl(), 
+				                                     rpaConfig.getTenantId(), 
+				                                     token,
+				                                     processName);
+		
+		List<RpaParameter> botSignature = RpaApi.getProcessDetails(rpaConfig.getBaseUrl(), rpaConfig.getTenantId(),
+				token, processId);
+		
+		System.out.println("botSignature: " + botSignature);
+		
+		return botSignature;
 	}
 
 	private static void createDirIfDoesNotExist(final String generatedDir) {

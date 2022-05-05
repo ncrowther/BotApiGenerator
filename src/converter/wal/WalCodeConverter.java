@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.BpmnTask;
+import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
 
 /* 
@@ -23,7 +23,7 @@ public class WalCodeConverter {
 
 	private static Map<String, List<String>> generatedCode = new HashMap<String, List<String>>();
 
-	public static Map<String, List<String>> generateCode(BpmnTask task) {
+	public static Map<String, List<String>> generateCode(RpaConfig task) {
 
 		try {
 			if (task != null) {
@@ -42,8 +42,8 @@ public class WalCodeConverter {
 		return generatedCode;
 	}
 
-	private static void generateInOutParams(BpmnTask task, BpmnTask parentTask) {
-
+	private static void generateInOutParams(RpaConfig task, RpaConfig parentTask) {
+/*
 		List<String> inputParamNames = task.getInputParams();
 
 		generateBotName(task.getName());
@@ -70,6 +70,7 @@ public class WalCodeConverter {
 		for (String paramName : outputParamName) {
 			generateWalOutputDefinitions(paramName);
 		}
+		*/
 	}
 
 	private static void generateWalInputDefinitions(String paramName) {
@@ -109,7 +110,7 @@ public class WalCodeConverter {
 		functionCode.add(paramsStr);
 	}
 	
-	private static void generateOdmCall(BpmnTask task, BpmnTask parentTask) {
+	private static void generateOdmCall(RpaConfig task, RpaConfig parentTask) {
 
 		String odmHost = task.getOdmHost();
 		String odmPath = task.getOdmPath();
