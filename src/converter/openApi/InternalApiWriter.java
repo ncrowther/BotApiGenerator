@@ -33,7 +33,7 @@ public class InternalApiWriter {
 				   description +
 				"  contact:\r\n" + 
 				"    email: ncrowther@uk.ibm.com\r\n" + 
-				host +
+				"host: localhost:8099\n" +
 				"basePath: /\r\n" + 
 				"schemes:\r\n" + 
 				"- https\r\n" + 

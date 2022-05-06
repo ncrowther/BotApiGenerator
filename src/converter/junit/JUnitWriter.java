@@ -10,6 +10,7 @@ import java.util.Map;
 import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
 import converter.common.StringUtils;
+import rpa.api.RpaApi;
 import rpa.api.parameters.RpaParameter;
 
 public class JUnitWriter {
@@ -55,11 +56,9 @@ public class JUnitWriter {
 				"	@Test\r\n" + 
 				"	public void testStartProcess() {\r\n" + 
 				"\r\n" + 
-				"		try {		\r\n" + 
-				"			String token = RpaApi.getBearerToken(baseURL, tenantId, username, password);\r\n" + 
-				"			assertNotNull( token, \"Token generated\");\r\n" + 
+				"		try {" + 
 				"\r\n" + 
-				"			String result = RpaApi.startProcessAndWait(baseURL, tenantId, token, processName, payload, waitSeconds);\r\n" + 
+				"			String result = RpaApi.startProcessAndWait(baseURL, tenantId, username, password, processName, payload, waitSeconds);\r\n" +
 				"\r\n" + 
 				"			assertNotNull(result, \"Result not null\");\r\n" +
 				"\r\n" + 				

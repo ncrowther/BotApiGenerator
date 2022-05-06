@@ -389,7 +389,6 @@ public class ExternalApiWriter {
 		byte[] strToBytes = strBuilder.toString().getBytes();
 		outputStream.write(strToBytes);
 
-
 		outputStream.close();
 	}
 

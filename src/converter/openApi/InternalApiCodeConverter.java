@@ -66,15 +66,15 @@ public class InternalApiCodeConverter {
 		}
 	}
 
-	private static void generateInputParams(RpaParameter paramName) {
-		String paramsStr = "      " + paramName + ":\r\n" + "        type: string\r\n";
+	private static void generateOutputParams(RpaParameter paramName) {
+		String paramsStr = "      " + paramName.getName() + ":\r\n" + "        type: " + paramName.getObjectType() + "\r\n";
 		addCode(CodePlacement.API_OUTPUT_PARAMS.toString(), paramsStr);
 
 	}
 
-	private static void generateOutputParams(RpaParameter paramName) {
-		String parameterStr = "      - name: " + paramName + "\r\n" + "        in: query\r\n"
-				+ "        required: false\r\n" + "        type: string\r\n" + "        description: TBS\r\n";
+	private static void generateInputParams(RpaParameter paramName) {
+		String parameterStr = "      - name: " + paramName.getName() + "\r\n" + "        in: query\r\n"
+				+ "        required: false\r\n" + "        type: " + paramName.getObjectType() + "\r\n" + "        description: TBS\r\n";
 
 		addCode(CodePlacement.API_INPUT_PARAMS.toString(), parameterStr);
 	}

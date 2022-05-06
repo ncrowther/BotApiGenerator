@@ -23,11 +23,8 @@ public class Weather4uTest {
 	@Test
 	public void testStartProcess() {
 
-		try {		
-			String token = RpaApi.getBearerToken(baseURL, tenantId, username, password);
-			assertNotNull( token, "Token generated");
-
-			String result = RpaApi.startProcessAndWait(baseURL, tenantId, token, processName, payload, waitSeconds);
+		try {
+			String result = RpaApi.startProcessAndWait(baseURL, tenantId, username, password, processName, payload, waitSeconds);
 
 			assertNotNull(result, "Result not null");
 
