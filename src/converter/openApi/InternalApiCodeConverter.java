@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
+import converter.config.RpaConfig;
 import rpa.api.parameters.ParameterDirection;
 import rpa.api.parameters.RpaParameter;
 

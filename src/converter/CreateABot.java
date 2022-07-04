@@ -21,14 +21,15 @@ import java.util.List;
 import java.util.Stack;
 import java.util.stream.Stream;
 
-import converter.bwl.BwlJsonParser;
-import converter.bpmn.RpaConfig;
-import converter.bpmn.IBpmnParser;
 import converter.openApi.ExternalApiWriter;
 import converter.openApi.InternalApiWriter;
 import converter.common.StringUtils;
+import converter.config.ConfigFileParser;
+import converter.config.IConfigParser;
+import converter.config.RpaConfig;
 import converter.junit.JUnitWriter;
 import converter.wal.WalWriter;
+import datastructures.BotInfo;
 import rpa.api.RpaApi;
 import rpa.api.RpaApi.RpaApiException;
 import rpa.api.parameters.RpaParameter;
@@ -38,17 +39,17 @@ public class CreateABot {
 
 	public static void main(String[] args) {
 
-		String bpmnFile = "";
+		String configFile = "";
 		String baseDir = ".";
 
 		System.out.println("Args: " + args.length);
 
 		try {
 			if (args.length > 0) {
-				bpmnFile = args[0];
+				configFile = args[0];
 				System.out.println("Arg[0]: " + args[0]);
 			} else {
-				throw new Exception("No file specified");
+				throw new Exception("No config file specified");
 			}
 
 			if (args.length > 1) {
@@ -58,51 +59,47 @@ public class CreateABot {
 				throw new Exception("No base directory specified");
 			}
 
-			System.out.println("Processing :" + bpmnFile);		
+			System.out.println("Config file :" + configFile);
+
+			String jsonString = readFile(configFile);
+			IConfigParser configParser = new ConfigFileParser(jsonString);
+			RpaConfig rpaConfig = configParser.getConfig();
 			
-			String jsonString = readFile(bpmnFile);
+			System.out.println(rpaConfig);
 
-			System.out.println(jsonString);
+			BotInfo botInfo = getBotInfo(rpaConfig);
 
-			IBpmnParser bpmnParser = new BwlJsonParser(jsonString);
+			final String generatedDir = baseDir + "\\generated\\";
 
-			Stack<RpaConfig> rpaConfigs = bpmnParser.getTaskIds();
+			createDirIfDoesNotExist(generatedDir);
 
-			while (!rpaConfigs.empty()) {
-				RpaConfig rpaConfig = rpaConfigs.pop();
-		
-				List<RpaParameter> botSignature = fetchBotSignature(rpaConfig);
-	
-				final String generatedDir = baseDir + "\\generated\\";
-				
-				createDirIfDoesNotExist(generatedDir);
-			    
-				String botFile = generatedDir + StringUtils.convertToTitleCase(rpaConfig.getName());
-				String walFileName = botFile + ".txt";
-				String internalOpenApiFileName = botFile + "_internal.yaml";
-				String externalOpenApiFileName = botFile + "_external.yaml";				
-				String junitFileName = botFile + "Test.java";
-				
-				//WalWriter.writeRPAFile(walFileName, rpaConfig);
-				//System.out.println("Wal generated in " + walFileName);
-				
-				InternalApiWriter.writeInternalApiFile(internalOpenApiFileName, rpaConfig, botSignature);
-				System.out.println("Internal API generated in " + internalOpenApiFileName);
+			String botFile = generatedDir + StringUtils.convertToTitleCase(rpaConfig.getName());
+			String walFileName = botFile + ".txt";
+			String internalOpenApiFileName = botFile + "_internal.yaml";
+			String externalOpenApiFileName = botFile + "_external.yaml";
+			String junitFileName = botFile + "Test.java";
 
-				ExternalApiWriter.writeExternalApiFile(externalOpenApiFileName, rpaConfig, botSignature);
-				System.out.println("External API generated in " + externalOpenApiFileName);
-				
-				JUnitWriter.writeJUnitFile(junitFileName, rpaConfig, botSignature);
-				System.out.println("JUnit test generated in " + junitFileName);				
-				
-			}
+			// WalWriter.writeRPAFile(walFileName, rpaConfig);
+			// System.out.println("Wal generated in " + walFileName);
+
+			InternalApiWriter.writeInternalApiFile(internalOpenApiFileName, rpaConfig, botInfo);
+			System.out.println("Internal API generated in " + internalOpenApiFileName);
+
+			ExternalApiWriter.writeExternalApiFile(externalOpenApiFileName, rpaConfig, botInfo);
+			System.out.println("External API generated in " + externalOpenApiFileName);
+
+			JUnitWriter.writeJUnitFile(junitFileName, rpaConfig, botInfo);
+			System.out.println("JUnit test generated in " + junitFileName);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static List<RpaParameter> fetchBotSignature(RpaConfig rpaConfig) throws RpaApiException {
+	private static BotInfo getBotInfo(RpaConfig rpaConfig) throws RpaApiException {
+		
+		BotInfo botInfo = new BotInfo();
+		
 		String baseURL = rpaConfig.getBaseUrl();
 		String tenantId = rpaConfig.getTenantId();
 		String username = rpaConfig.getRpaUser();
@@ -110,39 +107,37 @@ public class CreateABot {
 		String processName = rpaConfig.getName();
 
 		String token = RpaApi.getBearerToken(baseURL, tenantId, username, password);
-		
-		String processId = RpaApi.getProcessIdByName(rpaConfig.getBaseUrl(), 
-				                                     rpaConfig.getTenantId(), 
-				                                     token,
-				                                     processName);
-		
+
+		String processId = RpaApi.getProcessIdByName(rpaConfig.getBaseUrl(), rpaConfig.getTenantId(), token,
+				processName);
+
 		List<RpaParameter> botSignature = RpaApi.getProcessDetails(rpaConfig.getBaseUrl(), rpaConfig.getTenantId(),
 				token, processId);
+
+		botInfo.setBotSignature(botSignature);
+		botInfo.setWorkspaceId(tenantId);
+		botInfo.setProcessId(processId);
 		
-		System.out.println("botSignature: " + botSignature);
+		System.out.println("BotInfo: " + botInfo);
 		
-		return botSignature;
+		return botInfo;
 	}
 
 	private static void createDirIfDoesNotExist(final String generatedDir) {
 		File directory = new File(generatedDir);
-		if (! directory.exists()){
-		    directory.mkdir();
-		    // If you require it to make the entire directory path including parents,
-		    // use directory.mkdirs(); here instead.
+		if (!directory.exists()) {
+			directory.mkdir();
+			// If you require it to make the entire directory path including parents,
+			// use directory.mkdirs(); here instead.
 		}
 	}
-	
-	private static String readFile(String filePath)
-	{
+
+	private static String readFile(String filePath) {
 		StringBuilder contentBuilder = new StringBuilder();
 
-		try (Stream < String > stream = Files.lines( Paths.get(filePath), StandardCharsets.UTF_8))
-		{
+		try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
 			stream.forEach(s -> contentBuilder.append(s).append("\n"));
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

@@ -3,6 +3,7 @@
 	<name>BotApiGenerator</name>
 	<comment></comment>
 	<projects>
+		<project>RpaApi</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

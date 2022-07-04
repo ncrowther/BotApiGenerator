@@ -1,4 +1,4 @@
-package converter.bwl;
+package converter.config;
 
 /* 
  * Licensed Materials - Property of IBM Corporation.
@@ -10,72 +10,33 @@ package converter.bwl;
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corporation.
  */
-import java.util.HashMap;
-
-import java.util.Map;
-import java.util.Stack;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import converter.bpmn.RpaConfig;
-import converter.bpmn.IBpmnParser;
 import converter.common.StringUtils;
 
 import org.apache.commons.text.StringEscapeUtils;
 
-public class BwlJsonParser implements IBpmnParser {
+public class ConfigFileParser implements IConfigParser {
+	
+	private RpaConfig task = new RpaConfig();
 
-	private Map<String, RpaConfig> taskMap = new HashMap<String, RpaConfig>();
-	private Map<String, String> sequenceMap = new HashMap<String, String>();
-	private Stack<RpaConfig> taskNodes = new Stack<RpaConfig>();
-
-	public BwlJsonParser(String json) {
+	public ConfigFileParser(String json) {
 		parseProcess(json);
 	}
 
-	public Map<String, RpaConfig> getTaskMap() {
-		return taskMap;
-	}
-
-	public Map<String, String> getSequenceMap() {
-		return sequenceMap;
-	}
-
-	public Stack<RpaConfig> getTaskIds() {
-		return taskNodes;
-	}
-
-	public RpaConfig getTask(String taskId) {
-		return taskMap.get(taskId);
+	public  RpaConfig getConfig() {
+		return task;
 	}
 
 	private void parseProcess(String json) {
 
-		JSONObject obj = new JSONObject(json);
+		JSONObject jsonObj = new JSONObject(json);
 
-		JSONArray arr = obj.getJSONArray("milestones");
-		for (int i = 0; i < arr.length(); i++) {
-			JSONObject jsonObj = arr.getJSONObject(i);
-			getMilestones(jsonObj);
-		}
+		getTaskProperties(jsonObj);
 	}
 
-	private void getMilestones(JSONObject jsonObj) {
-		//String post_id = jsonObj.getString("name");
-		// System.out.println(post_id);
-		getActivities(jsonObj);
-	}
-
-	private void getTaskProperties(JSONObject activity, String name) {
-
-		RpaConfig task = new RpaConfig();
-		String id = "1";
-		task.setId(id);
-		task.setName(name);
-
-		taskMap.put(id, task);
-		taskNodes.push(task);
+	private void getTaskProperties(JSONObject activity) {
 
 		if (activity.has("properties")) {
 			JSONArray propertiesArr = activity.getJSONArray("properties");
@@ -97,11 +58,18 @@ public class BwlJsonParser implements IBpmnParser {
 		JSONArray inputsArr = property.getJSONArray("RpaTenant");
 		for (int i = 0; i < inputsArr.length(); i++) {
 			JSONObject inputObj = inputsArr.getJSONObject(i);
+			getProcessName(task, inputObj);
 			getTenantBaseUrl(task, inputObj);		
 			getTenantId(task, inputObj);
 			getRpaUser(task, inputObj);
 			getRpaPwd(task, inputObj);			
 		}
+	}
+
+	private void getProcessName(RpaConfig task, JSONObject inputObj) {
+		String processName = inputObj.getString("processName");	
+		System.out.println("getProcessName:" + processName);
+		task.setName(processName);
 	}
 	
 	private void getTenantBaseUrl(RpaConfig task, JSONObject inputObj) {
@@ -171,39 +139,14 @@ public class BwlJsonParser implements IBpmnParser {
 		task.setResPwd(resPwd);
 	}			
 	
-	private void getActivities(JSONObject milestone) {
-		JSONArray activityArr = milestone.getJSONArray("activities");
-		for (int j = 0; j < activityArr.length(); j++) {
-
-			JSONObject activity = activityArr.getJSONObject(j);
-			String taskName = activity.getString("name");
-			taskName = StringUtils.removeInvalidCharacters(taskName);
-			//System.out.println(taskName);
-
-			if (activity.has("sub-type")) {
-				String subtype = activity.getString("sub-type");
-				//System.out.println(subtype);
-				if (subtype.equals("robotic-task")) {
-					getTaskProperties(activity, taskName);
-				}
-				if (subtype.equals("subprocess")) {
-					getActivities(activity);
-				}				
-			}			
-		}
-	}
 
 	public static void main(String[] args) {
 
 	 String json = "{\r\n" + 
 	 		"  \"name\": \"RPA GENERATOR CONFIG\",\r\n" + 
-	 		"  \"milestones\": [{\r\n" + 
-	 		"    \"activities\": [{\r\n" + 
-	 		"      \"type\": \"activity\",\r\n" + 
-	 		"      \"name\": \"HelloMoto\",\r\n" + 
-	 		"      \"sub-type\": \"robotic-task\",\r\n" + 
 	 		"      \"properties\": [{\r\n" + 
 	 		"        \"RpaTenant\": [{\r\n" + 
+	 		"          \"processName\": \"CustomerRefunds\",\r\n" + 
 	 		"          \"baseUrl\": \"https://uk1api.wdgautomation.com\",\r\n" + 
 	 		"          \"tenantId\": \"e780ec1f-e62f-4148-8335-2f3ac251373e\",\r\n" + 
 	 		"          \"rpaUser\": \"ncrowther@uk.ibm.com\",\r\n" + 
@@ -217,11 +160,13 @@ public class BwlJsonParser implements IBpmnParser {
 	 		"            \"payload\": \"\"\r\n" + 
 	 		"          }]\r\n" + 
 	 		"      }]\r\n" + 
-	 		"    }]\r\n" + 
-	 		"  }]\r\n" + 
 	 		"}";
 	
-	BwlJsonParser jsonParser = new BwlJsonParser(json);
+	ConfigFileParser jsonParser = new ConfigFileParser(json);
+	
+	RpaConfig c = jsonParser.getConfig();
+	
+	System.out.println(c);
   }
 	
 }

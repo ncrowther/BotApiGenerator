@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
+import converter.config.RpaConfig;
 
 public class WalWriter {
 

@@ -7,18 +7,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
 import converter.common.StringUtils;
+import converter.config.RpaConfig;
+import datastructures.BotInfo;
 import rpa.api.RpaApi;
 import rpa.api.parameters.RpaParameter;
 
 public class JUnitWriter {
 
-	public static void writeJUnitFile(String filename, RpaConfig bpmnTask, List<RpaParameter> botSignature)
+	public static void writeJUnitFile(String filename, RpaConfig bpmnTask, BotInfo botInfo)
 			throws IOException {
 
-		Map<String, List<String>> generatedCode = JUnitCodeConverter.generateCode(bpmnTask, botSignature);
+		Map<String, List<String>> generatedCode = JUnitCodeConverter.generateCode(bpmnTask, botInfo.getBotSignature());
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 

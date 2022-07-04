@@ -6,8 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
+import converter.config.RpaConfig;
+import datastructures.BotInfo;
 import rpa.api.parameters.ParameterDirection;
 import rpa.api.parameters.RpaParameter;
 
@@ -25,13 +26,13 @@ public class ExternalApiCodeConverter {
 
 	private static Map<String, List<String>> generatedCode = new HashMap<String, List<String>>();
 
-	public static Map<String, List<String>> generateCode(RpaConfig task, List<RpaParameter> botSignature) {
+	public static Map<String, List<String>> generateCode(RpaConfig config, BotInfo botInfo) {
 
 		try {
-			if (task != null) {
-				System.out.println("**GENERATING CODE FOR " + task.getName());
+			if (config != null) {
+				System.out.println("**GENERATING CODE FOR " + config.getName());
 
-				generateStartCode(task, botSignature);
+				generateStartCode(config, botInfo);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -39,8 +40,7 @@ public class ExternalApiCodeConverter {
 		return generatedCode;
 	}
 
-	private static void generateStartCode(RpaConfig task, List<RpaParameter> botSignature) {
-
+	private static void generateStartCode(RpaConfig task, BotInfo botInfo) {
 
 		generateBotName(task.getName());
 
@@ -48,13 +48,18 @@ public class ExternalApiCodeConverter {
 			// openAPI
 			generateAPIDocumentation(task.getDocumentation());
 		}
+		
+		generateInvokeUrl(botInfo);
+		
+		generateGetResultUrl(botInfo);
 
 		if (task.getSystem() != null) {
 			// openAPI
 			generateApiSystem(task.getSystem());
 		}
 		
-		Iterator<RpaParameter> paramNameIterator = botSignature.iterator();
+		List<RpaParameter>botParams = botInfo.getBotSignature();
+		Iterator<RpaParameter> paramNameIterator = botParams.iterator();
 		while (paramNameIterator.hasNext()) {
 
 			RpaParameter paramName = paramNameIterator.next();
@@ -66,23 +71,6 @@ public class ExternalApiCodeConverter {
 			}
 		}
 
-		/*
-
-		Iterator<String> paramNameIterator = inputParamNames.iterator();
-		while (paramNameIterator.hasNext()) {
-
-			String paramName = paramNameIterator.next();
-
-			// External API
-			generateInputParams(paramName);
-
-		}
-
-		List<String> outputParamName = task.getoutputParams();
-		for (String paramName : outputParamName) {
-			generateOpenApiOutputDefinitions(paramName);
-		}
-		*/
 	}
 
 	private static void generateOutputParams(RpaParameter paramName) {
@@ -99,7 +87,17 @@ public class ExternalApiCodeConverter {
 		addCode(CodePlacement.API_INPUT_PARAMS.toString(), paramStr);
 	}
 
-
+	private static void generateInvokeUrl(BotInfo botInfo) {
+		String invokeUrl = "  /v2.0/workspace/" + botInfo.getWorkspaceId() + "/process/" + botInfo.getProcessId() + "/instance:\r\n";
+		addCode(CodePlacement.INVOKE_URL.toString(), invokeUrl);
+	}
+	
+	private static void generateGetResultUrl(BotInfo botInfo) {
+		String getResultUrl = 	"  /v2.0/workspace/" + botInfo.getWorkspaceId() + "/process/" + botInfo.getProcessId() + "/instance/{instanceId}:\r\n";
+		addCode(CodePlacement.GET_RESULT_URL.toString(), getResultUrl);
+	}	
+	
+	
 	private static void generateAPIDocumentation(String documentation) {
 		String docStr = "  description: " + documentation + "\r\n";
 		addCode(CodePlacement.API_DOCUMENTATION.toString(), docStr);

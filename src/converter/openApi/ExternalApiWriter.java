@@ -5,34 +5,34 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import converter.bpmn.RpaConfig;
 import converter.common.CodePlacement;
-import rpa.api.parameters.RpaParameter;
+import converter.config.RpaConfig;
+import datastructures.BotInfo;
 
 public class ExternalApiWriter {
 
-	public static void writeExternalApiFile(String filename, RpaConfig rpaConfig, List<RpaParameter> botSignature)
+	public static void writeExternalApiFile(String filename, RpaConfig rpaConfig, BotInfo botInfo)
 			throws IOException {
 
-		Map<String, List<String>> generatedCode = ExternalApiCodeConverter.generateCode(rpaConfig, botSignature);
+		Map<String, List<String>> generatedCode = ExternalApiCodeConverter.generateCode(rpaConfig, botInfo);
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 
 		String botName = getCode(generatedCode, CodePlacement.BOTNAME.toString());
 		String description = getCode(generatedCode, CodePlacement.API_DOCUMENTATION.toString());
+		String invokeProcessUrl = getCode(generatedCode, CodePlacement.INVOKE_URL.toString());
+		String getResultUrl = getCode(generatedCode, CodePlacement.GET_RESULT_URL.toString());		
 		String apiInputParams = getCode(generatedCode, CodePlacement.API_INPUT_PARAMS.toString());
 		String apiOutputParams = getCode(generatedCode, CodePlacement.API_OUTPUT_PARAMS.toString());
-		String host = getCode(generatedCode, CodePlacement.API_SYSTEM.toString());
+		
 		
 		StringBuilder strBuilder = new StringBuilder();
 		
 		strBuilder.append("openapi: 3.0.1\r\n" + 
 				"info:\r\n" + 
-				"  title: RPA Authenticated Asynchronous API\r\n" + 
+				"  title: " + botName + " RPA API\r\n" + 
 				"  description: |-\r\n" + 
-				"    This API presents an authenticated interface to invoke bot scripts asynchronously via the RPA tenant.  Authentication is enforced through bearer token. ![Architecture](https://rpapi.eu-gb.mybluemix.net/Architecture.png)\r\n" + 
-				"    url: https://uk1api.wdgautomation.com/v2.0\r\n" + 
-				"    Examples and labs- <br><br>[Presentation](/RPAWithAppConnect.pdf) <br>[Lab Guide](/labguide.pdf) <br>[Video](https://youtu.be/_BL6wobZlJ8) <br>[IBM RPA Agent API](https://www.ibm.com/docs/en/rpa/21.0?topic=bot-starting-bots-by-api-call) <br>[Git Repo](https://github.com/ncrowther/rpa-secure-gateway.git)\r\n" + 
+				"    This API presents an authenticated interface to invoke the " + botName + " RPA process asynchronously via the RPA tenant.  Authentication is enforced through bearer token. ![Architecture](https://rpapi.eu-gb.mybluemix.net/Architecture.PNG)\r\n" + 
 				"  contact:\r\n" + 
 				"    email: ncrowther@uk.ibm.com\r\n" + 
 				"  version: 1.0.0\r\n" + 
@@ -65,6 +65,7 @@ public class ExternalApiWriter {
 				"            default: e780ec1f-e62f-4148-8335-2f3ac251373e\r\n" + 
 				"          required: true\r\n" + 
 				"      requestBody:\r\n" + 
+				"        required: true\r\n" +
 				"        content:\r\n" + 
 				"          application/x-www-form-urlencoded:\r\n" + 
 				"            schema:\r\n" + 
@@ -77,11 +78,11 @@ public class ExternalApiWriter {
 				"                username:\r\n" + 
 				"                  type: string\r\n" + 
 				"                  description: Type of log in method. Default type is\r\n" + 
-				"                  default: ncrowther@uk.ibm.com\r\n" + 
+				"                  default: yourname@yourdomain.com\r\n" + 
 				"                password:\r\n" + 
 				"                  type: string\r\n" + 
 				"                  description: The user's password\r\n" + 
-				"                  default: Porker01!\r\n" + 
+				"                  default: XXXXXX\r\n" + 
 				"                culture:\r\n" + 
 				"                  type: string\r\n" + 
 				"                  description: The code of the language. See Supported languages for the supported language codes\r\n" + 
@@ -101,7 +102,7 @@ public class ExternalApiWriter {
 				"              schema:\r\n" + 
 				"                $ref: '#/components/schemas/RPAInvalidGrant'\r\n" + 
 				"      deprecated: false\r\n" + 
-				"  /v2.0/workspace/{workspaceId}/process/{processId}/instance:\r\n" + 
+				     invokeProcessUrl + 
 				"    post:\r\n" + 
 				"      tags:\r\n" + 
 				"      - RPA invoke API\r\n" + 
@@ -110,25 +111,11 @@ public class ExternalApiWriter {
 				"        requests are authenticated using a bearer token\r\n" + 
 				"      operationId: runAsyncProcess\r\n" + 
 				"      parameters:\r\n" + 
-				"      - name: workspaceId   # Note the name is the same as in the path\r\n" + 
-				"        in: path\r\n" + 
-				"        required: true\r\n" + 
-				"        schema:\r\n" + 
-				"          type: string\r\n" + 
-				"          minimum: 1\r\n" + 
-				"        description: The process ID\r\n" + 
-				"      - name: processId   # Note the name is the same as in the path\r\n" + 
-				"        in: path\r\n" + 
-				"        required: true\r\n" + 
-				"        schema:\r\n" + 
-				"          type: string\r\n" + 
-				"          minimum: 1\r\n" + 
-				"        description: The process ID\r\n" + 
 				"      - name: lang\r\n" + 
 				"        in: query\r\n" + 
 				"        description: Bot script name to run.  This script must be published on the\r\n" + 
 				"          tenant belonging to the host\r\n" + 
-				"        required: true\r\n" + 
+				"        required: false\r\n" + 
 				"        schema:\r\n" + 
 				"          type: string\r\n" + 
 				"      requestBody:\r\n" + 
@@ -174,7 +161,7 @@ public class ExternalApiWriter {
 				"      security:\r\n" + 
 				"        - bearerAuth: []\r\n" + 
 				"      deprecated: false\r\n" + 
-				"  /v2.0/workspace/{workspaceId}/process/{processId}/instance/{instanceId}:\r\n" + 
+			     getResultUrl + 				
 				"    get:\r\n" + 
 				"      tags:\r\n" + 
 				"        - Get RPA Result\r\n" + 
@@ -183,27 +170,13 @@ public class ExternalApiWriter {
 				"        requests are authenticated using a bearer token\r\n" + 
 				"      operationId: getInvocationResult\r\n" + 
 				"      parameters:\r\n" + 
-				"      - name: workspaceId   # Note the name is the same as in the path\r\n" + 
-				"        in: path\r\n" + 
-				"        required: true\r\n" + 
-				"        schema:\r\n" + 
-				"          type: string\r\n" + 
-				"          minimum: 1\r\n" + 
-				"        description: The process ID\r\n" + 
-				"      - name: processId   # Note the name is the same as in the path\r\n" + 
-				"        in: path\r\n" + 
-				"        required: true\r\n" + 
-				"        schema:\r\n" + 
-				"          type: string\r\n" + 
-				"          minimum: 1\r\n" + 
-				"        description: The process ID\r\n" + 
 				"      - name: instanceId   # Note the name is the same as in the path\r\n" + 
 				"        in: path\r\n" + 
 				"        required: true\r\n" + 
 				"        schema:\r\n" + 
 				"          type: string\r\n" + 
 				"          minimum: 1\r\n" + 
-				"        description: The instance ID\r\n" + 
+				"        description: The bot process instance ID\r\n" + 
 				"      responses:\r\n" + 
 				"        200:\r\n" + 
 				"          description: Response for the execution of the bot.\r\n" + 
