@@ -1,0 +1,19 @@
+{
+  name: RPA GENERATOR CONFIG,
+  properties: [{
+    RpaTenant: [{
+      processName: Weather4U,
+      baseUrl: "https://ap1api.wdgautomation.com",
+      tenantId: "ad2f6157-975e-40d8-b475-68977b92f4c3",
+      rpaUser: "ncrowther@uk.ibm.com",
+      rpaPwd: "xxxxx"
+    }],
+    Odm: [{
+      host: "",
+      path: "",
+      resUser: "",
+      resPwd: "",
+      payload: ""
+    }]
+  }]
+}

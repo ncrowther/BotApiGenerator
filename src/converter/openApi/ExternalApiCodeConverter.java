@@ -40,22 +40,24 @@ public class ExternalApiCodeConverter {
 		return generatedCode;
 	}
 
-	private static void generateStartCode(RpaConfig task, BotInfo botInfo) {
+	private static void generateStartCode(RpaConfig config, BotInfo botInfo) {
 
-		generateBotName(task.getName());
+		generateBotName(config.getName());
 
-		if (task.getDocumentation() != null) {
+		if (config.getDocumentation() != null) {
 			// openAPI
-			generateAPIDocumentation(task.getDocumentation());
+			generateAPIDocumentation(config.getDocumentation());
 		}
+
+		generateBaseUrl(config);
 		
 		generateInvokeUrl(botInfo);
 		
 		generateGetResultUrl(botInfo);
 
-		if (task.getSystem() != null) {
+		if (config.getSystem() != null) {
 			// openAPI
-			generateApiSystem(task.getSystem());
+			generateApiSystem(config.getSystem());
 		}
 		
 		List<RpaParameter>botParams = botInfo.getBotSignature();
@@ -86,7 +88,12 @@ public class ExternalApiCodeConverter {
 
 		addCode(CodePlacement.API_INPUT_PARAMS.toString(), paramStr);
 	}
-
+	
+	private static void generateBaseUrl(RpaConfig config) {
+		String invokeUrl = "- url: " + config.getBaseUrl() + "\r\n";
+		addCode(CodePlacement.BASE_URL.toString(), invokeUrl);
+	}
+	
 	private static void generateInvokeUrl(BotInfo botInfo) {
 		String invokeUrl = "  /v2.0/workspace/" + botInfo.getWorkspaceId() + "/process/" + botInfo.getProcessId() + "/instance:\r\n";
 		addCode(CodePlacement.INVOKE_URL.toString(), invokeUrl);
