@@ -158,7 +158,7 @@ function getPassword {
     $password = New-Object System.Windows.Forms.TextBox
     $password.Location = New-Object System.Drawing.Point(10,40)
     $password.Size = New-Object System.Drawing.Size(260,20)
-    $password.Text = 'Porker01!!'
+    $password.Text = 'Porker01!'
     $form.Controls.Add($password)
 
     $form.Topmost = $true
@@ -174,11 +174,15 @@ function getPassword {
 }
 
 function getPayload {
+    param (
+        $inputParams
+    )
+
+    Write-Host "***InputParams:" $inputParams
 
     $samplePayload = "{
-    `n    `"payload`": {
-    `n        `"in_region`": `"328328`"
-    `n    }
+    `n    `"payload`": 
+              $inputParams  
     `n}"
 
     Add-Type -AssemblyName System.Windows.Forms
@@ -241,7 +245,14 @@ function GetTenants {
 
     $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
 
-    $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
+    try {
+           $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
+    } catch {
+        # Dig into the exception to get the Response details.
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Invalid username: ' + $_.Exception.Response.StatusDescription,'Get Tenants','OK','Error')
+        Break finish
+    }
+
     $tenantResponse | ConvertTo-Json 
 
     return $tenantResponse
@@ -324,16 +335,23 @@ function getAccessToken {
     $headers.Add("tenantId",$tenantIdGbl)
     $headers.Add("Content-Type", "application/x-www-form-urlencoded")
     $body = "grant_type=password&username=" + $username + "&password=" + $password + "&culture=en-US"
-    $loginResponse = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
+
+    try {
+       $loginResponse = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
+    } catch {
+        # Dig into the exception to get the Response details.
+        # Note that value__ is not a typo.
+        Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
+        Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Login failed: ' + $_.Exception.Response.StatusDescription,'Access token','OK','Error')
+        Break finish
+    }
+
     $loginResponse | ConvertTo-Json
 
+    $loginResponse
+
     $global:accessTokenGbl = $loginResponse.access_token
-
-    $Msg = '
-     Access token: ' +
-     $accessTokenGbl
-
-    $msgBoxInput =  [System.Windows.MessageBox]::Show($Msg,'Access token','OK','Information')
     
     return $accessTokenGbl    
 }
@@ -351,7 +369,7 @@ function getProcesses {
     $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
 
     $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
-    $response | ConvertTo-Json
+    $response.results
 
     #$global:processIdGbl = $response.results[0].id
     #$processName = $response.results[0].name
@@ -361,15 +379,15 @@ function getProcesses {
 
     #$msgBoxInput =  [System.Windows.MessageBox]::Show($Msg,'Process Info','OK','Information')
 
-    return $response
+    return $response.results
 }
 
 function selectProcess {
     param (
-        [string]$processes
+        $processes
     )
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = 'Host Selection'
+    $form.Text = 'Process Selection'
     $form.Size = New-Object System.Drawing.Size(300,200)
     $form.StartPosition = 'CenterScreen'
 
@@ -401,12 +419,12 @@ function selectProcess {
 
     $listBox.SelectionMode = 'MultiExtended'
 
-    $data = ConvertFrom-Json $processes
     $hash = @{}
 
-    foreach ($process in $data)
+    foreach ($process in $processes)
     {
-        $hash[$process.results[0].name] = $process.results[0].id
+        $process
+        $hash[$process.name] = $process.id
     }
 
     $hash.GetEnumerator() | ForEach-Object {
@@ -441,27 +459,10 @@ function getBotDetails {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantIdGbl + '/process/' + $processIdGbl
     $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
-    $response | ConvertTo-Json
 
     $inputSchema = $response.scriptSchema.inputSchema.properties
-    $outputSchema = $response.scriptSchema.outputSchema.properties
 
-    $inputParams = $inputSchema | ConvertTo-Json
-    $outputParams = $outputSchema | ConvertTo-Json
-
-    $Msg = 'Bot Input: ' + $inputParams + '
-      Bot Output: ' + $outputParams
-
-    $msgBoxInput =  [System.Windows.MessageBox]::Show($Msg,'Bot Schema','OK','Information')
-
-    foreach ($inputParam in $inputSchema) {
-       $param = $($inputParam | Get-Member -MemberType *Property).Name
-       $param       
-       $paramType = $inputParam.$param.type
-       $paramType
-    } 
-
-   
+    return $inputSchema | ConvertTo-Json
 }
 
 function runBot {
@@ -565,9 +566,10 @@ $processes
 
 $processId = selectProcess $processes
 
-getBotDetails $hostURL $tenantId $accessToken $processId
+$inputParams = getBotDetails $hostURL $tenantId $accessToken $processId
+$inputParams
 
-$payload = getPayload
+$payload = getPayload $inputParams
 $payload
 
 $instanceId = runBot $hostURL $tenantId $accessToken $processId $payload
