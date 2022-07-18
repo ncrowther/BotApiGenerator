@@ -1,4 +1,12 @@
-﻿## Disable SSL Checks
+﻿# ######################################################
+# RPA API Test Script
+#
+# Author: Nigel T. Crowther
+# Copyright: IBM 2022
+# ######################################################
+
+
+## Disable SSL Checks
  add-type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
@@ -18,8 +26,16 @@ function DisableSSL {
    [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 }
 
+$Global:defaultUserGbl = 'admin@ibmdba.com'
+$Global:defaultPasswordGbl = 'passw0rd'
 
-  function GetHost {
+#$Global:defaultUserGbl = 'ncrowther@uk.ibm.com'
+#$Global:defaultPasswordGbl = '*****'
+
+# ######################################################
+# Get the RPA host.  For on prem this is localhost:30000
+# ######################################################
+function GetHost {
     $form = New-Object System.Windows.Forms.Form
     $form.Text = 'Host Selection'
     $form.Size = New-Object System.Drawing.Size(300,200)
@@ -64,15 +80,24 @@ function DisableSSL {
     $form.Controls.Add($listBox)
     $form.Topmost = $true
 
-    $result = $form.ShowDialog()
-
-    if ($result -eq [System.Windows.Forms.DialogResult]::OK)
+    do
     {
-        $x = $listBox.SelectedItems
-        $x
+        $result = $form.ShowDialog()
+
+        if ($ListBox.SelectedIndices.Count -lt 1 -and $result -eq [System.Windows.Forms.DialogResult]::OK)
+        {
+           $msgBoxInput =  [System.Windows.MessageBox]::Show('Please select a host','No Host Selected','OK','Error')
+        }
     }
+    until (($result -eq [System.Windows.Forms.DialogResult]::OK -and $listBox.SelectedIndices.Count -ge 1) -or $result -ne [System.Windows.Forms.DialogResult]::OK)
+
+    $x = $listBox.SelectedItem
+    return $x
 }
 
+# ######################################################
+# Get the RPA username
+# ######################################################
 function getUsername {
 
     Add-Type -AssemblyName System.Windows.Forms
@@ -108,7 +133,7 @@ function getUsername {
     $username = New-Object System.Windows.Forms.TextBox
     $username.Location = New-Object System.Drawing.Point(10,40)
     $username.Size = New-Object System.Drawing.Size(260,20)
-    $username.Text = 'ncrowther@uk.ibm.com'
+    $username.Text = $defaultUserGbl
     $form.Controls.Add($username)
 
     $form.Topmost = $true
@@ -120,9 +145,12 @@ function getUsername {
     {
         $x = $username.Text
         $x
-    }
+    } 
 }
 
+# ######################################################
+# Get the RPA password 
+# ######################################################
 function getPassword {
 
     Add-Type -AssemblyName System.Windows.Forms
@@ -158,7 +186,8 @@ function getPassword {
     $password = New-Object System.Windows.Forms.TextBox
     $password.Location = New-Object System.Drawing.Point(10,40)
     $password.Size = New-Object System.Drawing.Size(260,20)
-    $password.Text = 'Porker01!'
+    $password.PasswordChar = '*'
+    $password.Text = $defaultPasswordGbl
     $form.Controls.Add($password)
 
     $form.Topmost = $true
@@ -173,70 +202,9 @@ function getPassword {
     }
 }
 
-function getPayload {
-    param (
-        $inputParams
-    )
-
-    Write-Host "***InputParams:" $inputParams
-
-    $samplePayload = "{
-    `n    `"payload`": 
-              $inputParams  
-    `n}"
-
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type -AssemblyName System.Drawing
-
-    $form = New-Object System.Windows.Forms.Form
-    $form.Text = 'Payload'
-    $form.Size = New-Object System.Drawing.Size(300,400)
-    $form.StartPosition = 'CenterScreen'
-
-    $okButton = New-Object System.Windows.Forms.Button
-    $okButton.Location = New-Object System.Drawing.Point(75,300)
-    $okButton.Size = New-Object System.Drawing.Size(75,23)
-    $okButton.Text = 'OK'
-    $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
-    $form.AcceptButton = $okButton
-    $form.Controls.Add($okButton)
-
-    $cancelButton = New-Object System.Windows.Forms.Button
-    $cancelButton.Location = New-Object System.Drawing.Point(150,300)
-    $cancelButton.Size = New-Object System.Drawing.Size(75,23)
-    $cancelButton.Text = 'Cancel'
-    $cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-    $form.CancelButton = $cancelButton
-    $form.Controls.Add($cancelButton)
-
-    $promptText = New-Object System.Windows.Forms.Label
-    $promptText.Location = New-Object System.Drawing.Point(10,20)
-    $promptText.Size = New-Object System.Drawing.Size(280,20)
-    $promptText.Text = 'Payload:'
-    $form.Controls.Add($promptText)
-
-    $payload = New-Object System.Windows.Forms.TextBox
-    $payload.Multiline = $true
-    $payload.AcceptsReturn = $true 
-    $payload.ScrollBars = "Vertical"
-    $payload.Location = New-Object System.Drawing.Point(10,40)
-    $payload.Size = New-Object System.Drawing.Size(260,200)
-    $payload.Text = $samplePayload
-
-    $form.Controls.Add($payload)
-
-    $form.Topmost = $true
-
-    $form.Add_Shown({$payload.Select()})
-    $result = $form.ShowDialog()
-
-    if ($result -eq [System.Windows.Forms.DialogResult]::OK)
-    {
-        $x = $payload.Text
-        $x
-    }
-}
-
+# ##############################################################
+# Get the RPA tenants associated to the given host and username. 
+# ##############################################################
 function GetTenants {
     param (
         $hostURL,
@@ -246,7 +214,7 @@ function GetTenants {
     $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
 
     try {
-           $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
+        $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
     } catch {
         # Dig into the exception to get the Response details.
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Invalid username: ' + $_.Exception.Response.StatusDescription,'Get Tenants','OK','Error')
@@ -258,12 +226,15 @@ function GetTenants {
     return $tenantResponse
 }
 
+# ######################################################
+# Select the tenant
+# ######################################################
 function SelectTenant {
     param (
         [string]$tenants
     )
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = 'Host Selection'
+    $form.Text = 'Tenant Selection'
     $form.Size = New-Object System.Drawing.Size(300,200)
     $form.StartPosition = 'CenterScreen'
 
@@ -312,16 +283,26 @@ function SelectTenant {
     $form.Controls.Add($listBox)
     $form.Topmost = $true
 
-    $result = $form.ShowDialog()
-
-    if ($result -eq [System.Windows.Forms.DialogResult]::OK)
+    do
     {
-        $x = $listBox.SelectedItem
-        $Global:tenantIdGbl = $hash.$x
-        return $hash.$x
-    }
-}
+        $result = $form.ShowDialog()
 
+        if ($ListBox.SelectedIndices.Count -lt 1 -and $result -eq [System.Windows.Forms.DialogResult]::OK)
+        {
+           $msgBoxInput =  [System.Windows.MessageBox]::Show('Please select a tenant','No Tenant Selected','OK','Error')
+        }
+    }
+    until (($result -eq [System.Windows.Forms.DialogResult]::OK -and $listBox.SelectedIndices.Count -ge 1) -or $result -ne [System.Windows.Forms.DialogResult]::OK)
+
+    $x = $listBox.SelectedItem
+    $Global:tenantIdGbl = $hash.$x
+    return $hash.$x
+    
+ }
+
+# ########################################################################
+# Get the RPA acccess token given the host, username, password and tenant 
+# ########################################################################
 function getAccessToken {
     param (
         [string]$hostURL,
@@ -356,6 +337,9 @@ function getAccessToken {
     return $accessTokenGbl    
 }
 
+# ######################################################
+# Get the RPA processes associated to the tenant. 
+# ######################################################
 function getProcesses {
     param (
         [string]$hostURL,
@@ -368,20 +352,25 @@ function getProcesses {
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
 
-    $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
+    try {
+        $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
+    } catch {
+        # Dig into the exception to get the Response details.
+        # Note that value__ is not a typo.
+        Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
+        Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Get processes failed: ' + $_.Exception.Response.StatusDescription,'Get processes failed','OK','Error')
+        Break finish
+    }
+
     $response.results
-
-    #$global:processIdGbl = $response.results[0].id
-    #$processName = $response.results[0].name
-
-    #$Msg = 'Process name: ' + $processName + '
-     #Process id: ' + $processIdGbl
-
-    #$msgBoxInput =  [System.Windows.MessageBox]::Show($Msg,'Process Info','OK','Information')
 
     return $response.results
 }
 
+# ######################################################
+# Select a process to run
+# ######################################################
 function selectProcess {
     param (
         $processes
@@ -436,16 +425,26 @@ function selectProcess {
     $form.Controls.Add($listBox)
     $form.Topmost = $true
 
-    $result = $form.ShowDialog()
-
-    if ($result -eq [System.Windows.Forms.DialogResult]::OK)
+    do
     {
-        $x = $listBox.SelectedItem
-        $Global:processIdGbl = $hash.$x
-        return $hash.$x
+        $result = $form.ShowDialog()
+
+        if ($ListBox.SelectedIndices.Count -lt 1 -and $result -eq [System.Windows.Forms.DialogResult]::OK)
+        {
+           $msgBoxInput =  [System.Windows.MessageBox]::Show('Please select a process','No Process Selected','OK','Error')
+        }
     }
+    until (($result -eq [System.Windows.Forms.DialogResult]::OK -and $listBox.SelectedIndices.Count -ge 1) -or $result -ne [System.Windows.Forms.DialogResult]::OK)
+    
+    $x = $listBox.SelectedItem
+    $Global:processIdGbl = $hash.$x
+    return $hash.$x
+   
 }
 
+# ######################################################
+# Get the bot input parameters 
+# ######################################################
 function getBotDetails {
     param ( 
         [string]$hostURL,
@@ -458,13 +457,98 @@ function getBotDetails {
     $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantIdGbl + '/process/' + $processIdGbl
-    $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
+
+    try {
+       $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
+    } catch {
+        $response.scriptSchema.inputSchema.properties
+        # Dig into the exception to get the Response details.
+        # Note that value__ is not a typo.
+        Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
+        Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Get bot details failed: ' + $_.Exception.Response.StatusDescription,'Get Bot Details','OK','Error')
+        Break finish
+    }
 
     $inputSchema = $response.scriptSchema.inputSchema.properties
 
     return $inputSchema | ConvertTo-Json
 }
 
+# ##############################################################
+# Attempt to generate the bot input parameters (work in progress)
+# ##############################################################
+function getPayload {
+    param (
+        [String]$inputParams
+    )
+    
+    # transform the inputSchema to the payload
+    $inputParams = $inputParams -replace '{', ''
+    $inputParams = $inputParams -replace '}', ''
+    $inputParams = $inputParams -replace '"type":', ''
+
+    $samplePayload = "{ 
+     `"payload`": { 
+                 $inputParams  
+    } 
+ }"
+
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+
+    $form = New-Object System.Windows.Forms.Form
+    $form.Text = 'Payload'
+    $form.Size = New-Object System.Drawing.Size(300,400)
+    $form.StartPosition = 'CenterScreen'
+
+    $okButton = New-Object System.Windows.Forms.Button
+    $okButton.Location = New-Object System.Drawing.Point(75,300)
+    $okButton.Size = New-Object System.Drawing.Size(75,23)
+    $okButton.Text = 'OK'
+    $okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $form.AcceptButton = $okButton
+    $form.Controls.Add($okButton)
+
+    $cancelButton = New-Object System.Windows.Forms.Button
+    $cancelButton.Location = New-Object System.Drawing.Point(150,300)
+    $cancelButton.Size = New-Object System.Drawing.Size(75,23)
+    $cancelButton.Text = 'Cancel'
+    $cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+    $form.CancelButton = $cancelButton
+    $form.Controls.Add($cancelButton)
+
+    $promptText = New-Object System.Windows.Forms.Label
+    $promptText.Location = New-Object System.Drawing.Point(10,20)
+    $promptText.Size = New-Object System.Drawing.Size(280,20)
+    $promptText.Text = 'Payload:'
+    $form.Controls.Add($promptText)
+
+    $payload = New-Object System.Windows.Forms.TextBox
+    $payload.Multiline = $true
+    $payload.AcceptsReturn = $true 
+    $payload.ScrollBars = "Vertical"
+    $payload.Location = New-Object System.Drawing.Point(10,40)
+    $payload.Size = New-Object System.Drawing.Size(260,200)
+    $payload.Text = $samplePayload
+
+    $form.Controls.Add($payload)
+
+    $form.Topmost = $true
+
+    $form.Add_Shown({$payload.Select()})
+    $result = $form.ShowDialog()
+
+    if ($result -eq [System.Windows.Forms.DialogResult]::OK)
+    {
+        $x = $payload.Text
+        $x
+    }
+}
+
+# ######################################################
+# Run the process  
+# ######################################################
 function runBot {
     param ( 
         [string]$hostURL,
@@ -482,8 +566,17 @@ function runBot {
 
     $body = $payload
 
+    try {
+        $response = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
+    } catch {
+        # Dig into the exception to get the Response details.
+        # Note that value__ is not a typo.
+        Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
+        Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Invocation failed: ' + $_.Exception.Response.StatusDescription,'Invocation failed','OK','Error')
+        Break finish
+    }
 
-    $response = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
     $response | ConvertTo-Json
 
     $global:instanceIdGbl = $response.id
@@ -493,6 +586,9 @@ function runBot {
     $msgBoxInput =  [System.Windows.MessageBox]::Show($Msg,'Bot Instance','OK','Information')
 }
 
+# ######################################################
+# Get the execution resuylt of the process.   
+# ######################################################
 function getBotResult {
     param ( 
         [string]$hostURL,
@@ -510,7 +606,17 @@ function getBotResult {
     $status = 'Started'
     while($status -ne 'done') {
 
-        $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
+        try {
+            $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers
+        } catch {
+            # Dig into the exception to get the Response details.
+            # Note that value__ is not a typo.
+            Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
+            Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+            $msgBoxInput =  [System.Windows.MessageBox]::Show('Invocation failed: ' + $_.Exception.Response.StatusDescription,'Invocation failed','OK','Error')
+            Break finish
+        }
+
         $response | ConvertTo-Json
 
         $status = $response.status
@@ -540,7 +646,8 @@ function getBotResult {
  }
 
 
-
+# Disable SSL for test environments.  
+# NOTE: For production this must not be used.
 DisableSSL
 
 $hostURL = GetHost
