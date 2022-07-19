@@ -101,6 +101,8 @@ function SelectHost {
     $data = ConvertFrom-Json $hosts
     $hash = @{}
 
+    $hash[$hostObj."Local RPA Server"] = "https://localhost:30000"
+
     foreach ($hostObj in $data)
     {
         $hash[$hostObj.description] = $hostObj.apiUrl
