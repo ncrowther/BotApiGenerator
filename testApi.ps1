@@ -32,6 +32,10 @@ function DisableSSL {
 $Global:defaultUserGbl = 'ncrowther@uk.ibm.com'
 $Global:defaultPasswordGbl = '*****'
 
+# Open a stream writer
+$File   = '.\curls.txt'
+$Global:StreamGbl = [System.IO.StreamWriter]::new($File)
+
 # ##############################################################
 # Get the RPA hosts  
 # ##############################################################
@@ -39,12 +43,15 @@ function GetHosts {
     # Use uk1 as the starter host
     $url = 'https://uk1api.wdgautomation.com/v2.0/configuration/regions'
 
+    $curlCmd = "curl --location --request GET " + $url
+    $StreamGbl.WriteLine($curlCmd)
+
     try {
         $hosts = Invoke-RestMethod $url -Method 'GET' 
     } catch {
         # Dig into the exception to get the Response details.
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Invalid Rest call: ' + $_.Exception.Response.StatusDescription,'Get Hosts','OK','Error')
-        Break finish
+        exitScript
     }
 
     return $hosts | ConvertTo-Json | Select-Object -first 1
@@ -100,7 +107,7 @@ function SelectHost {
     }
 
     $hash.GetEnumerator() | ForEach-Object {      
-       Write-Host "The value of '$($_.Key)' is: $($_.Value)"
+       #Write-Host "The value of '$($_.Key)' is: $($_.Value)"
        [void] $listBox.Items.Add($_.Key)
     }
 
@@ -177,8 +184,7 @@ function getUsername {
 
     if ($result -eq [System.Windows.Forms.DialogResult]::OK)
     {
-        $x = $username.Text
-        $x
+        return $username.Text
     } 
 }
 
@@ -231,8 +237,7 @@ function getPassword {
 
     if ($result -eq [System.Windows.Forms.DialogResult]::OK)
     {
-        $x = $password.Text
-        $x
+        return $password.Text
     }
 }
 
@@ -247,14 +252,15 @@ function GetTenants {
 
     $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
 
-    Write-Host "GetTenants:" $url 
+    $curlCmd = "curl --location --request GET " + $url
+    $StreamGbl.WriteLine($curlCmd)
 
     try {
         $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
     } catch {
         # Dig into the exception to get the Response details.
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Invalid username: ' + $_.Exception.Response.StatusDescription,'Get Tenants','OK','Error')
-        Break finish
+        exitScript
     }
 
     $tenantResponse | ConvertTo-Json 
@@ -352,15 +358,20 @@ function getAccessToken {
     $headers.Add("Content-Type", "application/x-www-form-urlencoded")
     $body = "grant_type=password&username=" + $username + "&password=" + $password + "&culture=en-US"
 
+    $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US'"
+    $StreamGbl.WriteLine($curlCmd)
+
     try {
        $loginResponse = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
+
+
     } catch {
         # Dig into the exception to get the Response details.
         # Note that value__ is not a typo.
         Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
         Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Login failed: ' + $_.Exception.Response.StatusDescription,'Access token','OK','Error')
-        Break finish
+        exitScript
     }
     
     return $loginResponse.access_token   
@@ -381,6 +392,9 @@ function getProcesses {
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "Bearer " + $accessToken)
 
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'" 
+    $StreamGbl.WriteLine($curlCmd)
+
     try {
         $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
     } catch {
@@ -389,7 +403,7 @@ function getProcesses {
         Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
         Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Get processes failed: ' + $_.Exception.Response.StatusDescription,'Get processes failed','OK','Error')
-        Break finish
+        exitScript
     }
 
     $response.results
@@ -441,7 +455,6 @@ function selectProcess {
 
     foreach ($process in $processes)
     {
-        $process
         $hash[$process.name] = $process.id
     }
 
@@ -485,6 +498,9 @@ function getBotDetails {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId
 
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'" 
+    $StreamGbl.WriteLine($curlCmd)
+
     try {
        $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
     } catch {
@@ -494,7 +510,7 @@ function getBotDetails {
         Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
         Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Get bot details failed: ' + $_.Exception.Response.StatusDescription,'Get Bot Details','OK','Error')
-        Break finish
+        exitScript
     }
 
     $inputSchema = $response.scriptSchema.inputSchema.properties
@@ -591,17 +607,19 @@ function runBot {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance?lang=en-US'
 
-    $body = $payload
+    $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'"
+ 
+    $StreamGbl.WriteLine($curlCmd)
 
     try {
-        $response = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
+        $response = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $payload
     } catch {
         # Dig into the exception to get the Response details.
         # Note that value__ is not a typo.
         Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
         Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Invocation failed: ' + $_.Exception.Response.StatusDescription,'Invocation failed','OK','Error')
-        Break finish
+        exitScript
     }
 
     $instanceId = $response.id
@@ -630,6 +648,9 @@ function getBotResult {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance/' + $instanceId
 
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
+    $StreamGbl.WriteLine($curlCmd)
+
     $status = 'Started'
     while($status -ne 'done') {
 
@@ -641,7 +662,7 @@ function getBotResult {
             Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
             Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
             $msgBoxInput =  [System.Windows.MessageBox]::Show('Invocation failed: ' + $_.Exception.Response.StatusDescription,'Invocation failed','OK','Error')
-            Break finish
+            exitScript
         }
 
         $response | ConvertTo-Json
@@ -657,7 +678,7 @@ function getBotResult {
             switch  ($msgBoxInput) {
               'No' {
               ## Finish
-              Break Script
+              ExitScript
               }
             }
         }
@@ -672,6 +693,12 @@ function getBotResult {
      }
  }
 
+
+function exitScript {
+  # Close the stream
+ $StreamGbl.Close()
+ Break finish
+}
 
 # Disable SSL for test environments.  
 # NOTE: For production this must not be used.
@@ -702,3 +729,5 @@ $payload = getPayload $inputParams
 $instanceId = runBot $hostURL $tenantId $accessToken $processId $payload
 
 getBotResult $hostURL $tenantId $accessToken $processId $instanceId
+
+exitScript
