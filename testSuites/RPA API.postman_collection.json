@@ -1,0 +1,423 @@
+{
+	"info": {
+		"_postman_id": "c110a6ad-50b0-43c0-a9b1-928dcd0f819e",
+		"name": "RPA Workflow API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6433205"
+	},
+	"item": [
+		{
+			"name": "1 - Get tenants",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"strictSSL": false,
+				"followAuthorizationHeader": false,
+				"disableUrlEncoding": false,
+				"followRedirects": false,
+				"followOriginalHttpMethod": false,
+				"disableCookies": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{region}}api.wdgautomation.com/v1.0/en-US/account/tenant?username=ncrowther@uk.ibm.com",
+					"protocol": "https",
+					"host": [
+						"{{region}}api",
+						"wdgautomation",
+						"com"
+					],
+					"path": [
+						"v1.0",
+						"en-US",
+						"account",
+						"tenant"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "ncrowther@uk.ibm.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2 - Login to tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Login to tenant status code. Expected: 200, Actual: \" + responseCode.code] = responseCode.code === 200;\r",
+							"\r",
+							"if (responseCode.code !== 200) return;\r",
+							"var response = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"Bearer token: \" + response.access_token] = true;\r",
+							"\r",
+							"console.log(\"### ACCESS TOKEN = \" + response.access_token);\r",
+							"pm.environment.set(\"BEARER_TOKEN\", response.access_token);\r",
+							"\r",
+							"var template = `\r",
+							"    <table bgcolor=\"#FFFFFF\">\r",
+							"        <tr>\r",
+							"            <th>Name</th>\r",
+							"            <th>Tenant</th>\r",
+							"            <th>Expires</th>\r",
+							"        </tr>\r",
+							"\r",
+							"\r",
+							"            <tr>\r",
+							"                <td>{{response.Name}}</td>\r",
+							"                <td>{{response.TenantName}}</td>                \r",
+							"                <td>{{response.expires_in}}</td>\r",
+							"            </tr>\r",
+							"    \r",
+							"    </table>\r",
+							"`;\r",
+							"\r",
+							"pm.visualizer.set(template, {\r",
+							"    response: pm.response.json()\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false,
+				"followAuthorizationHeader": false,
+				"disableUrlEncoding": false,
+				"followRedirects": false,
+				"followOriginalHttpMethod": false,
+				"disableCookies": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "tenantId",
+						"value": "{{tenantId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "ncrowther@uk.ibm.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "culture",
+							"value": "en-US",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{region}}api.wdgautomation.com/v1.0/token",
+					"protocol": "https",
+					"host": [
+						"{{region}}api",
+						"wdgautomation",
+						"com"
+					],
+					"path": [
+						"v1.0",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3 - Get processes",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"strictSSL": false,
+				"followAuthorizationHeader": false,
+				"disableUrlEncoding": false,
+				"followRedirects": false,
+				"followOriginalHttpMethod": false,
+				"disableCookies": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARER_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{region}}api.wdgautomation.com/v2.0/workspace/{{tenantId}}/process?lang=en-US",
+					"protocol": "https",
+					"host": [
+						"{{region}}api",
+						"wdgautomation",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"workspace",
+						"{{tenantId}}",
+						"process"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "en-US"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4 - Get process details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"strictSSL": false,
+				"followAuthorizationHeader": false,
+				"disableUrlEncoding": false,
+				"followRedirects": false,
+				"followOriginalHttpMethod": false,
+				"disableCookies": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARER_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{region}}api.wdgautomation.com/v2.0/workspace/{{tenantId}}/process/{{workflowId}}",
+					"protocol": "https",
+					"host": [
+						"{{region}}api",
+						"wdgautomation",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"workspace",
+						"{{tenantId}}",
+						"process",
+						"{{workflowId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5 - Invoke weather process",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Invoke weather process. Expected: 200, Actual: \" + responseCode.code] = responseCode.code === 200;\r",
+							"\r",
+							"if (responseCode.code !== 200) return;\r",
+							"var response = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"Process ID  = \" + response.id] = true;\r",
+							"console.log(\"### Process ID  = \" + response.id);\r",
+							"pm.environment.set(\"processId\", response.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"strictSSL": false,
+				"followAuthorizationHeader": false,
+				"disableUrlEncoding": false,
+				"followRedirects": false,
+				"followOriginalHttpMethod": false,
+				"disableCookies": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARER_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"payload\": {\r\n        \"in_region\": \"328328\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{region}}api.wdgautomation.com/v2.0/workspace/{{tenantId}}/process/{{workflowId}}/instance?lang=en-US",
+					"protocol": "https",
+					"host": [
+						"{{region}}api",
+						"wdgautomation",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"workspace",
+						"{{tenantId}}",
+						"process",
+						"{{workflowId}}",
+						"instance"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "en-US"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6 - Get weather result",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Get result of weather process. Expected: 200, Actual: \" + responseCode.code] = responseCode.code === 200;\r",
+							"\r",
+							"if (responseCode.code !== 200) return;\r",
+							"var response = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"Process status expected: done. \" + response.status] = response.status === \"done\"\r",
+							"\r",
+							"tests[\"out_code expected: 0. \" + response.outputs.out_code] = response.outputs.out_code === \"0\"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"strictSSL": false,
+				"followAuthorizationHeader": false,
+				"disableUrlEncoding": false,
+				"followRedirects": false,
+				"followOriginalHttpMethod": false,
+				"disableCookies": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARER_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{region}}api.wdgautomation.com/v2.0/workspace/{{tenantId}}/process/{{workflowId}}/instance/{{processId}}",
+					"protocol": "https",
+					"host": [
+						"{{region}}api",
+						"wdgautomation",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"workspace",
+						"{{tenantId}}",
+						"process",
+						"{{workflowId}}",
+						"instance",
+						"{{processId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="670182a6-5bc8-4950-acf6-c20d24935619" created="3.40.1" activeEnvironment="Default" name="RPA Workflow API" resourceRoot="" updated="3.40.1 2022-06-10T12:52:02Z" abortOnError="false" runType="SEQUENTIAL" soapui-version="5.6.0" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:interface xsi:type="con:RestService" id="32023ba0-4e0f-4592-9957-a48c523564ab" wadlVersion="http://wadl.dev.java.net/2009/02" name="https://${#Project#region}api.wdgautomation.com" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:settings/>
+    <con:definitionCache type="TEXT" rootPart=""/>
+    <con:endpoints>
+      <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+    </con:endpoints>
+    <con:environmentSpec>
+      <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+        <con:authProfile>Inherit From Parent</con:authProfile>
+      </con:entry>
+    </con:environmentSpec>
+    <con:resource name="Tenant" path="/v1.0/en-US/account/tenant" id="2b856e14-9697-41fa-8700-ac939c50ac20">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="Tenant" id="1ee63c64-6cbf-4c9b-aac9-2919feb7c518" method="GET">
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>username</con:name>
+            <con:value>ncrowther@uk.ibm.com</con:value>
+            <con:style>QUERY</con:style>
+            <con:default>ncrowther@uk.ibm.com</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element>Response</con:element>
+        </con:representation>
+        <con:request name="1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://api.wdgautomation.com/v1.0/en-US/account/tenant</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters>
+            <con:entry key="username" value="ncrowther@uk.ibm.com"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>username</con:entry>
+          </con:parameterOrder>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>Inherit From Parent</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource>
+    <con:resource name="Token" path="/v1.0/token" id="e51212d6-cd7e-4fca-9bee-db2f4888fbbe">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="Token" id="7147ef59-3b69-4546-b258-60fe1677e33c" method="POST">
+        <con:settings/>
+        <con:parameters>
+          <con:parameter>
+            <con:name>tenantId</con:name>
+            <con:value>${#Project#tenantId}</con:value>
+            <con:style>HEADER</con:style>
+            <con:default/>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/json</con:mediaType>
+          <con:params/>
+        </con:representation>
+        <con:representation type="FAULT">
+          <con:mediaType>application/json;charset=UTF-8</con:mediaType>
+          <con:status>400</con:status>
+          <con:params/>
+          <con:element xmlns:tok="https://api.wdgautomation.com/v1.0/token">tok:Fault</con:element>
+        </con:representation>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
+          <con:params/>
+        </con:representation>
+        <con:representation type="FAULT">
+          <con:mediaType>application/json</con:mediaType>
+          <con:status>500</con:status>
+          <con:params/>
+          <con:element xmlns:tok="https://api.wdgautomation.com/v1.0/token">tok:Fault</con:element>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json;charset=UTF-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element xmlns:tok="https://api.wdgautomation.com/v1.0/token">tok:Response</con:element>
+        </con:representation>
+        <con:request name="2 - Login to tenant" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+          <con:request>grant_type=password&amp;username=ncrowther%40uk.ibm.com&amp;password=[PASSWORD]&amp;culture=en-US</con:request>
+          <con:originalUri>https://api.wdgautomation.com/v1.0/token</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters>
+            <con:entry key="tenantId" value="${#Project#tenantId}"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>tenantId</con:entry>
+          </con:parameterOrder>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>Inherit From Parent</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource>
+    <con:resource name="Process" path="/v2.0/workspace/{tenantId}/process" id="d14ce016-0fe5-417d-9851-8011f9e7e0cb">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="Process" id="0fa042ca-eca5-40c1-91d3-ff3b981de73e" method="GET">
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>tenantId</con:name>
+            <con:value>${#Project#tenantId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#tenantId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>lang</con:name>
+            <con:value>en-US</con:value>
+            <con:style>QUERY</con:style>
+            <con:default>en-US</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="FAULT">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>401</con:status>
+          <con:params/>
+          <con:element xmlns:proc="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process">proc:Fault</con:element>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element xmlns:proc="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process">proc:Response</con:element>
+        </con:representation>
+        <con:request name="3 - Get processes" id="593cae4f-6f52-4f76-8e21-e17b4f32ebc4" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>RPA API</con:selectedAuthProfile>
+            <con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes>
+            <con:addedBasicAuthenticationTypes>NTLM</con:addedBasicAuthenticationTypes>
+            <con:authType>OAuth 2.0</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters>
+            <con:entry key="tenantId" value="${#Project#tenantId}"/>
+            <con:entry key="lang" value="en-US"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>tenantId</con:entry>
+            <con:entry>lang</con:entry>
+          </con:parameterOrder>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>Inherit From Parent</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource>
+    <con:resource name="WorkflowId" path="/v2.0/workspace/{tenantId}/process/{workflowId}" id="79d0548e-e64d-4bc0-b70e-77df6b221531">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="WorkflowId" id="a2feeb0a-542e-45f1-b69c-96ca065d5bdc" method="GET">
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>tenantId</con:name>
+            <con:value>${#Project#tenantId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#tenantId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>workflowId</con:name>
+            <con:value>${#Project#workflowId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#workflowId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="FAULT">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>401</con:status>
+          <con:params/>
+          <con:element xmlns:proc="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/">proc:Fault</con:element>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element xmlns:proc="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/">proc:Response</con:element>
+        </con:representation>
+        <con:request name="4 - Get process details" id="e7aa3cb3-ce92-424e-89e7-d8055158a363" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>RPA API</con:selectedAuthProfile>
+            <con:authType>OAuth 2.0</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters>
+            <con:entry key="tenantId" value="${#Project#tenantId}"/>
+            <con:entry key="workflowId" value="${#Project#workflowId}"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>tenantId</con:entry>
+            <con:entry>workflowId</con:entry>
+          </con:parameterOrder>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>RPA API</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource>
+    <con:resource name="Instance" path="/v2.0/workspace/{tenantId}/process/{workflowId}/instance" id="9e8140c0-3a50-4a92-8fdd-9e4d3fb6a8af">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="Instance" id="b4a336e9-6c13-480e-a9d1-ce0bceca9f7c" method="POST">
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>tenantId</con:name>
+            <con:value>${#Project#tenantId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#tenantId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>workflowId</con:name>
+            <con:value>${#Project#workflowId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#workflowId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>lang</con:name>
+            <con:value>en-US</con:value>
+            <con:style>QUERY</con:style>
+            <con:default>en-US</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="REQUEST">
+          <con:mediaType>application/json</con:mediaType>
+          <con:params/>
+        </con:representation>
+        <con:representation type="FAULT">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>401 400</con:status>
+          <con:params/>
+          <con:element xmlns:ins="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/619cbab9-51b1-4725-94cd-f51bd5b915ea/instance">ins:Fault</con:element>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element xmlns:ins="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/619cbab9-51b1-4725-94cd-f51bd5b915ea/instance">ins:Response</con:element>
+        </con:representation>
+        <con:request name="5 - Invoke weather process" id="a649d883-2375-44a3-971c-6529d8c3689c" mediaType="application/json" postQueryString="false">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+          <con:request>{\r
+    "payload": {\r
+        "in_region": "328328"\r
+    }\r
+}</con:request>
+          <con:originalUri>https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/619cbab9-51b1-4725-94cd-f51bd5b915ea/instance</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>RPA API</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters>
+            <con:entry key="tenantId" value="${#Project#tenantId}"/>
+            <con:entry key="lang" value="en-US"/>
+            <con:entry key="workflowId" value="${#Project#workflowId}"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>tenantId</con:entry>
+            <con:entry>workflowId</con:entry>
+            <con:entry>lang</con:entry>
+          </con:parameterOrder>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>RPA API</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource>
+    <con:resource name="ProcessId" path="/v2.0/workspace/{tenantId}/process/{workflowId}/instance/{processId}" id="e169b8ae-9473-4089-8afe-bddb61902752">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="ProcessId" id="4835b3ae-5cbb-4337-9c81-a5507e298a3a" method="GET">
+        <con:settings/>
+        <con:parameters>
+          <con:parameter required="true">
+            <con:name>tenantId</con:name>
+            <con:value>${#Project#tenantId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#tenantId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>workflowId</con:name>
+            <con:value>${#Project#workflowId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#workflowId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+          <con:parameter required="true">
+            <con:name>processId</con:name>
+            <con:value>${#Project#processId}</con:value>
+            <con:style>TEMPLATE</con:style>
+            <con:default>${#Project#processId}</con:default>
+            <con:path xsi:nil="true"/>
+            <con:description xsi:nil="true"/>
+          </con:parameter>
+        </con:parameters>
+        <con:representation type="FAULT">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>401 404</con:status>
+          <con:params/>
+          <con:element xmlns:c25="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/ec832c01-122e-4f30-ad17-cf7c97e8415c/instance/968c2548-4918-4071-a5de-949eedc06ae5">c25:Fault</con:element>
+        </con:representation>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element xmlns:c25="https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/ec832c01-122e-4f30-ad17-cf7c97e8415c/instance/968c2548-4918-4071-a5de-949eedc06ae5">c25:Response</con:element>
+        </con:representation>
+        <con:request name="6 - Get weather result" id="3f8f7c28-a851-4c90-bedb-f205963bc875" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://uk1api.wdgautomation.com/v2.0/workspace/e780ec1f-e62f-4148-8335-2f3ac251373e/process/ec832c01-122e-4f30-ad17-cf7c97e8415c/instance/968c2548-4918-4071-a5de-949eedc06ae5</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>RPA API</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters>
+            <con:entry key="processId" value="${#Project#processId}"/>
+            <con:entry key="tenantId" value="${#Project#tenantId}"/>
+            <con:entry key="workflowId" value="${#Project#workflowId}"/>
+          </con:parameters>
+          <con:parameterOrder>
+            <con:entry>tenantId</con:entry>
+            <con:entry>workflowId</con:entry>
+            <con:entry>processId</con:entry>
+          </con:parameterOrder>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>RPA API</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource>
+  </con:interface>
+  <con:testSuite id="40d85d17-38d1-4fc7-b6ab-9df2330968b1" name="Test Suite 1">
+    <con:settings/>
+    <con:runType>SEQUENTIAL</con:runType>
+    <con:testCase id="0720e0d4-c389-4753-93dc-9dd0e99db5a3" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="RPA Workflow API" searchProperties="true" timeout="0" maxResults="0">
+      <con:settings/>
+      <con:testStep type="restrequest" name="Token - 2 - Login to tenant" id="1b1d11e6-197f-4cdf-a578-e5fbb5724694">
+        <con:settings/>
+        <con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="Token - 2 - Login to tenant" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/json" postQueryString="false">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://api.wdgautomation.com/v1.0/token</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:jmsPropertyConfig/><con:parameters>
+              <con:entry key="tenantId" value="${#Project#tenantId}"/>
+            </con:parameters>
+            <con:parameterOrder>
+              <con:entry>tenantId</con:entry>
+            </con:parameterOrder>
+            <con:environmentSpec>
+              <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+                <con:authProfile>Inherit From Parent</con:authProfile>
+              </con:entry>
+            </con:environmentSpec>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="Instance - 5 - Invoke weather process" id="bd3b2d58-28b4-4863-8cda-4e4e6e29e6eb">
+        <con:settings/>
+        <con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/{tenantId}/process/{workflowId}/instance" methodName="Instance" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="Instance - 5 - Invoke weather process" id="a649d883-2375-44a3-971c-6529d8c3689c" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+            <con:request>{\r
+    "payload": {\r
+        "in_region": "328328"\r
+    }\r
+}</con:request>
+            <con:originalUri>https://api.wdgautomation.com/v2.0/workspace/process/instance</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters>
+              <con:entry key="tenantId" value="${#Project#tenantId}"/>
+              <con:entry key="lang" value="en-US"/>
+              <con:entry key="workflowId" value="${#Project#workflowId}"/>
+            </con:parameters>
+            <con:parameterOrder>
+              <con:entry>tenantId</con:entry>
+              <con:entry>workflowId</con:entry>
+              <con:entry>lang</con:entry>
+            </con:parameterOrder>
+            <con:environmentSpec>
+              <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+                <con:authProfile>Inherit From Parent</con:authProfile>
+              </con:entry>
+            </con:environmentSpec>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:testStep type="restrequest" name="ProcessId - 6 - Get weather result" id="f644bca1-8af2-4d07-a706-1fec748ff5ca">
+        <con:settings/>
+        <con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/{tenantId}/process/{workflowId}/instance/{processId}" methodName="ProcessId" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:restRequest name="ProcessId - 6 - Get weather result" id="3f8f7c28-a851-4c90-bedb-f205963bc875" mediaType="application/json">
+            <con:settings/>
+            <con:endpoint>https://${#Project#region}api.wdgautomation.com</con:endpoint>
+            <con:request/>
+            <con:originalUri>https://api.wdgautomation.com/v2.0/workspace/process/instance/</con:originalUri>
+            <con:credentials>
+              <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+              <con:authType>No Authorization</con:authType>
+            </con:credentials>
+            <con:parameters>
+              <con:entry key="processId" value="${#Project#processId}"/>
+              <con:entry key="tenantId" value="${#Project#tenantId}"/>
+              <con:entry key="workflowId" value="${#Project#workflowId}"/>
+            </con:parameters>
+            <con:parameterOrder>
+              <con:entry>tenantId</con:entry>
+              <con:entry>workflowId</con:entry>
+              <con:entry>processId</con:entry>
+            </con:parameterOrder>
+            <con:environmentSpec>
+              <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+                <con:authProfile>Inherit From Parent</con:authProfile>
+              </con:entry>
+            </con:environmentSpec>
+          </con:restRequest>
+        </con:config>
+      </con:testStep>
+      <con:properties/>
+      <con:reportParameters/>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:testCase>
+    <con:properties/>
+    <con:reportParameters/>
+    <con:environmentSpec>
+      <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+        <con:authProfile>Inherit From Parent</con:authProfile>
+      </con:entry>
+    </con:environmentSpec>
+  </con:testSuite>
+  <con:requirements/>
+  <con:properties>
+    <con:property>
+      <con:name>region</con:name>
+      <con:value>ap1</con:value>
+    </con:property>
+    <con:property>
+      <con:name>tenantId</con:name>
+      <con:value>ad2f6157-975e-40d8-b475-68977b92f4c3</con:value>
+    </con:property>
+    <con:property>
+      <con:name>workflowId</con:name>
+    <con:value>0c71487e-c32a-4dbe-908e-273f02224379</con:value></con:property>
+    <con:property>
+      <con:name>processId</con:name>
+    <con:value>47f01a17-7dcb-47e6-b0fa-6115e3bca386</con:value></con:property>
+  <con:property><con:name>bearerToken</con:name><con:value>f-zxcNqNe2dpLbe6HDqhYTNVZxteN1zZbrRzOrLFyR8rFaq14p1-M5GVJbbuA5LFEhUDoiyqTBkH0xNetPeuJn3UId0EZT_qdM3D8Ujh_ngRd6QtkoZ9wE4qnrZHTqa9Yioerf51UY-sSqgf9v-wJ1VxrAN2EB11HigkfNBMskjCbycNUnPeZZmKGQADxlq0VLmWyszevrCNqSy330dpbUx_CJULK0I2105p716q91GiuG_GTaaa2QNTJK4Yf213cFyWqXeOUVWNJzhUrCLEQ-yyQUiPrVOeFw2jm34Q13iyOoJYU19M6VtZ-v7XBa0OIXONKRTLk83hLLOgEVF0kPtKaEkBQToQIfDQZNkAOQKHVzsWgYdv392Uhy60EQr4Uo-XEvhUXPRaqirKQNUNHhxQQT8orAjXEsctxHpy9ddZBMBY4I3h-_2xkf8F5uwccZF3eGaFj01_5RPvC9OWj7DVBG3tV1noYeaUaw9u6klTUfo_Le5HoP8kf_rqcSn7PTqd-r7JBAst1T4Ks_WRBF9P-OqTanF0Co_jN9MJYneHllvOiQmRYZTllyw4WrmvqjoAsoftTAy-uScuPYyAHUJWVrD6lLsoWITRpDx5yQCBElp6BfAktm_OW4nnWDhLrS3bcjs_qgrIS9EG-M0LLotHSlk9ScEqnv-SK_xqzaJY4NT7tPPznWgOZBwuDw3h9Nh5GouoPY0Cy9ElYuv8WWAoeumqb8jtb9uPuLRC-3pmx49WM3tonhYi3sTBgKyP9phByvzEtLh8mnyPjSfu8ECYHz-DDLOt5TRfxi-E__GX9S0tgsn2BciYQM_CFeV6fWeGginD4GnQz2yxNtkZwkcV8z1mWN4cOgBXvmuMezCSvTzNChWEQod7YFHhyn7Yy0CAF4emCYdjiDScOKspgf7XUehm8ECVP89zexb9dnojJ2yWGKwzLXSAjmx5Z2Gn0fiOymK68YQVnqrI7OF-3wWIfXVvAwy0Fhn1OlLEDxSMSnGVJj9qFv1vj_VQPX94eJ9OwKUTJdyifezWpiJVGKRJFyZ34ETWl52oXiZquv1Fh852bk15KU5uLlkrxtFFAykcwHx2uB2sM0vIgOu_BpQaVDbBzCO8KchXl6GoUaU</con:value></con:property></con:properties>
+  <con:wssContainer/>
+  <con:databaseConnectionContainer/>
+  <con:jmsConnectionContainer/>
+  <con:oAuth2ProfileContainer><con:oAuth2Profile><con:name>RPA API</con:name><con:accessToken>o_AeP1s6CNxBK3IXowaj9yHq_ZjCSmhOAKeWOqD17omixzmSszouo-cHaJSzCgIssECL_0uSyIYBo8aSWtYuU_z4T4btYv3oBsb0DZdiZFjoGbviQ97ssUUE48dwxsAkLfo0MvpTcUUsMKtYjXyFqtYayqW8PSLvRGb7w-lPTSW3BpNR0UwpXYF0sSntsp2WuvlDoG9U5MIfRxO9a-zWvQjfr-1SWQxmA3E8vLIE052nPZ2xxPdLZ4DeqYPf4O9RxPWMs_8_sGzX3aArrkJaA6ac994wbMlocR21iRtxMfTy1SG1AEDH-S7aP9b_6ElmnxMmDciJWn18gWdE8j8XFXAcHHn8ofPs1i93dFxGtPtDBYxgalyyrQgMChAqqfDfR9j3NDAI4jqMK0nS_CvaKqznMsQ74ZOrW7Kbi8fzC-NIxJ_D2aIx3OHKof3eGDFfhbPW3P9JDovsJPgxVJqYfdrKs0UrLve2kDKkgp0s4hv44q5E6k_VNueHrh6mRBo2RWRaZ-94DHam6V_wHSEKoA3evhawebK9KkgNp1AuGrOeD7sugmislXOWlccm-JFAR7aXdiVesECVI4nwPLdtsTWcJuX5GJo025bgJhon7hb3W2WU0XuOjDbgFe5Mv6fmLiknt1GMxi2E77GOOcc6YWf4AGlNM0Sqh0mDAJs0WQK18-Xi0timidyVPimEhF-aDNN3Rti7Az52hg8AALKaoCu0GSF7S7woPVJq_bJBzn-nQFW4gdXqy1EXpho2xaL6y61wlKhEBE2-dZluLpJrgNtQTvfwcOZJrwQTOtFOBcdyztYzum-KsuoeKKeOOtiHvzejvX-FTyIonFZ5lmQlopWWM-2pgeurfJPLvzrPmaaRqB63b_MerfzTXgY_Azx0_yY3X2EvjSMZM12gCjo7vVlrtaa7f9qF1eJfexgRiqZGOLnBSksjOYA6nleUH_OF1SzZBYuEcdxSYzF9gFHuSDn_0UYX9TMBMn642JbAlM_F07aLWifcBMA3dGiwYFW-qZnSGUzO7JqmuLu0x4hIrg</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>AUTHORIZATION_CODE_GRANT</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:accessTokenStatus>ENTERED_MANUALLY</con:accessTokenStatus><con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus></con:oAuth2Profile></con:oAuth2ProfileContainer>
+  <con:oAuth1ProfileContainer/>
+  <con:reporting>
+    <con:reportTemplates/>
+    <con:xmlTemplates/>
+    <con:xmlTemplates/>
+    <con:parameters/>
+    <con:parameters/>
+  </con:reporting>
+  <con:reporting/>
+  <con:eventHandlers type="RequestFilter.filterRequest" name="RequestFilter.filterRequest">
+    <con:script>// Sample event script to add custom HTTP header to all outgoing REST, SOAP and HTTP(S) calls
+// This code is often used for adding custom authentication to ReadyAPI functional tests
+
+// If hardcoding the token, uncomment and change line 5
+// token = '4567'
+
+// If your token is parameterized in Project level custom property, uncomment line 8
+// token = request.parent.testCase.testSuite.project.getProperty('auth_token').getValue()
+
+// To modify all outgoing calls, remove comments from lines 11 to 16
+// headers = request.requestHeaders
+// if (headers.containsKey('auth_token2') == false) {
+//   headers.put('auth_token2', token)
+//   request.requestHeaders = headers
+// }</con:script>
+  </con:eventHandlers>
+  <con:eventHandlers type="TestRunListener.afterStep" name="TestRunListener.afterStep">
+    <con:script>// Save all test step results into files
+// Change the directory path in line 5 to a location where you want to store details
+// then uncomment lines 5 to 10
+
+// filePath = 'C:\\tempOutputDirectory\\'
+// fos = new java.io.FileOutputStream(filePath + testStepResult.testStep.label + '.txt', true)
+// pw = new java.io.PrintWriter(fos)
+// testStepResult.writeTo(pw)
+// pw.close()
+// fos.close()</con:script>
+  </con:eventHandlers>
+  <con:sensitiveInformation/><con:environment id="7e772b3e-4a95-4709-b73e-49b2acf764b7" name="RPA API" index="0">
+    <con:service type="REST" name="https://${#Project#region}api.wdgautomation.com">
+      <con:endpoint authProfile="No Authorization" proxyHost="" proxyPort="" proxyUsername="" proxyPassword="">https://${#Project#region}api.wdgautomation.com</con:endpoint>
+    </con:service>
+    <con:property>
+      <con:name>region</con:name>
+      <con:value>uk1</con:value>
+    </con:property>
+    <con:property>
+      <con:name>tenantId</con:name>
+      <con:value>e780ec1f-e62f-4148-8335-2f3ac251373e</con:value>
+    </con:property>
+    <con:property>
+      <con:name>workflowId</con:name>
+      <con:value>ec832c01-122e-4f30-ad17-cf7c97e8415c</con:value>
+    </con:property>
+    <con:property>
+      <con:name>processId</con:name>
+      <con:value>088d155c-cea0-4a2f-bcbb-d874d7bd108a</con:value>
+    </con:property>
+    <con:databaseConnectionContainer/>
+    <con:jmsConnectionContainer/>
+  </con:environment>
+  <con:authRepository>
+    <con:oAuth20AuthEntry>
+      <con:name>f-zxcNqNe2dpLbe6HDqhYTNVZxteN1zZbrRzOrLFyR8rFaq14p1-M5GVJbbuA5LFEhUDoiyqTBkH0xNetPeuJn3UId0EZT_qdM3D8Ujh_ngRd6QtkoZ9wE4qnrZHTqa9Yioerf51UY-sSqgf9v-wJ1VxrAN2EB11HigkfNBMskjCbycNUnPeZZmKGQADxlq0VLmWyszevrCNqSy330dpbUx_CJULK0I2105p716q91GiuG_GTaaa2QNTJK4Yf213cFyWqXeOUVWNJzhUrCLEQ-yyQUiPrVOeFw2jm34Q13iyOoJYU19M6VtZ-v7XBa0OIXONKRTLk83hLLOgEVF0kPtKaEkBQToQIfDQZNkAOQKHVzsWgYdv392Uhy60EQr4Uo-XEvhUXPRaqirKQNUNHhxQQT8orAjXEsctxHpy9ddZBMBY4I3h-_2xkf8F5uwccZF3eGaFj01_5RPvC9OWj7DVBG3tV1noYeaUaw9u6klTUfo_Le5HoP8kf_rqcSn7PTqd-r7JBAst1T4Ks_WRBF9P-OqTanF0Co_jN9MJYneHllvOiQmRYZTllyw4WrmvqjoAsoftTAy-uScuPYyAHUJWVrD6lLsoWITRpDx5yQCBElp6BfAktm_OW4nnWDhLrS3bcjs_qgrIS9EG-M0LLotHSlk9ScEqnv-SK_xqzaJY4NT7tPPznWgOZBwuDw3h9Nh5GouoPY0Cy9ElYuv8WWAoeumqb8jtb9uPuLRC-3pmx49WM3tonhYi3sTBgKyP9phByvzEtLh8mnyPjSfu8ECYHz-DDLOt5TRfxi-E__GX9S0tgsn2BciYQM_CFeV6fWeGginD4GnQz2yxNtkZwkcV8z1mWN4cOgBXvmuMezCSvTzNChWEQod7YFHhyn7Yy0CAF4emCYdjiDScOKspgf7XUehm8ECVP89zexb9dnojJ2yWGKwzLXSAjmx5Z2Gn0fiOymK68YQVnqrI7OF-3wWIfXVvAwy0Fhn1OlLEDxSMSnGVJj9qFv1vj_VQPX94eJ9OwKUTJdyifezWpiJVGKRJFyZ34ETWl52oXiZquv1Fh852bk15KU5uLlkrxtFFAykcwHx2uB2sM0vIgOu_BpQaVDbBzCO8KchXl6GoUaU</con:name>
+      <con:type>OAuth 2.0</con:type>
+      <con:accessTokenPosition>HEADER</con:accessTokenPosition>
+      <con:manualAccessTokenExpirationTimeUnit>SECONDS</con:manualAccessTokenExpirationTimeUnit>
+      <con:oAuth2Flow>JWT_GRANT</con:oAuth2Flow>
+      <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
+      <con:jwtConfiguration/>
+      <con:responseType>id_token</con:responseType>
+    </con:oAuth20AuthEntry>
+    <con:oAuth20AuthEntry>
+      <con:name>Bearer f-zxcNqNe2dpLbe6HDqhYTNVZxteN1zZbrRzOrLFyR8rFaq14p1-M5GVJbbuA5LFEhUDoiyqTBkH0xNetPeuJn3UId0EZT_qdM3D8Ujh_ngRd6QtkoZ9wE4qnrZHTqa9Yioerf51UY-sSqgf9v-wJ1VxrAN2EB11HigkfNBMskjCbycNUnPeZZmKGQADxlq0VLmWyszevrCNqSy330dpbUx_CJULK0I2105p716q91GiuG_GTaaa2QNTJK4Yf213cFyWqXeOUVWNJzhUrCLEQ-yyQUiPrVOeFw2jm34Q13iyOoJYU19M6VtZ-v7XBa0OIXONKRTLk83hLLOgEVF0kPtKaEkBQToQIfDQZNkAOQKHVzsWgYdv392Uhy60EQr4Uo-XEvhUXPRaqirKQNUNHhxQQT8orAjXEsctxHpy9ddZBMBY4I3h-_2xkf8F5uwccZF3eGaFj01_5RPvC9OWj7DVBG3tV1noYeaUaw9u6klTUfo_Le5HoP8kf_rqcSn7PTqd-r7JBAst1T4Ks_WRBF9P-OqTanF0Co_jN9MJYneHllvOiQmRYZTllyw4WrmvqjoAsoftTAy-uScuPYyAHUJWVrD6lLsoWITRpDx5yQCBElp6BfAktm_OW4nnWDhLrS3bcjs_qgrIS9EG-M0LLotHSlk9ScEqnv-SK_xqzaJY4NT7tPPznWgOZBwuDw3h9Nh5GouoPY0Cy9ElYuv8WWAoeumqb8jtb9uPuLRC-3pmx49WM3tonhYi3sTBgKyP9phByvzEtLh8mnyPjSfu8ECYHz-DDLOt5TRfxi-E__GX9S0tgsn2BciYQM_CFeV6fWeGginD4GnQz2yxNtkZwkcV8z1mWN4cOgBXvmuMezCSvTzNChWEQod7YFHhyn7Yy0CAF4emCYdjiDScOKspgf7XUehm8ECVP89zexb9dnojJ2yWGKwzLXSAjmx5Z2Gn0fiOymK68YQVnqrI7OF-3wWIfXVvAwy0Fhn1OlLEDxSMSnGVJj9qFv1vj_VQPX94eJ9OwKUTJdyifezWpiJVGKRJFyZ34ETWl52oXiZquv1Fh852bk15KU5uLlkrxtFFAykcwHx2uB2sM0vIgOu_BpQaVDbBzCO8KchXl6GoUaU</con:name>
+      <con:type>OAuth 2.0</con:type>
+      <con:accessToken>f-zxcNqNe2dpLbe6HDqhYTNVZxteN1zZbrRzOrLFyR8rFaq14p1-M5GVJbbuA5LFEhUDoiyqTBkH0xNetPeuJn3UId0EZT_qdM3D8Ujh_ngRd6QtkoZ9wE4qnrZHTqa9Yioerf51UY-sSqgf9v-wJ1VxrAN2EB11HigkfNBMskjCbycNUnPeZZmKGQADxlq0VLmWyszevrCNqSy330dpbUx_CJULK0I2105p716q91GiuG_GTaaa2QNTJK4Yf213cFyWqXeOUVWNJzhUrCLEQ-yyQUiPrVOeFw2jm34Q13iyOoJYU19M6VtZ-v7XBa0OIXONKRTLk83hLLOgEVF0kPtKaEkBQToQIfDQZNkAOQKHVzsWgYdv392Uhy60EQr4Uo-XEvhUXPRaqirKQNUNHhxQQT8orAjXEsctxHpy9ddZBMBY4I3h-_2xkf8F5uwccZF3eGaFj01_5RPvC9OWj7DVBG3tV1noYeaUaw9u6klTUfo_Le5HoP8kf_rqcSn7PTqd-r7JBAst1T4Ks_WRBF9P-OqTanF0Co_jN9MJYneHllvOiQmRYZTllyw4WrmvqjoAsoftTAy-uScuPYyAHUJWVrD6lLsoWITRpDx5yQCBElp6BfAktm_OW4nnWDhLrS3bcjs_qgrIS9EG-M0LLotHSlk9ScEqnv-SK_xqzaJY4NT7tPPznWgOZBwuDw3h9Nh5GouoPY0Cy9ElYuv8WWAoeumqb8jtb9uPuLRC-3pmx49WM3tonhYi3sTBgKyP9phByvzEtLh8mnyPjSfu8ECYHz-DDLOt5TRfxi-E__GX9S0tgsn2BciYQM_CFeV6fWeGginD4GnQz2yxNtkZwkcV8z1mWN4cOgBXvmuMezCSvTzNChWEQod7YFHhyn7Yy0CAF4emCYdjiDScOKspgf7XUehm8ECVP89zexb9dnojJ2yWGKwzLXSAjmx5Z2Gn0fiOymK68YQVnqrI7OF-3wWIfXVvAwy0Fhn1OlLEDxSMSnGVJj9qFv1vj_VQPX94eJ9OwKUTJdyifezWpiJVGKRJFyZ34ETWl52oXiZquv1Fh852bk15KU5uLlkrxtFFAykcwHx2uB2sM0vIgOu_BpQaVDbBzCO8KchXl6GoUaU</con:accessToken>
+      <con:accessTokenPosition>HEADER</con:accessTokenPosition>
+      <con:accessTokenStatus>ENTERED_MANUALLY</con:accessTokenStatus>
+      <con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus>
+      <con:oAuth2Flow>JWT_GRANT</con:oAuth2Flow>
+      <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
+      <con:jwtConfiguration/>
+      <con:responseType>id_token</con:responseType>
+    </con:oAuth20AuthEntry>
+    <con:oAuth20AuthEntry>
+      <con:name>RPA API</con:name>
+      <con:type>OAuth 2.0</con:type>
+      <con:accessToken>f-zxcNqNe2dpLbe6HDqhYTNVZxteN1zZbrRzOrLFyR8rFaq14p1-M5GVJbbuA5LFEhUDoiyqTBkH0xNetPeuJn3UId0EZT_qdM3D8Ujh_ngRd6QtkoZ9wE4qnrZHTqa9Yioerf51UY-sSqgf9v-wJ1VxrAN2EB11HigkfNBMskjCbycNUnPeZZmKGQADxlq0VLmWyszevrCNqSy330dpbUx_CJULK0I2105p716q91GiuG_GTaaa2QNTJK4Yf213cFyWqXeOUVWNJzhUrCLEQ-yyQUiPrVOeFw2jm34Q13iyOoJYU19M6VtZ-v7XBa0OIXONKRTLk83hLLOgEVF0kPtKaEkBQToQIfDQZNkAOQKHVzsWgYdv392Uhy60EQr4Uo-XEvhUXPRaqirKQNUNHhxQQT8orAjXEsctxHpy9ddZBMBY4I3h-_2xkf8F5uwccZF3eGaFj01_5RPvC9OWj7DVBG3tV1noYeaUaw9u6klTUfo_Le5HoP8kf_rqcSn7PTqd-r7JBAst1T4Ks_WRBF9P-OqTanF0Co_jN9MJYneHllvOiQmRYZTllyw4WrmvqjoAsoftTAy-uScuPYyAHUJWVrD6lLsoWITRpDx5yQCBElp6BfAktm_OW4nnWDhLrS3bcjs_qgrIS9EG-M0LLotHSlk9ScEqnv-SK_xqzaJY4NT7tPPznWgOZBwuDw3h9Nh5GouoPY0Cy9ElYuv8WWAoeumqb8jtb9uPuLRC-3pmx49WM3tonhYi3sTBgKyP9phByvzEtLh8mnyPjSfu8ECYHz-DDLOt5TRfxi-E__GX9S0tgsn2BciYQM_CFeV6fWeGginD4GnQz2yxNtkZwkcV8z1mWN4cOgBXvmuMezCSvTzNChWEQod7YFHhyn7Yy0CAF4emCYdjiDScOKspgf7XUehm8ECVP89zexb9dnojJ2yWGKwzLXSAjmx5Z2Gn0fiOymK68YQVnqrI7OF-3wWIfXVvAwy0Fhn1OlLEDxSMSnGVJj9qFv1vj_VQPX94eJ9OwKUTJdyifezWpiJVGKRJFyZ34ETWl52oXiZquv1Fh852bk15KU5uLlkrxtFFAykcwHx2uB2sM0vIgOu_BpQaVDbBzCO8KchXl6GoUaU</con:accessToken>
+      <con:accessTokenPosition>HEADER</con:accessTokenPosition>
+      <con:accessTokenStatus>ENTERED_MANUALLY</con:accessTokenStatus>
+      <con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus>
+      <con:oAuth2Flow>JWT_GRANT</con:oAuth2Flow>
+      <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
+      <con:jwtConfiguration/>
+      <con:responseType>id_token</con:responseType>
+    </con:oAuth20AuthEntry>
+  </con:authRepository>
+  <con:environmentSpec>
+    <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+      <con:authProfile>No Authorization</con:authProfile>
+    </con:entry>
+  </con:environmentSpec>
+  <con:tags/>
+</con:soapui-project>
