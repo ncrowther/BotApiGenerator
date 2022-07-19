@@ -2,7 +2,7 @@
 # RPA API Test Script
 #
 # Author: Nigel T. Crowther
-# Copyright: IBM 2022
+# Copyright: IBM July 2022
 # ######################################################
 
 
@@ -26,16 +26,38 @@ function DisableSSL {
    [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 }
 
-$Global:defaultUserGbl = 'admin@ibmdba.com'
-$Global:defaultPasswordGbl = 'passw0rd'
+#$Global:defaultUserGbl = 'admin@ibmdba.com'
+#$Global:defaultPasswordGbl = 'passw0rd'
 
-#$Global:defaultUserGbl = 'ncrowther@uk.ibm.com'
-#$Global:defaultPasswordGbl = '*****'
+$Global:defaultUserGbl = 'ncrowther@uk.ibm.com'
+$Global:defaultPasswordGbl = '*****'
+
+# ##############################################################
+# Get the RPA hosts  
+# ##############################################################
+function GetHosts {
+    # Use uk1 as the starter host
+    $url = 'https://uk1api.wdgautomation.com/v2.0/configuration/regions'
+
+    try {
+        $hosts = Invoke-RestMethod $url -Method 'GET' 
+    } catch {
+        # Dig into the exception to get the Response details.
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Invalid Rest call: ' + $_.Exception.Response.StatusDescription,'Get Hosts','OK','Error')
+        Break finish
+    }
+
+    return $hosts | ConvertTo-Json | Select-Object -first 1
+
+}
 
 # ######################################################
-# Get the RPA host.  For on prem this is localhost:30000
+# Select the host
 # ######################################################
-function GetHost {
+function SelectHost {
+    param (
+        [string]$hosts
+    )
     $form = New-Object System.Windows.Forms.Form
     $form.Text = 'Host Selection'
     $form.Size = New-Object System.Drawing.Size(300,200)
@@ -69,12 +91,18 @@ function GetHost {
 
     $listBox.SelectionMode = 'MultiExtended'
 
-    [void] $listBox.Items.Add('https://localhost:30000')
-    [void] $listBox.Items.Add('https://uk1api.wdgautomation.com')
-    [void] $listBox.Items.Add('https://eu1api.wdgautomation.com')
-    [void] $listBox.Items.Add('https://us1api.wdgautomation.com')
-    [void] $listBox.Items.Add('https://ap1api.wdgautomation.com')
-    [void] $listBox.Items.Add('https://br2-api.wdgautomation.com')
+    $data = ConvertFrom-Json $hosts
+    $hash = @{}
+
+    foreach ($hostObj in $data)
+    {
+        $hash[$hostObj.description] = $hostObj.apiUrl
+    }
+
+    $hash.GetEnumerator() | ForEach-Object {      
+       Write-Host "The value of '$($_.Key)' is: $($_.Value)"
+       [void] $listBox.Items.Add($_.Key)
+    }
 
     $listBox.Height = 70
     $form.Controls.Add($listBox)
@@ -92,8 +120,14 @@ function GetHost {
     until (($result -eq [System.Windows.Forms.DialogResult]::OK -and $listBox.SelectedIndices.Count -ge 1) -or $result -ne [System.Windows.Forms.DialogResult]::OK)
 
     $x = $listBox.SelectedItem
-    return $x
-}
+
+    $hostUrl = $hash.$x
+    $hostUrl = $hostUrl -replace '/v1.0/', ''
+ 
+    Write-Host "Host:" $hostUrl
+    return $hostUrl
+    
+ }
 
 # ######################################################
 # Get the RPA username
@@ -104,7 +138,7 @@ function getUsername {
     Add-Type -AssemblyName System.Drawing
 
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = 'Enter Tenant Username'
+    $form.Text = 'Username'
     $form.Size = New-Object System.Drawing.Size(300,200)
     $form.StartPosition = 'CenterScreen'
 
@@ -157,7 +191,7 @@ function getPassword {
     Add-Type -AssemblyName System.Drawing
 
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = 'Enter Tenant Password'
+    $form.Text = 'Password'
     $form.Size = New-Object System.Drawing.Size(300,200)
     $form.StartPosition = 'CenterScreen'
 
@@ -212,6 +246,8 @@ function GetTenants {
     )
 
     $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
+
+    Write-Host "GetTenants:" $url 
 
     try {
         $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
@@ -275,7 +311,7 @@ function SelectTenant {
     }
 
     $hash.GetEnumerator() | ForEach-Object {
-       "The value of '$($_.Key)' is: $($_.Value)"
+       Write-Host "The value of '$($_.Key)' is: $($_.Value)"
        [void] $listBox.Items.Add($_.Key)
     }
 
@@ -295,9 +331,8 @@ function SelectTenant {
     until (($result -eq [System.Windows.Forms.DialogResult]::OK -and $listBox.SelectedIndices.Count -ge 1) -or $result -ne [System.Windows.Forms.DialogResult]::OK)
 
     $x = $listBox.SelectedItem
-    $Global:tenantIdGbl = $hash.$x
-    return $hash.$x
-    
+    $tenantId = $hash.$x 
+    return $tenantId  
  }
 
 # ########################################################################
@@ -313,7 +348,7 @@ function getAccessToken {
     $url = $hostURL + '/v1.0/token'
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $headers.Add("tenantId",$tenantIdGbl)
+    $headers.Add("tenantId",$tenantId)
     $headers.Add("Content-Type", "application/x-www-form-urlencoded")
     $body = "grant_type=password&username=" + $username + "&password=" + $password + "&culture=en-US"
 
@@ -327,14 +362,8 @@ function getAccessToken {
         $msgBoxInput =  [System.Windows.MessageBox]::Show('Login failed: ' + $_.Exception.Response.StatusDescription,'Access token','OK','Error')
         Break finish
     }
-
-    $loginResponse | ConvertTo-Json
-
-    $loginResponse
-
-    $global:accessTokenGbl = $loginResponse.access_token
     
-    return $accessTokenGbl    
+    return $loginResponse.access_token   
 }
 
 # ######################################################
@@ -347,10 +376,10 @@ function getProcesses {
         [string]$accessToken
     )
 
-    $url = $hostURL + '/v2.0/workspace/' + $tenantIdGbl + '/process?lang=en-US'
+    $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process?lang=en-US'
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
+    $headers.Add("Authorization", "Bearer " + $accessToken)
 
     try {
         $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
@@ -417,7 +446,7 @@ function selectProcess {
     }
 
     $hash.GetEnumerator() | ForEach-Object {
-       "The value of '$($_.Key)' is: $($_.Value)"
+       Write-Host "The value of '$($_.Key)' is: $($_.Value)"
        [void] $listBox.Items.Add($_.Key)
     }
 
@@ -437,9 +466,7 @@ function selectProcess {
     until (($result -eq [System.Windows.Forms.DialogResult]::OK -and $listBox.SelectedIndices.Count -ge 1) -or $result -ne [System.Windows.Forms.DialogResult]::OK)
     
     $x = $listBox.SelectedItem
-    $Global:processIdGbl = $hash.$x
     return $hash.$x
-   
 }
 
 # ######################################################
@@ -454,9 +481,9 @@ function getBotDetails {
     )
 
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
+    $headers.Add("Authorization", "Bearer " + $accessToken)
 
-    $url = $hostURL + '/v2.0/workspace/' + $tenantIdGbl + '/process/' + $processIdGbl
+    $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId
 
     try {
        $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
@@ -559,10 +586,10 @@ function runBot {
     )
    
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
+    $headers.Add("Authorization", "Bearer " + $accessToken)
     $headers.Add("Content-Type", "application/json")
 
-    $url = $hostURL + '/v2.0/workspace/' + $tenantIdGbl + '/process/' + $processIdGbl + '/instance?lang=en-US'
+    $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance?lang=en-US'
 
     $body = $payload
 
@@ -577,13 +604,13 @@ function runBot {
         Break finish
     }
 
-    $response | ConvertTo-Json
+    $instanceId = $response.id
 
-    $global:instanceIdGbl = $response.id
-
-    $Msg = 'Instance Id: ' + $instanceIdGbl 
+    $Msg = 'Instance Id: ' + $instanceId 
 
     $msgBoxInput =  [System.Windows.MessageBox]::Show($Msg,'Bot Instance','OK','Information')
+
+    return $instanceId
 }
 
 # ######################################################
@@ -599,9 +626,9 @@ function getBotResult {
     )
    
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $headers.Add("Authorization", "Bearer " + $accessTokenGbl)
+    $headers.Add("Authorization", "Bearer " + $accessToken)
 
-    $url = $hostURL + '/v2.0/workspace/' + $tenantIdGbl + '/process/' + $processIdGbl + '/instance/' + $instanceIdGbl
+    $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance/' + $instanceId
 
     $status = 'Started'
     while($status -ne 'done') {
@@ -650,34 +677,27 @@ function getBotResult {
 # NOTE: For production this must not be used.
 DisableSSL
 
-$hostURL = GetHost
-$hostURL
+$hosts = GetHosts
+
+$hostURL = SelectHost $hosts
 
 $username = getUserName
-$username
 
 $password = getPassword
-$password
 
 $tenantResponse = getTenants $hostURL $username
-$tenantResponse
 
 $tenantId = SelectTenant $tenantResponse
-$tenantId
 
 $accessToken = getAccessToken $hostURL $tenantId $username $password
-$accessToken
 
 $processes = getProcesses $hostURL $tenantId $accessToken
-$processes
 
 $processId = selectProcess $processes
 
 $inputParams = getBotDetails $hostURL $tenantId $accessToken $processId
-$inputParams
 
 $payload = getPayload $inputParams
-$payload
 
 $instanceId = runBot $hostURL $tenantId $accessToken $processId $payload
 
