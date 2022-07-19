@@ -26,15 +26,14 @@ function DisableSSL {
    [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 }
 
-#$Global:defaultUserGbl = 'admin@ibmdba.com'
-#$Global:defaultPasswordGbl = 'passw0rd'
+$Global:defaultUserGbl = 'admin@ibmdba.com'
+$Global:defaultPasswordGbl = 'passw0rd'
 
-$Global:defaultUserGbl = 'ncrowther@uk.ibm.com'
-$Global:defaultPasswordGbl = '*****'
+#$Global:defaultUserGbl = 'ncrowther@uk.ibm.com'
+#$Global:defaultPasswordGbl = '*****'
 
-# Open a stream writer
-$File   = '.\curls.txt'
-$Global:StreamGbl = [System.IO.StreamWriter]::new($File)
+# File to contain the curl commands
+$Global:curlCmdsFile = '.\curls.log'
 
 # ##############################################################
 # Get the RPA hosts  
@@ -43,15 +42,15 @@ function GetHosts {
     # Use uk1 as the starter host
     $url = 'https://uk1api.wdgautomation.com/v2.0/configuration/regions'
 
-    $curlCmd = "curl --location --request GET " + $url
-    $StreamGbl.WriteLine($curlCmd)
+   # $curlCmd = "curl --location --request GET " + $url
+  #  $curlCmd > $Global:curlCmdsFile
 
-    try {
+   try {
         $hosts = Invoke-RestMethod $url -Method 'GET' 
     } catch {
         # Dig into the exception to get the Response details.
-        $msgBoxInput =  [System.Windows.MessageBox]::Show('Invalid Rest call: ' + $_.Exception.Response.StatusDescription,'Get Hosts','OK','Error')
-        exitScript
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Unable to find SaaS tenants: ' + $_.Exception.Response.StatusDescription,'Get Hosts','OK','Error')
+        #exitScript
     }
 
     return $hosts | ConvertTo-Json | Select-Object -first 1
@@ -101,7 +100,7 @@ function SelectHost {
     $data = ConvertFrom-Json $hosts
     $hash = @{}
 
-    $hash[$hostObj."Local RPA Server"] = "https://localhost:30000"
+    $hash["Local RPA Server"] = "https://localhost:30000"
 
     foreach ($hostObj in $data)
     {
@@ -255,7 +254,7 @@ function GetTenants {
     $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
 
     $curlCmd = "curl --location --request GET " + $url
-    $StreamGbl.WriteLine($curlCmd)
+    $curlCmd >> $Global:curlCmdsFile
 
     try {
         $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
@@ -361,7 +360,7 @@ function getAccessToken {
     $body = "grant_type=password&username=" + $username + "&password=" + $password + "&culture=en-US"
 
     $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US'"
-    $StreamGbl.WriteLine($curlCmd)
+    $curlCmd > $Global:curlCmdsFile
 
     try {
        $loginResponse = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $body
@@ -395,7 +394,7 @@ function getProcesses {
     $headers.Add("Authorization", "Bearer " + $accessToken)
 
     $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'" 
-    $StreamGbl.WriteLine($curlCmd)
+    $curlCmd > $Global:curlCmdsFile
 
     try {
         $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
@@ -501,7 +500,7 @@ function getBotDetails {
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId
 
     $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'" 
-    $StreamGbl.WriteLine($curlCmd)
+    $curlCmd > $Global:curlCmdsFile
 
     try {
        $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers 
@@ -611,7 +610,7 @@ function runBot {
 
     $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'"
  
-    $StreamGbl.WriteLine($curlCmd)
+    $curlCmd > $Global:curlCmdsFile
 
     try {
         $response = Invoke-RestMethod $url -Method 'POST' -Headers $headers -Body $payload
@@ -651,7 +650,7 @@ function getBotResult {
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance/' + $instanceId
 
     $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
-    $StreamGbl.WriteLine($curlCmd)
+    $curlCmd > $Global:curlCmdsFile
 
     $status = 'Started'
     while($status -ne 'done') {
@@ -697,8 +696,6 @@ function getBotResult {
 
 
 function exitScript {
-  # Close the stream
- $StreamGbl.Close()
  Break finish
 }
 
