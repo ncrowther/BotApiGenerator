@@ -42,7 +42,7 @@ function GetHosts {
     # Use uk1 as the starter host
     $url = 'https://uk1api.wdgautomation.com/v2.0/configuration/regions'
 
-    $curlCmd = "curl --location --request GET " + $url
+    $curlCmd = "curl --location --request GET " + $url + "`n"
     $curlCmd > $Global:curlCmdsFile
 
    try {
@@ -251,10 +251,10 @@ function GetTenants {
         $username
     )
 
-    $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
+    $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username  + "`n"
 
     $curlCmd = "curl --location --request GET " + $url
-    $curlCmd >> $Global:curlCmdsFile
+    $curlCmd >> $Global:curlCmdsFile 
 
     try {
         $tenantResponse = Invoke-RestMethod $url -Method 'GET' -Headers $headers
@@ -359,7 +359,7 @@ function getAccessToken {
     $headers.Add("Content-Type", "application/x-www-form-urlencoded")
     $body = "grant_type=password&username=" + $username + "&password=" + $password + "&culture=en-US"
 
-    $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US'"
+    $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US' `n"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -393,7 +393,7 @@ function getProcesses {
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "Bearer " + $accessToken)
 
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'" 
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'`n"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -499,7 +499,7 @@ function getBotDetails {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId
 
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'" 
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'`n"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -608,7 +608,7 @@ function runBot {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance?lang=en-US'
 
-    $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'"
+    $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'`n"
  
     $curlCmd >> $Global:curlCmdsFile
 
@@ -649,7 +649,7 @@ function getBotResult {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance/' + $instanceId
 
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'`n"
     $curlCmd >> $Global:curlCmdsFile
 
     $status = 'Started'
