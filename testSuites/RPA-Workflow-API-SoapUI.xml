@@ -374,7 +374,7 @@
           <con:params/>
           <con:element>Response</con:element>
         </con:representation>
-        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="0 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="0 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -415,7 +415,7 @@
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
-          <con:endpoint>${#Project#hostUrl}</con:endpoint>
+          <con:endpoint>${#Project#defaultHostUrl}</con:endpoint>
           <con:request/>
           <con:originalUri>https://api.wdgautomation.com/v1.0/en-US/account/tenant</con:originalUri>
           <con:credentials>
@@ -439,7 +439,7 @@ log.info("context.response: " + context.response)
  
 def jsonResonponse = new JsonSlurper().parseText(context.response)
 
-region = 0
+region = 4
 regionName = jsonResonponse[region].name
 regionUrl = jsonResonponse[region].apiUrl
 if (regionUrl) {
@@ -454,7 +454,8 @@ if (regionUrl) {
 } else {
 	  testrunner.fail("Failed to get region")
 	  return
-}</script></con:config></con:testStep><con:testStep type="restrequest" name="2 - Get tenants" id="a400842d-2021-4276-ba74-8e4fc2d07643"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/en-US/account/tenant" methodName="Tenant" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="2 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+}</script></con:config></con:testStep>
+      <con:testStep type="restrequest" name="2 - Get tenants" id="1f13f4f8-9072-443a-b799-d564403ad7f7"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/en-US/account/tenant" methodName="Tenant" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Tenant - 1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -500,8 +501,7 @@ if (tenantId) {
 	  testrunner.fail("Failed to get tenant")
 	  return
 }
-</script></con:config></con:testStep>
-      <con:testStep type="restrequest" name="3 - Login to tenant" id="e1c0cd89-4c69-4e36-80c9-13ae383e023d"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="3 - Login to tenant" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
+</script></con:config></con:testStep><con:testStep type="restrequest" name="3 - Login to tenant" id="e1c0cd89-4c69-4e36-80c9-13ae383e023d"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="3 - Login to tenant" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -726,7 +726,7 @@ if (processStatus) {
     <con:property><con:name>hostUrl</con:name><con:value>https://localhost:30000</con:value></con:property>
     
     
-  <con:property><con:name>processId</con:name><con:value>d264f7ba-d795-4256-896f-456f5147de8d</con:value></con:property><con:property><con:name>processInstanceId</con:name><con:value>df79ec61-80b9-4755-8e33-0157cf6da610</con:value></con:property><con:property><con:name>tenantId</con:name><con:value>bc94fbd3-3d42-49ec-8575-63dd51d2e489</con:value></con:property><con:property><con:name>username</con:name><con:value>admin@ibmdba.com</con:value></con:property></con:properties>
+  <con:property><con:name>processId</con:name><con:value>d264f7ba-d795-4256-896f-456f5147de8d</con:value></con:property><con:property><con:name>processInstanceId</con:name><con:value>df79ec61-80b9-4755-8e33-0157cf6da610</con:value></con:property><con:property><con:name>tenantId</con:name><con:value>38e264de-74c7-4d48-b314-5624e7b4726f</con:value></con:property><con:property><con:name>username</con:name><con:value>admin@ibmdba.com</con:value></con:property><con:property><con:name>defaultHostUrl</con:name><con:value>https://br1api.wdgautomation.com</con:value></con:property></con:properties>
   <con:wssContainer/>
   <con:databaseConnectionContainer/>
   <con:jmsConnectionContainer/>
