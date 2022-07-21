@@ -33,7 +33,7 @@
           <con:params/>
           <con:element>Response</con:element>
         </con:representation>
-        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -360,14 +360,101 @@
         </con:entry>
       </con:environmentSpec>
     </con:resource>
-  </con:interface>
+  <con:resource name="Get Regions" path="/v2.0/configuration/regions" id="2b856e14-9697-41fa-8700-ac939c50ac20">
+      <con:settings/>
+      <con:parameters/>
+      <con:method name="Regions" id="1ee63c64-6cbf-4c9b-aac9-2919feb7c518" method="GET">
+        <con:settings/>
+        <con:parameters>
+          
+        </con:parameters>
+        <con:representation type="RESPONSE">
+          <con:mediaType>application/json; charset=utf-8</con:mediaType>
+          <con:status>200</con:status>
+          <con:params/>
+          <con:element>Response</con:element>
+        </con:representation>
+        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="0 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>${#Project#hostUrl}</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://api.wdgautomation.com/v1.0/en-US/account/tenant</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters/>
+          <con:parameterOrder/>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>Inherit From Parent</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:request>
+        <con:environmentSpec>
+          <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+            <con:authProfile>Inherit From Parent</con:authProfile>
+          </con:entry>
+        </con:environmentSpec>
+      </con:method>
+      <con:environmentSpec>
+        <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+          <con:authProfile>Inherit From Parent</con:authProfile>
+        </con:entry>
+      </con:environmentSpec>
+    </con:resource></con:interface>
   <con:testSuite id="40d85d17-38d1-4fc7-b6ab-9df2330968b1" name="Test Suite 1">
     <con:settings/>
     <con:runType>SEQUENTIAL</con:runType>
     <con:testCase id="0720e0d4-c389-4753-93dc-9dd0e99db5a3" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="RPA Workflow API" searchProperties="true" timeout="0" maxResults="0">
       <con:settings/>
       
-      <con:testStep type="restrequest" name="Tenant - 1 - Get tenants" id="a400842d-2021-4276-ba74-8e4fc2d07643"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/en-US/account/tenant" methodName="Tenant" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Tenant - 1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+      <con:testStep type="restrequest" name="1 - Get regions" id="099b6fd8-3e20-4f79-a994-1881a9b4deb8"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/configuration/regions" methodName="Regions" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Regions - 1 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+          </con:settings>
+          <con:endpoint>${#Project#hostUrl}</con:endpoint>
+          <con:request/>
+          <con:originalUri>https://api.wdgautomation.com/v1.0/en-US/account/tenant</con:originalUri>
+          <con:credentials>
+            <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/><con:parameters/>
+          <con:parameterOrder/>
+          <con:environmentSpec>
+            <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
+              <con:authProfile>Inherit From Parent</con:authProfile>
+            </con:entry>
+          </con:environmentSpec>
+        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Get Region" id="747dcd37-4516-4961-8edb-ebbaa3556fc0"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
+import net.sf.json.groovy.JsonSlurper
+
+//Check if the response
+assert context.response, 'Response is empty or null'
+
+log.info("context.response: " + context.response)
+ 
+def jsonResonponse = new JsonSlurper().parseText(context.response)
+
+region = 0
+regionName = jsonResonponse[region].name
+regionUrl = jsonResonponse[region].apiUrl
+if (regionUrl) {
+	 regionUrl = regionUrl.replace("/v1.0/", "")
+	 log.info("Found Region: " + regionName)	
+	 log.info("Found region Url: " + regionUrl)
+	 testRunner.testCase.testSuite.project.setPropertyValue( "hostUrl", regionUrl ) 
+	
+	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "selected region is: " + regionUrl )
+
+} else {
+	  testrunner.fail("Failed to get region")
+	  return
+}</script></con:config></con:testStep><con:testStep type="restrequest" name="2 - Get tenants" id="a400842d-2021-4276-ba74-8e4fc2d07643"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/en-US/account/tenant" methodName="Tenant" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Tenant - 1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -387,8 +474,10 @@
               <con:authProfile>Inherit From Parent</con:authProfile>
             </con:entry>
           </con:environmentSpec>
-        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="GetTenantId" id="33cbf96b-5936-4f95-b759-6d5d080313ab"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
+        </con:restRequest></con:config></con:testStep>
+      <con:testStep type="groovy" name="GetTenantId" id="33cbf96b-5936-4f95-b759-6d5d080313ab"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
 import net.sf.json.groovy.JsonSlurper
+
 
 //Check if the response
 assert context.response, 'Response is empty or null'
@@ -397,22 +486,27 @@ log.info("context.response: " + context.response)
  
 def jsonResonponse = new JsonSlurper().parseText(context.response)
 
-tenantName = jsonResonponse[0].name
-tenantId = jsonResonponse[0].id
+tenant = 0
+tenantName = jsonResonponse[tenant].name
+tenantId = jsonResonponse[tenant].id
 if (tenantId) {
- log.info("Found tenant name: " + tenantName)	
- log.info("Found tenant id: " + tenantId)
- testRunner.testCase.testSuite.project.setPropertyValue( "tenantId", tenantId ) 
+	 log.info("Found tenant name: " + tenantName)	
+	 log.info("Found tenant id: " + tenantId)
+	 testRunner.testCase.testSuite.project.setPropertyValue( "tenantId", tenantId ) 
+
+ 	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "selected tenant is: " + tenantName )
 } else {
-  testrunner.fail("Failed to get tenant")
-  return
+	  testrunner.fail("Failed to get tenant")
+	  return
 }
-</script></con:config></con:testStep><con:testStep type="restrequest" name="Token - 2 - Login to tenant 1" id="e1c0cd89-4c69-4e36-80c9-13ae383e023d"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Token - 2 - Login to tenant 1" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
+</script></con:config></con:testStep>
+      <con:testStep type="restrequest" name="3 - Login to tenant" id="e1c0cd89-4c69-4e36-80c9-13ae383e023d"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Token - 2 - Login to tenant 1" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
           <con:endpoint>${#Project#hostUrl}</con:endpoint>
-          <con:request>grant_type=password&amp;username=admin@ibmdba.com&amp;password=passw0rd&amp;culture=en-US</con:request>
+          <con:request>grant_type=password&amp;username=admin@ibmdba.com&amp;password=passw0rd&amp;culture=en-</con:request>
           <con:originalUri>https://api.wdgautomation.com/v1.0/token</con:originalUri>
           <con:credentials>
             <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType>
@@ -428,8 +522,7 @@ if (tenantId) {
               <con:authProfile>Inherit From Parent</con:authProfile>
             </con:entry>
           </con:environmentSpec>
-        </con:restRequest></con:config></con:testStep>
-      <con:testStep type="groovy" name="GetAccessToken" id="e38a22fe-737d-4999-b783-40235bd2fef5"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
+        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="GetAccessToken" id="e38a22fe-737d-4999-b783-40235bd2fef5"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
 import net.sf.json.groovy.JsonSlurper
 
 //Check if the response
@@ -441,13 +534,15 @@ def jsonResonponse = new JsonSlurper().parseText(context.response)
 
 accessToken = jsonResonponse.access_token
 if (accessToken) {
- log.info("Found access_token: " + accessToken)
- testRunner.testCase.testSuite.project.setPropertyValue( "bearerToken", accessToken ) 
+	 log.info("Found access_token: " + accessToken)
+	 testRunner.testCase.testSuite.project.setPropertyValue( "bearerToken", accessToken ) 
+
+  	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "Access Token is: " + accessToken )
 } else {
   testrunner.fail("Failed to get token")
   return
-}</script></con:config></con:testStep>
-      <con:testStep type="restrequest" name="Process - 3 - Get process 1" id="5d45bba6-cd94-4111-b07d-4001a220b627"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process" methodName="Process" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Process - 3 - Get processes" id="593cae4f-6f52-4f76-8e21-e17b4f32ebc4" mediaType="application/json">
+}</script></con:config></con:testStep><con:testStep type="restrequest" name="4 - Get process" id="5d45bba6-cd94-4111-b07d-4001a220b627"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process" methodName="Process" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Process - 3 - Get process 1" id="593cae4f-6f52-4f76-8e21-e17b4f32ebc4" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -478,16 +573,21 @@ log.info("context.response: " + context.response)
  
 def jsonResonponse = new JsonSlurper().parseText(context.response)
 
-processId = jsonResonponse.results[1].id
-if (processId) {
- processName = jsonResonponse.results[1].name	
- log.info("Found process: " + processName)	
- log.info("Found processId: " + processId)
- testRunner.testCase.testSuite.project.setPropertyValue( "processId", processId ) 
+process = 0
+processId = jsonResonponse.results[process].id
+processName = jsonResonponse.results[process].name
+
+if (processId) {	
+	 log.info("Found process: " + processName)	
+	 log.info("Found processId: " + processId)
+	 testRunner.testCase.testSuite.project.setPropertyValue( "processId", processId ) 
+
+   	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "Selected processName is: " + processName )
 } else {
-  testrunner.fail("Failed to get process id")
-  return
-}</script></con:config></con:testStep><con:testStep type="restrequest" name="WorkflowId - 4 - Get process details 1" id="488f06a9-eb6a-4272-ba2a-e631268c0c97"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process/${#Project#processId}" methodName="WorkflowId" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="WorkflowId - 4 - Get process details" id="e7aa3cb3-ce92-424e-89e7-d8055158a363" mediaType="application/json">
+	  testrunner.fail("Failed to get process id")
+	  return
+}</script></con:config></con:testStep><con:testStep type="restrequest" name="5 - Get process details" id="488f06a9-eb6a-4272-ba2a-e631268c0c97"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process/${#Project#processId}" methodName="WorkflowId" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="WorkflowId - 4 - Get process details 1" id="e7aa3cb3-ce92-424e-89e7-d8055158a363" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -506,7 +606,26 @@ if (processId) {
               <con:authProfile>RPA API</con:authProfile>
             </con:entry>
           </con:environmentSpec>
-        </con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Instance - 5 - Invoke process 1" id="4d7dbb3a-f349-4b2a-89e8-6432bddca23f"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process/${#Project#processId}/instance" methodName="Instance" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Instance - 5 - Invoke process 1" id="a649d883-2375-44a3-971c-6529d8c3689c" mediaType="application/json" postQueryString="false">
+        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Show Details" id="1978aaa2-9c21-4d96-bd2a-0b4d342c1254"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
+import net.sf.json.groovy.JsonSlurper
+
+//Check if the response
+assert context.response, 'Response is empty or null'
+
+log.info("context.response: " + context.response)
+ 
+def jsonResonponse = new JsonSlurper().parseText(context.response)
+
+schema = jsonResonponse.scriptSchema
+if (schema) {
+	 log.info("Schema: " + schema)
+ 
+    	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "Process schema is: " + schema )
+} else {
+	  testrunner.fail("Failed to get schema")
+	  return
+}</script></con:config></con:testStep><con:testStep type="restrequest" name="6 - Invoke process 1" id="4d7dbb3a-f349-4b2a-89e8-6432bddca23f"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process/${#Project#processId}/instance" methodName="Instance" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Instance - 5 - Invoke process 1" id="a649d883-2375-44a3-971c-6529d8c3689c" mediaType="application/json" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -540,12 +659,15 @@ def jsonResonponse = new JsonSlurper().parseText(context.response)
 
 processInstanceId = jsonResonponse.id
 if (processInstanceId) {
- log.info("Process instance id: " + processInstanceId)
- testRunner.testCase.testSuite.project.setPropertyValue( "processInstanceId", processInstanceId ) 
+	 log.info("Process instance id: " + processInstanceId)
+	 testRunner.testCase.testSuite.project.setPropertyValue( "processInstanceId", processInstanceId ) 
+	 
+    	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "Processinstance is: " + processInstanceId )
 } else {
-  testrunner.fail("Failed to get process instance")
-  return
-}</script></con:config></con:testStep><con:testStep type="restrequest" name="ProcessId - 6 - Get process result" id="11d78105-215c-415b-8c17-06cfb742d6b0"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process/${#Project#processId}/instance/${#Project#processInstanceId}" methodName="ProcessId" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="ProcessId - 6 - Get process result" id="3f8f7c28-a851-4c90-bedb-f205963bc875" mediaType="application/json">
+	  testrunner.fail("Failed to get process instance")
+	  return
+}</script></con:config></con:testStep><con:testStep type="restrequest" name="7 - Get process result" id="11d78105-215c-415b-8c17-06cfb742d6b0"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/workspace/${#Project#tenantId}/process/${#Project#processId}/instance/${#Project#processInstanceId}" methodName="ProcessId" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="ProcessId - 6 - Get process result" id="3f8f7c28-a851-4c90-bedb-f205963bc875" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -563,7 +685,26 @@ if (processInstanceId) {
               <con:authProfile>RPA API</con:authProfile>
             </con:entry>
           </con:environmentSpec>
-        </con:restRequest></con:config></con:testStep><con:properties/>
+        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Show Result" id="a1f6fcc7-3cf1-432f-8890-5794b5859467"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
+import net.sf.json.groovy.JsonSlurper
+
+//Check if the response
+assert context.response, 'Response is empty or null'
+
+log.info("context.response: " + context.response)
+ 
+def jsonResonponse = new JsonSlurper().parseText(context.response)
+
+processStatus = jsonResonponse.status
+if (processStatus) {
+	 log.info("Process status: " + processStatus)
+ 
+    	 def ui = com.eviware.soapui.support.UISupport;
+	 ui.showInfoMessage( "Process status is: " + processStatus )
+} else {
+	  testrunner.fail("Failed to get process status")
+	  return
+}</script></con:config></con:testStep><con:properties/>
       <con:reportParameters/>
       <con:environmentSpec>
         <con:entry environmentId="7e772b3e-4a95-4709-b73e-49b2acf764b7">
@@ -581,18 +722,15 @@ if (processInstanceId) {
   </con:testSuite>
   <con:requirements/>
   <con:properties>
-    <con:property><con:name>username</con:name><con:value>admin@ibmdba.com</con:value></con:property>
-    <con:property>
-      <con:name>tenantId</con:name>
-      <con:value>bc94fbd3-3d42-49ec-8575-63dd51d2e489</con:value>
-    </con:property>
+    <con:property><con:name>bearerToken</con:name><con:value>v7qfdmSybgXW3-g_FMWOd3Q2HxFnuD0w1QP08xAZcTKPWl5XnPdAQq0QheHPY4EL3OkDxXMPT_zAXUg7eJ0litquNGZiO5JmA7lhBHksvdjx6iEG9pimR9rENi0O87xtk4LINujjcUn4EfvnD7Vc5KhrIcmcES1OjjBY1ibIgc4LPaWnWazqKLA3o1OypESQFlgL5-dXlTAO9f5CiuAenNFr9NRrZSOSg_bnu0PCjVZFIJwZatp7O3ojLGwHWS1D3UwmfDjawNTeJdVNXUifNC2n-wrG5or_oFmDUOzHsOhlBF8sfou_rg4C-eZCRFUEALYKSpPDWlUCpjB-CdD8jZfZKHfvbRZjp_FhZ4DC4DADLy7oqBvmphOsVa9VBYYOe5b2ae6rYPjvJKxT6PMwowwmZwCaC1ckSJeTt4BGtPZoWLBCaQPk77behDNjuG3dctptR1Tq0Q4iiLJgt43DYBbbPJdfcRQ4pWCz9bfzb7aoFLUwsSvoiDx_Y9i_HNv_m8LH2A96iMzaVRh0an3HdfZhKBTwqTRjcgwLnIhpoWVtYxSv0JduV9Z90WyQ9gVN2S7dRWyDgMqeSaPmwkoQoD0O8fKh__0mMIH39GC__v0hMUj_kvcTjx63oz1hDbPsKgFL-xCUz7mn__kB_-jEbOHzPDl-PeQn6eWS1aPRAPpPYAsJCsLqLELk6Zo8q5e8HetmbiJj7COn_rgOSFroGCeUAclFIzImZ3YLaw3cydLu_j9gHTV_S48xaUuU4fxhtRT-x6V5dDBolmwjb0FWRbwcwYNS09JNgtuZ4sLiFszIANqN6FevmnTXjlXce4evjLJmiax3Y-0nj7io0FCLc2dSsALTnOo19mAKjWsdpJTrtwUhEKMSu8mivtZNx-JIvVg4l121Xd94oFh7DkbxhVdk6tbeaOkl58uPcUEOoUZdDbbuZroCverz95iBTdwq3-N2OX4Dn-xcnOPgEUs8cFkOERx2d0aH3TyBkgWo0SgUXpBQz-Y6vol-_orIwxCsFKvqxTzs5x0YziyExqM_Qw</con:value></con:property>
+    <con:property><con:name>hostUrl</con:name><con:value>https://br1api.wdgautomation.com</con:value></con:property>
     
     
-  <con:property><con:name>bearerToken</con:name><con:value>Bz8c4Ymsoeg2V89crP9YtDht-6AVp4RK-cxMJNg_dcUCMd0sNnb4xzrc30YEohppqBzi14VAEvRP2jcuMxWegbd5rb1ntQHoypOMqxGzK_CICS5cYYC3JM2KVza62WS-d6CRvSUqgpTdF8Q7uXH5s4artaHqS_-MLsU9i4gMJmDkerNdt5mAtH5klTR5NnC_4aECE1DOwM1EtZVFwRX8JkYcIyaeCGqgwL6-NB4AwYETK4CjeL0v9WgECc_x24VnG1Q9favOCkin7LZtRQGXKwNWpww_97FMrPpNnhV5URpGZVAYlLPf0rarpQAzusHIXdgLDulRoHJQN17xE3En9qcXl_gzHgGireGUT4973nWDZ4XEWC5likI9MQrSV57nWVOwStHJfsmAo-EOZJOKeC6anUasCMwVtyLuLwzyc8LSHKQo1t4IJzP-CzyoGsBjg-C99ODetaBhvKMJZuiYz0SI-QmNE3pPOxMd3D2UgXSD_d3CVYD8AyfSUBjdcWKUZ3hnL3y5Is40wtwgNh2GqdLOmWKIYxqqz02BOXl8RR4rPLnBq7WYLEBTf4TDP9TVPntPRMb3z8jG8ya0JF3FcTt8YwpFtZwXIzJyZ3XLq5zDKV3deNhj43SIfZ-NXVl1DeVe9i0jnlGsMqwUjwAOGz8On_UFI_fodYeFPEP9Rpc9qyPa9-xg7Gya-kEbXvgTVidKWTuQ3rZH9Xk__BhmfMtUD6R7BqAiPs9iv-jNaaCIC4EtVk6S4fzzXlWhqZf8ebyLIXWlJ-0riWeez_3jr-7IUC1AtTmtwBN7sHLj-BwVjaPIcXS8DA0iWwYgsmmPPjpmDWuJ_Lsu4iOaucu2Oiwudp9NQCGZgvuKvbUynLFOX-i1tTG_X82iTBYFIUeTdp1jVlO8X_odcySAonQjtOW_yzGO57S_sTua2Y4N8QuTkMw54VC0U7SJNoSvEjfEnJbpvrDGP2gFKgHqvb-CZujT6aDsnOHcQz9uENuwaNPp2z6REqhuntEdy1DZp2CNJDOMQK5Gs2B7OhrmlSnt6r3SV7f8Ts4wGGwoOaDDxZycAL5CE6sh_PXYZ8I_D8Ot</con:value></con:property><con:property><con:name>processInstanceId</con:name><con:value>d1f033e6-6260-4203-8984-2003c031d67a</con:value></con:property><con:property><con:name>processId</con:name><con:value>714bf4c2-c1bf-402b-94a8-771d051f30e0</con:value></con:property><con:property><con:name>hostUrl</con:name><con:value>https://localhost:30000</con:value></con:property></con:properties>
+  <con:property><con:name>processId</con:name><con:value>a0adb986-af01-4bcb-b39e-0832d04bc061</con:value></con:property><con:property><con:name>processInstanceId</con:name><con:value>d90cb1c5-59ef-43d5-9146-add0aff7eb2a</con:value></con:property><con:property><con:name>tenantId</con:name><con:value>38e264de-74c7-4d48-b314-5624e7b4726f</con:value></con:property><con:property><con:name>username</con:name><con:value>admin@ibmdba.com</con:value></con:property></con:properties>
   <con:wssContainer/>
   <con:databaseConnectionContainer/>
   <con:jmsConnectionContainer/>
-  <con:oAuth2ProfileContainer><con:oAuth2Profile><con:name>RPA API</con:name><con:accessToken>def authRepository = testRunner.getTestCase().getProject().getAuthRepository() def entrylist = authRepository.getEntryList()  entrylist.each(){ entry ->  	log.info('Entry "' + entry.getName() + '" class = ' + entry.getClass()) }</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>IMPLICIT_GRANT</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:accessTokenStatus>ENTERED_MANUALLY</con:accessTokenStatus><con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus><con:manualAccessTokenExpirationTimeUnit>SECONDS</con:manualAccessTokenExpirationTimeUnit></con:oAuth2Profile></con:oAuth2ProfileContainer>
+  <con:oAuth2ProfileContainer><con:oAuth2Profile><con:name>RPA API</con:name><con:accessToken>def authRepository = testRunner.getTestCase().getProject().getAuthRepository() def entrylist = authRepository.getEntryList()  entrylist.each(){ entry ->  	log.info('Entry "' + entry.getName() + '" class = ' + entry.getClass()) }</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>IMPLICIT_GRANT</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:accessTokenStatus>UNKNOWN</con:accessTokenStatus><con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus><con:manualAccessTokenExpirationTimeUnit>SECONDS</con:manualAccessTokenExpirationTimeUnit></con:oAuth2Profile></con:oAuth2ProfileContainer>
   <con:oAuth1ProfileContainer><con:oAuth1Profile><con:name>Profile 2</con:name><con:accessTokenPosition>HEADER</con:accessTokenPosition></con:oAuth1Profile></con:oAuth1ProfileContainer>
   <con:reporting>
     <con:reportTemplates/>
