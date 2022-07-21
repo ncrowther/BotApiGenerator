@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="670182a6-5bc8-4950-acf6-c20d24935619" created="3.40.1" activeEnvironment="Default" name="RPA Workflow API" resourceRoot="" updated="3.40.1 2022-06-10T12:52:02Z" abortOnError="false" runType="SEQUENTIAL" soapui-version="5.7.0" xmlns:con="http://eviware.com/soapui/config">
+<con:soapui-project id="670182a6-5bc8-4950-acf6-c20d24935619" created="5.7.0" activeEnvironment="Default" name="RPA Workflow API" resourceRoot="" abortOnError="false" runType="SEQUENTIAL" soapui-version="5.7.0" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
   <con:interface xsi:type="con:RestService" id="32023ba0-4e0f-4592-9957-a48c523564ab" wadlVersion="http://wadl.dev.java.net/2009/02" name="https://${#Project#region}api.wdgautomation.com" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:settings/>
@@ -374,7 +374,7 @@
           <con:params/>
           <con:element>Response</con:element>
         </con:representation>
-        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="0 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+        <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:ten="https://api.wdgautomation.com/v1.0/en-US/account/tenant">ten:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="0 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -411,11 +411,11 @@
     <con:testCase id="0720e0d4-c389-4753-93dc-9dd0e99db5a3" discardOkResults="false" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="RPA Workflow API" searchProperties="true" timeout="0" maxResults="0">
       <con:settings/>
       
-      <con:testStep type="restrequest" name="1 - Get regions" id="099b6fd8-3e20-4f79-a994-1881a9b4deb8" disabled="true"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/configuration/regions" methodName="Regions" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="1 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+      <con:testStep type="restrequest" name="1 - Get regions" id="099b6fd8-3e20-4f79-a994-1881a9b4deb8"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v2.0/configuration/regions" methodName="Regions" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="1 - Get regions" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
-          <con:endpoint>${#Project#defaultHostUrl}</con:endpoint>
+          <con:endpoint>${#Project#hostUrl}</con:endpoint>
           <con:request/>
           <con:originalUri>https://api.wdgautomation.com/v1.0/en-US/account/tenant</con:originalUri>
           <con:credentials>
@@ -429,7 +429,7 @@
               <con:authProfile>Inherit From Parent</con:authProfile>
             </con:entry>
           </con:environmentSpec>
-        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Get Region" id="747dcd37-4516-4961-8edb-ebbaa3556fc0" disabled="true"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
+        </con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Get Region" id="747dcd37-4516-4961-8edb-ebbaa3556fc0"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.TestCaseRunContext
 import net.sf.json.groovy.JsonSlurper
 
 //Check if the response
@@ -439,7 +439,7 @@ log.info("context.response: " + context.response)
  
 def jsonResonponse = new JsonSlurper().parseText(context.response)
 
-region = 4
+region = 0
 regionName = jsonResonponse[region].name
 regionUrl = jsonResonponse[region].apiUrl
 if (regionUrl) {
@@ -454,8 +454,7 @@ if (regionUrl) {
 } else {
 	  testrunner.fail("Failed to get region")
 	  return
-}</script></con:config></con:testStep>
-      <con:testStep type="restrequest" name="2 - Get tenants" id="1f13f4f8-9072-443a-b799-d564403ad7f7"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/en-US/account/tenant" methodName="Tenant" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Tenant - 1 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
+}</script></con:config></con:testStep><con:testStep type="restrequest" name="2 - Get tenants" id="a400842d-2021-4276-ba74-8e4fc2d07643"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/en-US/account/tenant" methodName="Tenant" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="2 - Get tenants" id="93df36e9-61d9-4004-9c42-a47069f9c154" mediaType="application/json">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -501,7 +500,8 @@ if (tenantId) {
 	  testrunner.fail("Failed to get tenant")
 	  return
 }
-</script></con:config></con:testStep><con:testStep type="restrequest" name="3 - Login to tenant" id="e1c0cd89-4c69-4e36-80c9-13ae383e023d"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="3 - Login to tenant" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
+</script></con:config></con:testStep>
+      <con:testStep type="restrequest" name="3 - Login to tenant" id="e1c0cd89-4c69-4e36-80c9-13ae383e023d"><con:settings/><con:config service="https://${#Project#region}api.wdgautomation.com" resourcePath="/v1.0/token" methodName="Token" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="3 - Login to tenant" id="d7ab4e8c-2751-4350-85f9-fe9208937cc6" mediaType="application/x-www-form-urlencoded" postQueryString="false">
           <con:settings>
             <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
           </con:settings>
@@ -722,11 +722,11 @@ if (processStatus) {
   </con:testSuite>
   <con:requirements/>
   <con:properties>
-    <con:property><con:name>bearerToken</con:name><con:value>BBbCkT9sP2JPrcsX3aih1qk3egYyMPvsG_ZIWE1v65AZScK4doNgdhwnohXk0mT1mBwliCNR2zJoIwRxgT91o2VGunjRdmrq9qZdpG-eh3Nlz17KnULskwpHQbdAeBja59jQTeHTtY6hJdvaqOdQLG8tZ0H8XC1EvPzRFPGJGGhm5GGjD5N7yqD18TYn__-RMJ9HpiZwy47_ORzx3-rtQO9uB_lxoIFM6lSnKNgW5-KRcTqwZmrafw2RrJMVyY0fEG4wj_grpwIlwQhQuPqHJN_bKil59GPtzzxWoUVamjz8-XqVo79ktP3HtwB2_OV1Eh7W5Hr_rFYV45jZ0teomxcjGF1PsWiqXO6NbUuwi0DL9jcLkPjG-_BrzsT4hbHH5ZIwZPtcaF5kPE8cFbGSIcDbfZkxsvDw30-bZXwvxpWIUAS1niwiGJCPtve10O-RHpCjgF4JLEahOhBISlXg-D8dRWsl9nkMRAevuFSgGSs-X6YOiXamxdW-qxAxuCAsdmokkJF-H6KzlAoq_r9WS6lkT2lcW9Qiqs6r9B8DB_DXbuDdAgyuJTsL-Gl09Vum0d078HySqZh2LAyRUfzCv1OslqEbK0zwS4MIp_YSX6MBwJ2r4-_XxDTrZgaLvD_uifWSQ5wbKDDi4ulb7kC7zDznLUWhSKgEwOrngIQwEx7Wki06ampANGM6PIzDZ8Z4Ju3dlUMSmOlJZ9M5-OWRghVyf7CKbqkP2zlU5rjOk5PrZ0LgoNU0m-ph9qXt_0osNRBlFiL4lkrUjcJdt_X8IvAzSK9YQc-umVE5G3E-_7xKXwgtnkmUsQxjea0swQhZ16qzmXVxg1lwPSA3EOxBKoVWGHUVx6gRbWIqZMxJhSTDIxkgnxRweQoN8a_ACrbSLOB5Uq9jMy3vbyR2nq0j9PCI4KB3oynMRNGg2SIpDgYbMaPQwTZ6W-pu7oyQXuJT9eMiXciJQqcJN_ZDX3O_pkUPfBIGA8J5TZ8EP5zMeRFIwqJazUXUM9gtUcJOqV2MavieIzTlKFj_jZR9bW05BbMv7HUAXtDwDId8E8M1bAw_pBDc_mkVwc3Eltd8YscC</con:value></con:property>
-    <con:property><con:name>hostUrl</con:name><con:value>https://localhost:30000</con:value></con:property>
+    <con:property><con:name>bearerToken</con:name><con:value>BSUO_LdhNPGad5GUIezJCPe5Qu3ldjBEQElBdEUGF7CZZ8Wxad4Wz27qC0cOWyi1V9rvNkOib30hG4wYtEnBPrrpf4qyEXKyGVy2ffMrTjO1YPbsPP4rTn_aM_iukb5PpDvZYQyYM3xpwICYhybTY2TJvr4JXhuMYBCNVlIhB5ivR3l5g4ImeoOIBn7y6bDdhFAOu8XQIEmHh3yf0lA0Rqq27353kQasDi1fAV7O-kIwDgtAkh-IGh8730syv5_ri8E2AJ9xl5CArvkr4z6OtK_dmvrwBQ9Cq1ZaQppBErGvcIMKiJ63Edpr6nHqBgyTQo-YxE6LeqL0egWyE--y_QQIfEKjR0LyF1W7Ql0-Dwmra4t71UxYTgY68s5cT2ftsLk7AKUKSrwCI4BcuVSyxYqTDD9GQrqefbvWw3TAbQ9SohhMbxQJN8yKIXqisX6Y-EB3ajfqsXBtuCPXyy9kjwTtdX963ud3NOSuy5ZEo3sPDq5siqSl_rBJtNtPlmqH2D0QMDX1SZiLOH5oZboSf0tzSZR_Oea4RbYZswpjSJa8Qa3FKi43w-yXudHlVLt_zEOVMpbyn33xdPeeK00WZ5ZECBGAq6pqFJlqe-pJJVHAgsaAs6tqJrW6BE8tyqoh58Fmn9-z6A7nMB3eczHIKFvh9IjNSSbawCOYjU9DVOPjD7Xjniw5013kOxmnO2qY_-9c5IEN4CUmryPj3lzw5Hqyhd0_dHAXX6qKu4FmrD5U8Ksk9p1P45fkjjgaxUhvHn2GJn8O1tl_ePZJwxrJ5zsedzw5DMQq-BYLC4L8Y5WO58pMMOC3GEegHz5J20uJjpjR0Qw_mzszT3X7YWxMHSfhHtN3ltghkWdh9nM21Aolw3rZzNKglsNsGT5tXIFLWD_rDAs1SMeGwY8_eOPHD2nkGL-Y2ltkrzz-3PM3O5wfzSYJ0ViqYqWBE_9L4Szvh3tVo2gGB_BI7JHj6CvL97V_yqazvO3zsylk6BE2arJ_rLgm_gmuHbrUJCoJ8cuHv69vVuQovLnBIYm8fSeCqgR_gcGz-XpShU9Ku6YuBKvqCLmNaFkLggiis3m29LL0</con:value></con:property>
+    <con:property><con:name>hostUrl</con:name><con:value>https://ibmbaw:30000</con:value></con:property>
     
     
-  <con:property><con:name>processId</con:name><con:value>d264f7ba-d795-4256-896f-456f5147de8d</con:value></con:property><con:property><con:name>processInstanceId</con:name><con:value>df79ec61-80b9-4755-8e33-0157cf6da610</con:value></con:property><con:property><con:name>tenantId</con:name><con:value>38e264de-74c7-4d48-b314-5624e7b4726f</con:value></con:property><con:property><con:name>username</con:name><con:value>admin@ibmdba.com</con:value></con:property><con:property><con:name>defaultHostUrl</con:name><con:value>https://br1api.wdgautomation.com</con:value></con:property></con:properties>
+  <con:property><con:name>processId</con:name><con:value>d264f7ba-d795-4256-896f-456f5147de8d</con:value></con:property><con:property><con:name>processInstanceId</con:name><con:value>efc6d580-c9e4-485e-b7f4-2d0cce970067</con:value></con:property><con:property><con:name>tenantId</con:name><con:value>bc94fbd3-3d42-49ec-8575-63dd51d2e489</con:value></con:property><con:property><con:name>username</con:name><con:value>admin@ibmdba.com</con:value></con:property></con:properties>
   <con:wssContainer/>
   <con:databaseConnectionContainer/>
   <con:jmsConnectionContainer/>
