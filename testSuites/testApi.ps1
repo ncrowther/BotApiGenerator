@@ -19,6 +19,7 @@
     }
 "@
 
+Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
@@ -33,7 +34,7 @@ $Global:defaultPasswordGbl = 'passw0rd'
 #$Global:defaultPasswordGbl = '*****'
 
 # File to contain the curl commands
-$Global:curlCmdsFile = '.\curls.log'
+$Global:curlCmdsFile = '.\curls.sh'
 
 # ##############################################################
 # Get the RPA hosts  
@@ -42,14 +43,16 @@ function GetHosts {
     # Use uk1 as the starter host
     $url = 'https://uk1api.wdgautomation.com/v2.0/configuration/regions'
 
-    $curlCmd = "curl --location --request GET " + $url + "`n"
-    $curlCmd > $Global:curlCmdsFile
+    $curlComment = "# 1 - Find Host Regions "
+    $curlComment > $Global:curlCmdsFile
+    $curlCmd = "curl --location --request GET " + $url
+    $curlCmd >> $Global:curlCmdsFile
 
    try {
         $hosts = Invoke-RestMethod $url -Method 'GET' 
     } catch {
         # Dig into the exception to get the Response details.
-        $msgBoxInput =  [System.Windows.MessageBox]::Show('Unable to find SaaS tenants: ' + $_.Exception.Response.StatusDescription,'Get Hosts','OK','Error')
+        $msgBoxInput =  [System.Windows.MessageBox]::Show('Unable to find SaaS tenants: ' + $_.Exception.Response.StatusDescription,'Get Hosts','OK','Warning')
         #exitScript
     }
 
@@ -251,8 +254,10 @@ function GetTenants {
         $username
     )
 
-    $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username  + "`n"
+    $url = $hostURL + '/v1.0/en-US/account/tenant?username=' + $username
 
+    $curlComment = "`n# 2 - Find tenants"
+    $curlComment >> $Global:curlCmdsFile
     $curlCmd = "curl --location --request GET " + $url
     $curlCmd >> $Global:curlCmdsFile 
 
@@ -358,8 +363,10 @@ function getAccessToken {
     $headers.Add("tenantId",$tenantId)
     $headers.Add("Content-Type", "application/x-www-form-urlencoded")
     $body = "grant_type=password&username=" + $username + "&password=" + $password + "&culture=en-US"
-
-    $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US' `n"
+  
+    $curlComment = "`n# 3 - Login to tenant"
+    $curlComment >> $Global:curlCmdsFile
+    $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -393,7 +400,9 @@ function getProcesses {
     $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
     $headers.Add("Authorization", "Bearer " + $accessToken)
 
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'`n"
+    $curlComment = "`n# 4 - Get Processes"
+    $curlComment >> $Global:curlCmdsFile
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -499,7 +508,9 @@ function getBotDetails {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId
 
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'`n"
+    $curlComment = "`n# 5 - Get process details"
+    $curlComment >> $Global:curlCmdsFile
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -608,8 +619,9 @@ function runBot {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance?lang=en-US'
 
-    $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'`n"
- 
+    $curlComment = "`n# 7 - Invoke Process"
+    $curlComment >> $Global:curlCmdsFile
+    $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -649,7 +661,9 @@ function getBotResult {
 
     $url = $hostURL + '/v2.0/workspace/' + $tenantId + '/process/' + $processId + '/instance/' + $instanceId
 
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'`n"
+    $curlComment = "`n# 8 - Get result"
+    $curlComment >> $Global:curlCmdsFile
+    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     $status = 'Started'
