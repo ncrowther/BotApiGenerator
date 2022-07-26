@@ -57,13 +57,13 @@ public class JUnitWriter {
 				"	static final String COMPLETED_STATUS = \"done\";\r\n" + 
 				"	static final int waitSeconds = 30;\r\n" + 
 				"	\r\n" + 
-				"	  @Before\r\n" + 
-				"	  public void setUp()\r\n" + 
-				"	  {\r\n" + 
-				"	    // SECURITY: REMOVE THE LINE BELOW IF NOT USING THE SKYTAP LAB TENANT\r\n" + 
-				"	    RpaApi.ignoreSSL();\r\n" + 
-				"	  }"  +		
-				"	\r\n" + 				
+				"	@Before\r\n" + 
+				"	public void setUp()\r\n" + 
+				"	{\r\n" + 
+				"	  // SECURITY: REMOVE THE LINE BELOW IF NOT USING THE SKYTAP LAB TENANT\r\n" + 
+				"	  RpaApi.ignoreSSL();\r\n" + 
+				"	}"  +		
+				"	\r\n\r\n" + 				
 				"	@Test\r\n" + 
 				"	public void testStartProcess() {\r\n" + 
 				"\r\n" + 

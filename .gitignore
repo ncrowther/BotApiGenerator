@@ -4,3 +4,4 @@ bpmn/
 *.wad
 ~$aApiGuide.odt
 ~WRL0005.tmp
+data/config.json
