@@ -18,7 +18,6 @@ import java.util.List;
  * restricted by GSA ADP Schedule Contract with IBM Corporation.
  */
 
-import java.util.Stack;
 import java.util.stream.Stream;
 
 import converter.openApi.ExternalApiWriter;
@@ -28,12 +27,10 @@ import converter.config.ConfigFileParser;
 import converter.config.IConfigParser;
 import converter.config.RpaConfig;
 import converter.junit.JUnitWriter;
-import converter.wal.WalWriter;
 import datastructures.BotInfo;
 import rpa.api.RpaApi;
 import rpa.api.RpaApi.RpaApiException;
 import rpa.api.parameters.RpaParameter;
-import rpa.json.JsonUtils;
 
 public class CreateABot {
 

@@ -1,42 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?><project default="build_jar" name="Create Runnable Jar for Project BotApiGenerator">
-    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
-    <!--define folder properties-->
-    <property name="dir.buildfile" value="."/>
-    <property name="dir.jarfile" value="${dir.buildfile}"/>
-    <property name="dir.rpaapi" value="${dir.buildfile}/../RpaApi/RpaApi"/>    	
-    <target name="build_jar">
-        <jar destfile="${dir.jarfile}/BotApiGen.jar" filesetmanifest="mergewithoutmain">
-            <manifest>
-                <attribute name="Main-Class" value="converter.CreateABot"/>
-                <attribute name="Class-Path" value="."/>
-            </manifest>
-            <fileset dir="${dir.jarfile}/bin"/>
-            <fileset dir="${dir.rpaapi}/bin"/>    
-            <zipfileset excludes="META-INF/*.SF" src="D:/RPA/github/RpaApi/RpaApi/lib/json-20140107.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="D:/RPA/github/RpaApi/RpaApi/lib/commons-codec-1.15.jar"/>            	
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/json-20210307.jar"/>
-            <zipfileset excludes="METAdir ..\rpa-INF/*.SF" src="${dir.jarfile}/lib/jsoup-1.14.3.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/javax.xml.bind.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-text-1.9.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/swagger-parser-2.0.28.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-io-2.11.0.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/swagger-parser-v2-converter-2.0.28.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-lang3-3.12.0.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.api_5.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.engine_5.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.migrationsupport_5.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.params_5.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.commons_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.engine_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.launcher_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.runner_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.suite.api_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.vintage.engine_4.12.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.opentest4j_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.apiguardian_1.0.0.v20170910-2246.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
-        </jar>
-    </target>
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="run" >
+
+	<property name="dir.buildfile" value="." />
+    <property name="lib.dir"       value="lib"/>	
+    <property name="config.dir"     value="data"/>		
+	<property name="dir.jarfile"   value="${dir.buildfile}" />
+	<property name="jar.name"   value="BotApiGenerator.jar" />
+    <property name="main-class"    value="converter.CreateABot"/>
+    	
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+        	
+	<target name="build_jar">
+		<jar destfile="${lib.dir}/${jar.name}" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="converter.CreateABot" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${dir.jarfile}/bin" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/RpaRestApi.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/json-20210307.jar" />
+			<zipfileset excludes="METAdir ..\rpa-INF/*.SF" src="${dir.jarfile}/lib/jsoup-1.14.3.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/javax.xml.bind.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-text-1.9.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/swagger-parser-2.0.28.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-io-2.11.0.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/swagger-parser-v2-converter-2.0.28.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-lang3-3.12.0.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.api_5.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.engine_5.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.migrationsupport_5.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.params_5.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.commons_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.engine_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.launcher_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.runner_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.suite.api_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.vintage.engine_4.12.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.opentest4j_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.apiguardian_1.0.0.v20170910-2246.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit_4.12.0.v201504281640/junit.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" />
+		</jar>
+	</target>
+
+	<target name="build.run" depends="build_jar">
+		<java fork="true" classname="${main-class}">
+			<arg value="${config.dir}\config.json" />
+			<arg value="." />			
+			<classpath>
+                <path refid="classpath"/>
+				<path location="${lib.dir}/${jar.namne}" />
+			</classpath>
+		</java>
+	</target>
+	
+	<target name="run">
+		<java fork="true" classname="${main-class}">
+			<arg value="${config.dir}\config.json" />
+			<arg value="." />			
+			<classpath>
+                <path refid="classpath"/>
+				<path location="${lib.dir}/${jar.namne}" />
+			</classpath>
+		</java>
+	</target>
+
+
 </project>
