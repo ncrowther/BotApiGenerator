@@ -45,7 +45,7 @@ function GetHosts {
 
     $curlComment = "# 1 - Find Host Regions "
     $curlComment > $Global:curlCmdsFile
-    $curlCmd = "curl --location --request GET " + $url
+    $curlCmd = "curl -k --location --request GET " + $url
     $curlCmd >> $Global:curlCmdsFile
 
    try {
@@ -258,7 +258,7 @@ function GetTenants {
 
     $curlComment = "`n# 2 - Find tenants"
     $curlComment >> $Global:curlCmdsFile
-    $curlCmd = "curl --location --request GET " + $url
+    $curlCmd = "curl -k --location --request GET " + $url
     $curlCmd >> $Global:curlCmdsFile 
 
     try {
@@ -366,7 +366,7 @@ function getAccessToken {
   
     $curlComment = "`n# 3 - Login to tenant"
     $curlComment >> $Global:curlCmdsFile
-    $curlCmd =  "curl --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US'"
+    $curlCmd =  "curl -k --location --request POST " + $url + " --header 'tenantId: $tenantId' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=$username' --data-urlencode 'password=$password' --data-urlencode 'culture=en-US'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -402,7 +402,7 @@ function getProcesses {
 
     $curlComment = "`n# 4 - Get Processes"
     $curlComment >> $Global:curlCmdsFile
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
+    $curlCmd = "curl -k --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -510,7 +510,7 @@ function getBotDetails {
 
     $curlComment = "`n# 5 - Get process details"
     $curlComment >> $Global:curlCmdsFile
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
+    $curlCmd = "curl -k --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -621,7 +621,7 @@ function runBot {
 
     $curlComment = "`n# 7 - Invoke Process"
     $curlComment >> $Global:curlCmdsFile
-    $curlCmd = "curl --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'"
+    $curlCmd = "curl -k --location --request POST " + $url + " --header 'Authorization: Bearer " + $accessToken + "' --header 'Content-Type: application/json' --data-raw '" + $payload + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     try {
@@ -663,7 +663,7 @@ function getBotResult {
 
     $curlComment = "`n# 8 - Get result"
     $curlComment >> $Global:curlCmdsFile
-    $curlCmd = "curl --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
+    $curlCmd = "curl -k --location --request GET " + $url + " --header 'Authorization: Bearer " + $accessToken + "'"
     $curlCmd >> $Global:curlCmdsFile
 
     $status = 'Started'
