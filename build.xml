@@ -11,8 +11,12 @@
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
-        	
-	<target name="build_jar">
+	
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+	<target name="build" depends="clean">
 		<jar destfile="${lib.dir}/${jar.name}" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="converter.CreateABot" />
@@ -28,27 +32,14 @@
 			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-io-2.11.0.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/swagger-parser-v2-converter-2.0.28.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-lang3-3.12.0.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.api_5.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.engine_5.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.migrationsupport_5.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.jupiter.params_5.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.commons_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.engine_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.launcher_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.runner_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.platform.suite.api_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit.vintage.engine_4.12.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.opentest4j_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.apiguardian_1.0.0.v20170910-2246.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.junit_4.12.0.v201504281640/junit.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="C:/Program Files/IBM/IBMIMShared/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" />
 		</jar>
 	</target>
 
-	<target name="build.run" depends="build_jar">
+	<target name="build.run" depends="build">
 		<java fork="true" classname="${main-class}">
 			<arg value="${config.dir}\config.json" />
-			<arg value="." />			
+			<arg value="." />	
+			<arg value="Y" />				
 			<classpath>
                 <path refid="classpath"/>
 				<path location="${lib.dir}/${jar.namne}" />
@@ -59,7 +50,8 @@
 	<target name="run">
 		<java fork="true" classname="${main-class}">
 			<arg value="${config.dir}\config.json" />
-			<arg value="." />			
+			<arg value="." />	
+			<arg value="Y" />				
 			<classpath>
                 <path refid="classpath"/>
 				<path location="${lib.dir}/${jar.namne}" />

@@ -55,6 +55,14 @@ public class CreateABot {
 			} else {
 				throw new Exception("No base directory specified");
 			}
+			
+			if (args.length > 2) {
+				String noSSL = args[2];
+				System.out.println("Arg[2]: " + args[2]);
+				if (noSSL.equals("Y")) {
+					RpaApi.ignoreSSL();
+				}
+			}
 
 			System.out.println("Config file :" + configFile);
 

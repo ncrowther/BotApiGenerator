@@ -19,15 +19,15 @@ public class Weather4uTest {
 	static final String processName = "Weather4u";
 	static final String payload = "{ \"payload\": { \"in_region\": \"test\", }}";
 	static final String COMPLETED_STATUS = "done";
-	static final int waitSeconds = 30;
+	static final int waitSeconds = 20;
 	
-	
-	  @Before
-	  public void setUp()
-	  {
-	    RpaApi.ignoreSSL();
-	  }
-	  
+	@Before
+	public void setUp()
+	{
+	  // SECURITY: REMOVE THE LINE BELOW IF NOT USING THE SKYTAP LAB TENANT
+	  RpaApi.ignoreSSL();
+	}	
+
 	@Test
 	public void testStartProcess() {
 

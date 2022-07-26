@@ -18,8 +18,11 @@ public class ExternalApiWriter {
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 
+		String tenantId = rpaConfig.getTenantId();	
+		String username = rpaConfig.getRpaUser();
+		String password = rpaConfig.getRpaPwd();
+		
 		String botName = getCode(generatedCode, CodePlacement.BOTNAME.toString());
-		String description = getCode(generatedCode, CodePlacement.API_DOCUMENTATION.toString());
 		String baseURL = getCode(generatedCode, CodePlacement.BASE_URL.toString());
 		String invokeProcessUrl = getCode(generatedCode, CodePlacement.INVOKE_URL.toString());
 		String getResultUrl = getCode(generatedCode, CodePlacement.GET_RESULT_URL.toString());		
@@ -123,7 +126,7 @@ public class ExternalApiWriter {
 			"      tags:\r\n" + 
 			"        - Authentication\r\n" + 
 			"      summary: List all the tenants that an user can access.\r\n" + 
-			"      description: \"Lists all the tenants that the user defined in `{UserName}` can access.\\r\\n\\r\\nSample request:\\r\\n            \\r\\n    GET /v2.0/account/tenant?UserName=example@email.com\"\r\n" + 
+			"      description: \"Lists all the tenants that the user defined in `{UserName}` can access.\\r\\n\\r\\nSample request:\\r\\n            \\r\\n    GET /v2.0/account/tenant?UserName=" + username + "\"\r\n" + 
 			"      parameters:\r\n" + 
 			"        - name: locale\r\n" + 
 			"          in: path\r\n" + 
@@ -140,7 +143,7 @@ public class ExternalApiWriter {
 			"            type: string\r\n" + 
 			"            description: The user name is the email.\r\n" + 
 			"            nullable: true\r\n" + 
-			"            example: UserName\r\n" + 
+			"            example: " + username + "\r\n" + 
 			"      responses:\r\n" + 
 			"        '200':\r\n" + 
 			"          description: List of Tenant Information retrieved successfully.\r\n" + 
@@ -214,7 +217,7 @@ public class ExternalApiWriter {
 			"          schema:\r\n" + 
 			"            type: string\r\n" + 
 			"            format: uuid\r\n" + 
-			"            default: e780ec1f-e62f-4148-8335-2f3ac251373e\r\n" + 
+			"            default: " + tenantId + "\r\n" + 
 			"          required: true\r\n" + 
 			"      requestBody:\r\n" + 
 			"        required: true\r\n" + 
@@ -230,11 +233,11 @@ public class ExternalApiWriter {
 			"                username:\r\n" + 
 			"                  type: string\r\n" + 
 			"                  description: Type of log in method. Default type is\r\n" + 
-			"                  default: yourname@yourdomain.com\r\n" + 
+			"                  default: " + username + "\r\n" + 
 			"                password:\r\n" + 
 			"                  type: string\r\n" + 
 			"                  description: The user's password\r\n" + 
-			"                  default: XXXXXX\r\n" + 
+			"                  default: " + password + "\r\n" + 
 			"                culture:\r\n" + 
 			"                  type: string\r\n" + 
 			"                  description: The code of the language. See Supported languages for the supported language codes\r\n" + 
@@ -674,12 +677,12 @@ public class ExternalApiWriter {
 			"          type: string\r\n" + 
 			"          description: The email of the user that will be the tenant owner.\r\n" + 
 			"          format: email\r\n" + 
-			"          example: email@example.com\r\n" + 
+			"          example: " + username + "\r\n" + 
 			"        userName:\r\n" + 
 			"          maxLength: 50\r\n" + 
 			"          type: string\r\n" + 
 			"          description: The name of the user that will be the tenant owner.\r\n" + 
-			"          example: example\r\n" + 
+			"          example: " + username + "\r\n" + 
 			"      additionalProperties: false\r\n" + 
 			"      description: The model used to create a new tenant.\r\n" + 
 			"    TenantId:\r\n" + 
@@ -690,7 +693,7 @@ public class ExternalApiWriter {
 			"          description: The ID of the tenant.\r\n" + 
 			"          format: uuid\r\n" + 
 			"          readOnly: true\r\n" + 
-			"          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6\r\n" + 
+			"          example: " + tenantId + "\r\n" + 
 			"      additionalProperties: false\r\n" + 
 			"    TenantModel:\r\n" + 
 			"      type: object\r\n" + 
@@ -739,7 +742,7 @@ public class ExternalApiWriter {
 			"        username:\r\n" + 
 			"          type: string\r\n" + 
 			"          description: The user's email to log in to the tenant.\r\n" + 
-			"          example: example@email.com\r\n" + 
+			"          example: " + username + "\r\n" + 
 			"        password:\r\n" + 
 			"          type: string\r\n" + 
 			"          description: The user's password.\r\n" + 

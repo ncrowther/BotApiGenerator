@@ -41,6 +41,7 @@ public class JUnitWriter {
 				"import static org.junit.Assert.fail;\r\n" + 
 				"import static org.junit.jupiter.api.Assertions.assertNotNull;\r\n" + 
 				"\r\n" + 
+				"import org.junit.Before;\r\n" + 
 				"import org.junit.Test;\r\n" + 
 				"\r\n" + 
 				"import rpa.api.RpaApi;\r\n" + 
@@ -55,7 +56,7 @@ public class JUnitWriter {
 				"	static final String processName = \"" + botName + "\";\r\n" + 
 				"	static final String payload = \"{ \\\"payload\\\": { " + inputParams + " }}\";\r\n" + 
 				"	static final String COMPLETED_STATUS = \"done\";\r\n" + 
-				"	static final int waitSeconds = 30;\r\n" + 
+				"	static final int waitSeconds = 20;\r\n" + 
 				"	\r\n" + 
 				"	@Before\r\n" + 
 				"	public void setUp()\r\n" + 
