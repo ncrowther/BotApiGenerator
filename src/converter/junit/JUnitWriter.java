@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
+
 import converter.common.CodePlacement;
 import converter.common.StringUtils;
 import converter.config.RpaConfig;
@@ -16,20 +18,21 @@ import rpa.api.parameters.RpaParameter;
 
 public class JUnitWriter {
 
-	public static void writeJUnitFile(String filename, RpaConfig bpmnTask, BotInfo botInfo)
+	public static void writeJUnitFile(String filename, RpaConfig botConfig, BotInfo botInfo)
 			throws IOException {
 
-		Map<String, List<String>> generatedCode = JUnitCodeConverter.generateCode(bpmnTask, botInfo.getBotSignature());
+		Map<String, List<String>> generatedCode = JUnitCodeConverter.generateCode(botConfig, botInfo.getBotSignature());
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 
 		String botName = getCode(generatedCode, CodePlacement.BOTNAME.toString());
 		botName = StringUtils.convertToTitleCase(botName);
-		String description = getCode(generatedCode, CodePlacement.API_DOCUMENTATION.toString());
 		String inputParams = getCode(generatedCode, CodePlacement.API_INPUT_PARAMS.toString());
 		String outputParams = getCode(generatedCode, CodePlacement.API_OUTPUT_PARAMS.toString());
-		String host = getCode(generatedCode, CodePlacement.API_SYSTEM.toString());
-		
+		String baseUrl = botConfig.getBaseUrl();
+		String tenantId = botConfig.getTenantId();
+		String username = botConfig.getRpaUser();
+		String pwd = botConfig.getRpaPwd();
 		StringBuilder strBuilder = new StringBuilder();
 		
 		strBuilder.append("package junit;\r\n" + 
@@ -45,15 +48,22 @@ public class JUnitWriter {
 				"\r\n" + 
 				"public class " + botName + "Test {\r\n" + 
 				"\r\n" + 
-				"	static final String baseURL = \"https://uk1api.wdgautomation.com\";\r\n" + 
-				"	static final String tenantId = \"e780ec1f-e62f-4148-8335-2f3ac251373e\";\r\n" + 
-				"	static final String username = \"ncrowther@uk.ibm.com\";\r\n" + 
-				"	static final String password = \"Porker01!\";\r\n" + 
+				"	static final String baseURL = \"" + baseUrl + "\";\r\n" + 
+				"	static final String tenantId = \"" + tenantId + "\";\r\n" + 
+				"	static final String username = \"" + username +"\";\r\n" + 
+				"	static final String password = \"" + pwd + "\";\r\n" + 
 				"	static final String processName = \"" + botName + "\";\r\n" + 
 				"	static final String payload = \"{ \\\"payload\\\": { " + inputParams + " }}\";\r\n" + 
 				"	static final String COMPLETED_STATUS = \"done\";\r\n" + 
 				"	static final int waitSeconds = 30;\r\n" + 
 				"	\r\n" + 
+				"	  @Before\r\n" + 
+				"	  public void setUp()\r\n" + 
+				"	  {\r\n" + 
+				"	    // SECURITY: REMOVE THE LINE BELOW IF NOT USING THE SKYTAP LAB TENANT\r\n" + 
+				"	    RpaApi.ignoreSSL();\r\n" + 
+				"	  }"  +		
+				"	\r\n" + 				
 				"	@Test\r\n" + 
 				"	public void testStartProcess() {\r\n" + 
 				"\r\n" + 

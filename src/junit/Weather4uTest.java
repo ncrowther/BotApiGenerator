@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import rpa.api.RpaApi;
@@ -11,15 +12,22 @@ import rpa.json.JsonUtils;
 
 public class Weather4uTest {
 
-	static final String baseURL = "https://uk1api.wdgautomation.com";
-	static final String tenantId = "e780ec1f-e62f-4148-8335-2f3ac251373e";
+	static final String baseURL = "https://ap1api.wdgautomation.com";
+	static final String tenantId = "ad2f6157-975e-40d8-b475-68977b92f4c3";
 	static final String username = "ncrowther@uk.ibm.com";
-	static final String password = "Porker01!";
+	static final String password = "Porker01!!";
 	static final String processName = "Weather4u";
-	static final String payload = "{ \"payload\": { \"in_region\": \"328328\", }}";
+	static final String payload = "{ \"payload\": { \"in_region\": \"test\", }}";
 	static final String COMPLETED_STATUS = "done";
 	static final int waitSeconds = 30;
 	
+	
+	  @Before
+	  public void setUp()
+	  {
+	    RpaApi.ignoreSSL();
+	  }
+	  
 	@Test
 	public void testStartProcess() {
 
