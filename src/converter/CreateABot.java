@@ -30,6 +30,7 @@ import converter.junit.JUnitWriter;
 import datastructures.BotInfo;
 import rpa.api.RpaApi;
 import rpa.api.RpaApi.RpaApiException;
+import rpa.api.parameters.BotSignature;
 import rpa.api.parameters.RpaParameter;
 
 public class CreateABot {
@@ -78,7 +79,7 @@ public class CreateABot {
 
 			createDirIfDoesNotExist(generatedDir);
 
-			String botFile = generatedDir + StringUtils.convertToTitleCase(rpaConfig.getName());
+			String botFile = generatedDir + StringUtils.convertToTitleCase(rpaConfig.getProcessName());
 			String walFileName = botFile + ".txt";
 			String internalOpenApiFileName = botFile + "_internal.yaml";
 			String externalOpenApiFileName = botFile + "_external.yaml";
@@ -109,14 +110,14 @@ public class CreateABot {
 		String tenantId = rpaConfig.getTenantId();
 		String username = rpaConfig.getRpaUser();
 		String password = rpaConfig.getRpaPwd();
-		String processName = rpaConfig.getName();
-
+		String processName = rpaConfig.getProcessName();
+		
 		String token = RpaApi.getBearerToken(baseURL, tenantId, username, password);
 
 		String processId = RpaApi.getProcessIdByName(rpaConfig.getBaseUrl(), rpaConfig.getTenantId(), token,
 				processName);
 
-		List<RpaParameter> botSignature = RpaApi.getProcessDetails(rpaConfig.getBaseUrl(), rpaConfig.getTenantId(),
+		BotSignature botSignature = RpaApi.getProcessDetails(rpaConfig.getBaseUrl(), rpaConfig.getTenantId(),
 				token, processId);
 
 		botInfo.setBotSignature(botSignature);

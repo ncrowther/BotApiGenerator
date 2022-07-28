@@ -56,7 +56,7 @@ public class RpaConfig {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getName() {
+	public String getProcessName() {
 		return name;
 	}
 	public void setName(String name) {

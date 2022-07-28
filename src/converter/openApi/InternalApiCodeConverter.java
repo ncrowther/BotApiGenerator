@@ -8,6 +8,7 @@ import java.util.Map;
 
 import converter.common.CodePlacement;
 import converter.config.RpaConfig;
+import rpa.api.parameters.BotSignature;
 import rpa.api.parameters.ParameterDirection;
 import rpa.api.parameters.RpaParameter;
 
@@ -25,11 +26,11 @@ public class InternalApiCodeConverter {
 
 	private static Map<String, List<String>> generatedCode = new HashMap<String, List<String>>();
 
-	public static Map<String, List<String>> generateCode(RpaConfig task, List<RpaParameter> botSignature) {
+	public static Map<String, List<String>> generateCode(RpaConfig task, BotSignature botSignature) {
 
 		try {
 			if (task != null) {
-				System.out.println("**GENERATING CODE FOR " + task.getName());
+				System.out.println("**GENERATING CODE FOR " + task.getProcessName());
 
 				generateStartCode(task, botSignature);
 			}
@@ -39,9 +40,9 @@ public class InternalApiCodeConverter {
 		return generatedCode;
 	}
 
-	private static void generateStartCode(RpaConfig task, List<RpaParameter> botSignature) {
+	private static void generateStartCode(RpaConfig task, BotSignature botSignature) {
 
-		generateBotName(task.getName());
+		generateBotName(botSignature.getBotScriptName());
 
 		if (task.getDocumentation() != null) {
 			// openAPI
@@ -53,7 +54,8 @@ public class InternalApiCodeConverter {
 			generateApiSystem(task.getSystem());
 		}
 
-		Iterator<RpaParameter> paramNameIterator = botSignature.iterator();
+		List<RpaParameter> botParams = botSignature.getParameters();
+		Iterator<RpaParameter> paramNameIterator = botParams.iterator();
 		while (paramNameIterator.hasNext()) {
 
 			RpaParameter paramName = paramNameIterator.next();
@@ -74,7 +76,10 @@ public class InternalApiCodeConverter {
 
 	private static void generateInputParams(RpaParameter paramName) {
 		String parameterStr = "      - name: " + paramName.getName() + "\r\n" + "        in: query\r\n"
-				+ "        required: false\r\n" + "        type: " + paramName.getObjectType() + "\r\n" + "        description: TBS\r\n";
+				+ "        required: false\r\n" 
+				+ "        type: " + paramName.getObjectType() + "\r\n" 
+				+ "        default: " + paramName.getExamplePayload() + "\r\n"
+				+ "        description: Bot input param\r\n";
 
 		addCode(CodePlacement.API_INPUT_PARAMS.toString(), parameterStr);
 	}

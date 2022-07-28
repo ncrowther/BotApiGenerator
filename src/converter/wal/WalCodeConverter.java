@@ -27,7 +27,7 @@ public class WalCodeConverter {
 
 		try {
 			if (task != null) {
-				System.out.println("**GENERATING CODE FOR " + task.getName());
+				System.out.println("**GENERATING CODE FOR " + task.getProcessName());
 
 				generateInOutParams( task, null);
 				

@@ -21,7 +21,7 @@ public class JUnitWriter {
 	public static void writeJUnitFile(String filename, RpaConfig botConfig, BotInfo botInfo)
 			throws IOException {
 
-		Map<String, List<String>> generatedCode = JUnitCodeConverter.generateCode(botConfig, botInfo.getBotSignature());
+		Map<String, List<String>> generatedCode = JUnitCodeConverter.generateCode(botConfig, botInfo);
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 

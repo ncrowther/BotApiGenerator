@@ -1,14 +1,12 @@
 package datastructures;
 
-import java.util.List;
-
-import rpa.api.parameters.RpaParameter;
+import rpa.api.parameters.BotSignature;
 
 public class BotInfo {
 
 	String workspaceId;
 	String processId;
-	List<RpaParameter> botSignature;
+	BotSignature botSignature;
 	
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -22,10 +20,10 @@ public class BotInfo {
 	public void setProcessId(String processId) {
 		this.processId = processId;
 	}
-	public List<RpaParameter> getBotSignature() {
+	public BotSignature getBotSignature() {
 		return botSignature;
 	}
-	public void setBotSignature(List<RpaParameter> botSignature) {
+	public void setBotSignature(BotSignature botSignature) {
 		this.botSignature = botSignature;
 	}
 	

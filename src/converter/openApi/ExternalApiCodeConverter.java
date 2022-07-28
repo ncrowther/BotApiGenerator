@@ -9,6 +9,7 @@ import java.util.Map;
 import converter.common.CodePlacement;
 import converter.config.RpaConfig;
 import datastructures.BotInfo;
+import rpa.api.parameters.BotSignature;
 import rpa.api.parameters.ParameterDirection;
 import rpa.api.parameters.RpaParameter;
 
@@ -30,7 +31,7 @@ public class ExternalApiCodeConverter {
 
 		try {
 			if (config != null) {
-				System.out.println("**GENERATING CODE FOR " + config.getName());
+				System.out.println("**GENERATING CODE FOR " + config.getProcessName());
 
 				generateStartCode(config, botInfo);
 			}
@@ -42,7 +43,7 @@ public class ExternalApiCodeConverter {
 
 	private static void generateStartCode(RpaConfig config, BotInfo botInfo) {
 
-		generateBotName(config.getName());
+		generateBotName(config.getProcessName());
 
 		if (config.getDocumentation() != null) {
 			// openAPI
@@ -60,8 +61,9 @@ public class ExternalApiCodeConverter {
 			generateApiSystem(config.getSystem());
 		}
 		
-		List<RpaParameter>botParams = botInfo.getBotSignature();
-		Iterator<RpaParameter> paramNameIterator = botParams.iterator();
+		BotSignature botParams = botInfo.getBotSignature();
+		
+		Iterator<RpaParameter> paramNameIterator = botParams.getParameters().iterator();
 		while (paramNameIterator.hasNext()) {
 
 			RpaParameter paramName = paramNameIterator.next();
@@ -83,8 +85,14 @@ public class ExternalApiCodeConverter {
 	}
 
 	private static void generateInputParams(RpaParameter paramName) {
-		String paramStr = "        " + paramName.getName() + ":\r\n" + "          type: " + paramName.getObjectType() + "\r\n" + 
-				"          description: TBS\r\n";
+		String paramStr = "        " 
+	     + paramName.getName() 
+		 + ":\r\n" 
+	     + "          type: " + paramName.getObjectType() 
+		 + "\r\n" 
+	     + "          default: " + paramName.getExamplePayload() 	     
+	     + "\r\n" 
+		 + "          description: Bot input param\r\n";
 
 		addCode(CodePlacement.API_INPUT_PARAMS.toString(), paramStr);
 	}

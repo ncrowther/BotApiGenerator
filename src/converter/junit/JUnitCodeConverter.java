@@ -8,6 +8,8 @@ import java.util.Map;
 
 import converter.common.CodePlacement;
 import converter.config.RpaConfig;
+import datastructures.BotInfo;
+import rpa.api.parameters.BotSignature;
 import rpa.api.parameters.ParameterDirection;
 import rpa.api.parameters.RpaParameter;
 
@@ -25,12 +27,13 @@ public class JUnitCodeConverter {
 
 	private static Map<String, List<String>> generatedCode = new HashMap<String, List<String>>();
 
-	public static Map<String, List<String>> generateCode(RpaConfig task, List<RpaParameter> botSignature) {
+	public static Map<String, List<String>> generateCode(RpaConfig task, BotInfo botInfo) {
 
 		try {
 			if (task != null) {
-				System.out.println("**GENERATING CODE FOR " + task.getName());
+				System.out.println("**GENERATING CODE FOR " + task.getProcessName());
 
+				BotSignature botSignature = botInfo.getBotSignature();
 				generateStartCode(task, botSignature);
 			}
 		} catch (Exception e) {
@@ -39,9 +42,9 @@ public class JUnitCodeConverter {
 		return generatedCode;
 	}
 
-	private static void generateStartCode(RpaConfig task, List<RpaParameter> botSignature) {
+	private static void generateStartCode(RpaConfig task, BotSignature botSignature) {
 
-		generateBotName(task.getName());
+		generateBotName(task.getProcessName());
 
 		if (task.getDocumentation() != null) {
 			generateAPIDocumentation(task.getDocumentation());
@@ -51,7 +54,7 @@ public class JUnitCodeConverter {
 			generateApiSystem(task.getSystem());
 		}
 
-		Iterator<RpaParameter> paramNameIterator = botSignature.iterator();
+		Iterator<RpaParameter> paramNameIterator = botSignature.getParameters().iterator();
 		while (paramNameIterator.hasNext()) {
 
 			RpaParameter paramName = paramNameIterator.next();
@@ -61,7 +64,7 @@ public class JUnitCodeConverter {
 			}
 		}
 
-		paramNameIterator = botSignature.iterator();
+		paramNameIterator = botSignature.getParameters().iterator();
 		while (paramNameIterator.hasNext()) {
 
 			RpaParameter paramName = paramNameIterator.next();
@@ -78,9 +81,10 @@ public class JUnitCodeConverter {
 		addCode(CodePlacement.API_OUTPUT_PARAMS.toString(), paramsStr);
 
 	}
+	
 
 	private static void generateInputParams(RpaParameter paramName) {
-		String parameterStr = "\\\"" + paramName.getName() + "\\\": \\\"test\\\",";
+		String parameterStr = "\\\"" + paramName.getName() + "\\\": \\\"" + paramName.getExamplePayload() + "\\\",";
 
 		addCode(CodePlacement.API_INPUT_PARAMS.toString(), parameterStr);
 	}
