@@ -1,0 +1,26 @@
+•// Test bot for synchronous API testing
+//
+// Input Variables 
+defVar --name input_text --type String --parameter
+// Output Variables 
+defVar --name output_text --type String --output
+defVar --name ResponseCode --type String --value 0 --output
+defVar --name ResponseMessage --type String --output
+// Local Variables 
+defVar --name success --type Boolean --value True
+
+setVar --name "${ResponseMessage}" --value OK
+
+// Get user input
+messageBox --title Input --text "${input_text}" --icon "Information" --buttons "OK" --defaultbutton "FirstButton"
+inputBox --title Output --prompt Output output_text=value
+
+// Return response.  ResponseCode is 0 for success, any other number for error code
+if --left "${success}" --operator "Is_True"
+	setVar --name "${ResponseCode}" --value 0
+else
+	setVar --name "${ResponseCode}" --value "-1"
+	setVar --name "${ResponseMessage}" --value "Bot failed"
+endIf
+
+*21.0.2.5
