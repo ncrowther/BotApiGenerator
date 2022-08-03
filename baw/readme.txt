@@ -1,0 +1,1 @@
+This folder contains a BAW template to help test the RPA Sync API
