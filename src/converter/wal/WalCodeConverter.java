@@ -8,6 +8,7 @@ import java.util.Map;
 
 import converter.common.CodePlacement;
 import converter.config.RpaConfig;
+import rpa.api.parameters.BotSignature;
 
 /* 
  * Licensed Materials - Property of IBM Corporation.
@@ -32,7 +33,7 @@ public class WalCodeConverter {
 				generateInOutParams( task, null);
 				
 				if (!task.getOdmHost().equals("")) {
-					generateOdmCall( task, null);					
+					generateOdmCall( task);					
 				}
 
 			}
@@ -110,7 +111,7 @@ public class WalCodeConverter {
 		functionCode.add(paramsStr);
 	}
 	
-	private static void generateOdmCall(RpaConfig task, RpaConfig parentTask) {
+	private static void generateOdmCall(RpaConfig task) {
 
 		String odmHost = task.getOdmHost();
 		String odmPath = task.getOdmPath();

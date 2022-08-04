@@ -16,7 +16,7 @@ public class WalWriter {
 	public static void writeRPAFile(String filename, RpaConfig rpaConfig, BotInfo botInfo)
 			throws IOException {
 		
-		Map<String, List<String>> generatedCode = ExternalApiCodeConverter.generateCode(rpaConfig, botInfo);
+		Map<String, List<String>> generatedCode = WalCodeConverter.generateCode(rpaConfig);
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
 		
