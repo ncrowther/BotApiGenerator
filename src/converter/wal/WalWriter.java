@@ -7,16 +7,19 @@ import java.util.Map;
 
 import converter.common.CodePlacement;
 import converter.config.RpaConfig;
+import converter.openApi.ExternalApiCodeConverter;
+import datastructures.BotInfo;
+import rpa.api.parameters.BotSignature;
 
 public class WalWriter {
 
-	public static void writeRPAFile(String filename, RpaConfig bpmnTask)
+	public static void writeRPAFile(String filename, RpaConfig rpaConfig, BotInfo botInfo)
 			throws IOException {
 		
-		Map<String, List<String>> generatedCode = WalCodeConverter.generateCode(bpmnTask);
+		Map<String, List<String>> generatedCode = ExternalApiCodeConverter.generateCode(rpaConfig, botInfo);
 		
 		FileOutputStream outputStream = new FileOutputStream(filename);
-
+		
 		StringBuilder strBuilder = new StringBuilder();
 		
 		String docs = getCodeBlock(generatedCode, CodePlacement.WAL_DOCUMENTATION.toString());		

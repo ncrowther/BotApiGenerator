@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import converter.openApi.ExternalApiWriter;
 import converter.openApi.InternalApiWriter;
+import converter.wal.WalWriter;
 import converter.common.StringUtils;
 import converter.config.ConfigFileParser;
 import converter.config.IConfigParser;
@@ -85,8 +86,8 @@ public class CreateABot {
 			String externalOpenApiFileName = botFile + "_external.yaml";
 			String junitFileName = botFile + "Test.java";
 
-			// WalWriter.writeRPAFile(walFileName, rpaConfig);
-			// System.out.println("Wal generated in " + walFileName);
+		    WalWriter.writeRPAFile(walFileName, rpaConfig, botInfo);
+			System.out.println("Wal generated in " + walFileName);
 
 			InternalApiWriter.writeInternalApiFile(internalOpenApiFileName, rpaConfig, botInfo);
 			System.out.println("Internal API generated in " + internalOpenApiFileName);
